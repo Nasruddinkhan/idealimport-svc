@@ -1,5 +1,6 @@
 package ca.com.idealimport.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.observation.ObservationRegistry;
 import io.micrometer.observation.aop.ObservedAspect;
 import lombok.extern.slf4j.Slf4j;
@@ -24,5 +25,10 @@ public class ObservedAspectConfiguration {
     public ServerHttpObservationFilter observationFilter(ObservationRegistry registry) {
         log.info("ObservedAspectConfiguration.observationFilter {} ", registry);
         return new ServerHttpObservationFilter(registry);
+    }
+
+    @Bean("objectMapper")
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
     }
 }

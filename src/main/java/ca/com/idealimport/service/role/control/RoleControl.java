@@ -83,6 +83,13 @@ public class RoleControl {
                 .orElseThrow(() -> new RuntimeException("passing invalid argumentId"));
     }
 
+
+    public Set<Role> findRoleByNames(Set<String> name) {
+        var names = roleRepository.findByNameInAndIsActiveTrue(name);
+        if (names.isEmpty()) throw new RuntimeException("passing invalid argumentId");
+        return names;
+    }
+
     private Set<String> getPermissionNames(RoleDto roles) {
         return roles.permissions()
                 .stream()
@@ -115,7 +122,6 @@ public class RoleControl {
 
     public RoleDto activeAndInActiveRole(String name, Boolean status) {
         log.debug("RoleControl.activeAndInActiveRole end name {}, status {}", name, status);
-
         final var rolesDto = roleRepository.findByName(name)
                 .map(e -> RoleMapper.setStatus(e, status))
                 .map(roleRepository::save)
