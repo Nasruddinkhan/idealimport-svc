@@ -1,4 +1,4 @@
-package ca.com.idealimport.config;
+package ca.com.idealimport.config.security;
 
 import ca.com.idealimport.config.filter.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;

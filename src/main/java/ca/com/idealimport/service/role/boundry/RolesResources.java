@@ -2,6 +2,7 @@ package ca.com.idealimport.service.role.boundry;
 
 import ca.com.idealimport.service.role.control.RoleControl;
 import ca.com.idealimport.service.role.entity.dto.RoleDto;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/role/v1.0")
 @Slf4j
+@SecurityRequirement(name = "ideal-api")
+
 public record RolesResources(RoleControl roleControl) {
 
     /**
@@ -23,7 +26,7 @@ public record RolesResources(RoleControl roleControl) {
         log.info("RolesResources.createRole start");
         final var role = roleControl.createRole(roleDto);
         log.info("RolesResources.createRole end");
-        return new ResponseEntity<>(roleDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(role, HttpStatus.CREATED);
     }
 
     /**

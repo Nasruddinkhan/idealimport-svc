@@ -1,4 +1,4 @@
-package ca.com.idealimport.config;
+package ca.com.idealimport.config.observe;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.observation.ObservationRegistry;

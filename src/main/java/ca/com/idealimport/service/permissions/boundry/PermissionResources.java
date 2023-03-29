@@ -2,6 +2,8 @@ package ca.com.idealimport.service.permissions.boundry;
 
 import ca.com.idealimport.service.permissions.control.PermissionControl;
 import ca.com.idealimport.service.permissions.entity.dto.PermissionDto;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/permission/v1.0")
 @Slf4j
+@SecurityRequirement(name = "ideal-api")
+@OpenAPIDefinition()
 public record PermissionResources(PermissionControl permissionControl) {
 
     @PostMapping
