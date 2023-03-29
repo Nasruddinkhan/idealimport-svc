@@ -1,5 +1,7 @@
 package ca.com.idealimport.service.permissions.control;
 
+import ca.com.idealimport.config.exception.IdealException;
+import ca.com.idealimport.config.exception.enums.IdealResponseErrorCode;
 import ca.com.idealimport.service.permissions.control.mapper.PermissionMapper;
 import ca.com.idealimport.service.permissions.control.repository.PermissionRepository;
 import ca.com.idealimport.service.permissions.entity.Permission;
@@ -41,7 +43,7 @@ public class PermissionControl {
         log.debug("PermissionControl.createPermission start {}", name);
         final var dto = permissionRepository.findByNameAndIsActiveTrue(name)
                 .map(PermissionMapper::convertEntityToDto)
-                .orElseThrow(() -> new RuntimeException("passing invalid parameter " + name));
+                .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND,"record not present " + name));
         log.debug("PermissionControl.createPermission end {}", name);
         return dto;
     }
@@ -59,7 +61,7 @@ public class PermissionControl {
     public Set<Permission> findAllPermission(Set<String> name) {
         log.debug("PermissionControl.findAllPermission start ");
         Set<Permission> permission = permissionRepository.findByNameIn(name);
-        if (permission.isEmpty()) throw new RuntimeException("passing invalid permission");
+        if (permission.isEmpty()) throw new IdealException(IdealResponseErrorCode.INVALID_PERMISSION, "passing invalid permissions please re verify");
         log.debug("PermissionControl.findAllPermission end {}", permission);
         return permission;
     }
@@ -81,7 +83,7 @@ public class PermissionControl {
                 .map(PermissionMapper::setIsInActivePermission)
                 .map(permissionRepository::save)
                 .map(PermissionMapper::convertEntityToDto)
-                .orElseThrow(() -> new RuntimeException("passing invalid parameter " + name));
+                .orElseThrow(() ->new IdealException(IdealResponseErrorCode.NOT_FOUND,"record not present " + name));
         log.debug("PermissionControl.deleteByName end ", dto);
 
     }
