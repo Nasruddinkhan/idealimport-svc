@@ -1,4 +1,4 @@
-package ca.com.idealimport.config.filter;
+package ca.com.idealimport.config.filter.jwt;
 
 import ca.com.idealimport.config.jwt.JwtService;
 import ca.com.idealimport.service.token.control.repository.TokenRepository;
@@ -35,7 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String userId = jwtService.extractUsername(jwt);
         if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             var userDetails = this.userDetailsService.loadUserByUsername(userId);
-            var isTokenValid = tokenRepository.findByToken(jwt)
+            boolean isTokenValid = tokenRepository.findByToken(jwt)
                     .map(t -> !t.isExpired() && !t.isRevoked())
                     .orElse(false);
             if (jwtService.isTokenValid(jwt, userDetails) && isTokenValid) {

@@ -1,5 +1,6 @@
 package ca.com.idealimport.config.filter;
 
+import ca.com.idealimport.config.filter.builder.IdealResponseBuilderFilter;
 import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;

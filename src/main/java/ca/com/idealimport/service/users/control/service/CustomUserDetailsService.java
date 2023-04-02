@@ -1,5 +1,7 @@
 package ca.com.idealimport.service.users.control.service;
 
+import ca.com.idealimport.config.exception.IdealException;
+import ca.com.idealimport.config.exception.enums.IdealResponseErrorCode;
 import ca.com.idealimport.service.users.control.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,9 +18,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("Calling this service");
         var users = userRepository.findByUserName(username)
-                .orElseThrow(() -> new RuntimeException("User not found with email : " + username));
+                .orElseThrow(() -> new IdealException(IdealResponseErrorCode.BAD_CREDENTIAL, "User not found with email : " + username));
         var roles = users.getRoles().stream().distinct()
                 .map(e -> new SimpleGrantedAuthority(e.getName())).toList();
         return new User(username, users.getPassword(), roles);
