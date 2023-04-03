@@ -1,4 +1,4 @@
-package ca.com.idealimport.config.filter;
+package ca.com.idealimport.config.filter.builder;
 
 import ca.com.idealimport.common.dto.IdealError;
 import ca.com.idealimport.common.dto.IdealErrorResponse;
@@ -10,11 +10,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Component
 @Slf4j
@@ -31,33 +34,36 @@ public class IdealResponseBuilder {
 
         var headerNames = (List<String>) response.getHeaderNames();
         if (!CollectionUtils.isEmpty(headerNames)) {
-            for (String headerName : headerNames) {
+            headerNames.forEach(headerName -> {
                 responseEntityHeaders.set(headerName, response.getHeader(headerName));
                 log.info("Start IdealResponseBuilder.createErrorResponse add set headers " + headerName);
-            }
+            });
         }
         log.info("Start IdealResponseBuilder.createErrorResponse after set responseEntityHeaders ");
         log.info("Start IdealResponseBuilder.createErrorResponse set status " + idealException.getError().getHttpStatus());
         log.info("Start IdealResponseBuilder.createErrorResponse set body " + errorReply);
         log.info("Start IdealResponseBuilder.createErrorResponse set responseEntityHeaders " + responseEntityHeaders);
-        return ResponseEntity.status(HttpStatus.resolve(idealException.getError().getHttpStatus()))
+        return ResponseEntity.status(Optional.ofNullable(HttpStatus.resolve(idealException.getError().getHttpStatus())).orElse(HttpStatus.BAD_REQUEST))
                 .headers(responseEntityHeaders).body(errorReply);
     }
 
     private IdealErrorResponse createIdealError(IdealException idealException, HttpServletRequest request) {
-        var idealError = idealException.getError();
+        var error = idealException.getError();
         var msg = idealException.getMsg();
         var errorId = idealException.getId();
-        if (idealError == null) {
-            idealError = IdealResponseErrorCode.UNEXPECTED_ERROR;
+        if (error == null) {
+            error = IdealResponseErrorCode.UNEXPECTED_ERROR;
         }
-        if (StringUtils.isBlank(msg)) {
-            msg = idealError.getMsg();
-        }
-        return new IdealErrorResponse(HttpStatus.resolve(idealError.getHttpStatus()).toString(), errorId, msg, List.of(new IdealError(idealError.getCode(), msg, request.getPathInfo(), request.getRequestURI())));
-
+        msg = StringUtils.isBlank(msg) ? error.getMsg() : msg;
+        var status = Optional.ofNullable(HttpStatus.resolve(error.getHttpStatus())).orElse(HttpStatus.BAD_REQUEST);
+        var errorList = List.of(new IdealError(error.getCode(), msg, request.getContextPath(), request.getRequestURI()));
+        return new IdealErrorResponse(status.toString(), errorId, error.getMsg(), errorList);
     }
 
-    private void addResponseHeaders(HttpServletRequest request, HttpServletResponse response) {
+    public void addResponseHeaders(HttpServletRequest request, HttpServletResponse response) {
+        var interactionId = request.getHeader("interaction-id");
+        response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        response.setHeader("interaction-id", Optional.ofNullable(interactionId).orElse(UUID.randomUUID().toString())); // later will change with thread local
+        //later add correlation Id
     }
 }
