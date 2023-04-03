@@ -9,7 +9,8 @@ public enum IdealResponseErrorCode {
     NOT_FOUND("Not Found", 404, "Not Found ."),
     UNEXPECTED_ERROR("Unexceptional Error ",500 ,"Unexceptional Error "),
     BAD_CREDENTIAL("Bad Credential", 401 , "You have enter incorrect username & password" ),
-    DUPLICATE_RECORD("Duplicate Record", 409 , "this request cannot be process because for conflict request ");
+    DUPLICATE_RECORD("Duplicate Record", 409 , "this request cannot be process because for conflict request "),
+    TOKEN_EXPIRED("Token Expired",  403, "your jwt token is expired kindly re-generate or access your apis" );
     private final String code;
     private final int httpStatus;
     private final String msg;

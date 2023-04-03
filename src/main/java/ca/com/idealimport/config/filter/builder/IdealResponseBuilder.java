@@ -34,10 +34,10 @@ public class IdealResponseBuilder {
 
         var headerNames = (List<String>) response.getHeaderNames();
         if (!CollectionUtils.isEmpty(headerNames)) {
-            for (String headerName : headerNames) {
+            headerNames.forEach(headerName -> {
                 responseEntityHeaders.set(headerName, response.getHeader(headerName));
                 log.info("Start IdealResponseBuilder.createErrorResponse add set headers " + headerName);
-            }
+            });
         }
         log.info("Start IdealResponseBuilder.createErrorResponse after set responseEntityHeaders ");
         log.info("Start IdealResponseBuilder.createErrorResponse set status " + idealException.getError().getHttpStatus());
@@ -48,19 +48,16 @@ public class IdealResponseBuilder {
     }
 
     private IdealErrorResponse createIdealError(IdealException idealException, HttpServletRequest request) {
-        var idealError = idealException.getError();
+        var error = idealException.getError();
         var msg = idealException.getMsg();
         var errorId = idealException.getId();
-        if (idealError == null) {
-            idealError = IdealResponseErrorCode.UNEXPECTED_ERROR;
+        if (error == null) {
+            error = IdealResponseErrorCode.UNEXPECTED_ERROR;
         }
-        if (StringUtils.isBlank(msg)) {
-            msg = idealError.getMsg();
-        }
-        var status = Optional.ofNullable(HttpStatus.resolve(idealException.getError().getHttpStatus())).orElse(HttpStatus.BAD_REQUEST);
-        return new IdealErrorResponse(status.toString() , errorId,
-                idealError.getMsg(), List.of(new IdealError(idealError.getCode(), msg, request.getContextPath(), request.getRequestURI())));
-
+        msg = StringUtils.isBlank(msg) ? error.getMsg() : msg;
+        var status = Optional.ofNullable(HttpStatus.resolve(error.getHttpStatus())).orElse(HttpStatus.BAD_REQUEST);
+        var errorList = List.of(new IdealError(error.getCode(), msg, request.getContextPath(), request.getRequestURI()));
+        return new IdealErrorResponse(status.toString(), errorId, error.getMsg(), errorList);
     }
 
     public void addResponseHeaders(HttpServletRequest request, HttpServletResponse response) {
