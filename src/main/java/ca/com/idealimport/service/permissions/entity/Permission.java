@@ -29,4 +29,7 @@ public class Permission implements Serializable {
     @Column(name = "active", columnDefinition = "boolean default true")
     private Boolean isActive;
 
+    @Column(name = "sort")
+    private int sort;
+
 }

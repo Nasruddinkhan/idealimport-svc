@@ -5,6 +5,7 @@ import ca.com.idealimport.service.permissions.entity.dto.PermissionDto;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,9 +36,10 @@ public record PermissionResources(PermissionControl permissionControl) {
     }
 
     @GetMapping
-    public ResponseEntity<List<PermissionDto>> findAllPermission() {
+    public ResponseEntity<Page<PermissionDto>> findAllPermission(@RequestParam("page") int page,
+                                                                 @RequestParam("size") int size) {
         log.debug("PermissionResources.findByName start");
-        final var permissionDtos = permissionControl.findAllPermission();
+        final var permissionDtos = permissionControl.findAllPermission(page, size);
         log.debug("PermissionResources.findByName end");
         return new ResponseEntity<>(permissionDtos, HttpStatus.OK);
     }
