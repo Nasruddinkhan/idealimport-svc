@@ -1,7 +1,11 @@
 package ca.com.idealimport.config.jwt;
 
+import ca.com.idealimport.config.exception.IdealException;
+import ca.com.idealimport.config.exception.IdealUnknownException;
+import ca.com.idealimport.config.exception.enums.IdealResponseErrorCode;
 import ca.com.idealimport.service.users.entity.User;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -21,7 +25,7 @@ public class JwtService {
     public String generateToken(Map<String, Object> extraClaims, User user) {
         extraClaims.entrySet().removeIf(e -> e.getKey().equals("password"));
         return Jwts.builder()
-                .setClaims(extraClaims)
+                .addClaims(extraClaims)
                 .setSubject(user.getUserName())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
@@ -56,13 +60,11 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token)  {
-
-        return Jwts.parserBuilder()
+            return Jwts.parserBuilder()
                     .setSigningKey(getSignInKey())
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-
 
     }
 }

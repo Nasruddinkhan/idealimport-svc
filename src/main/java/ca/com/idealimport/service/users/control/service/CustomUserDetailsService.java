@@ -22,6 +22,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new IdealException(IdealResponseErrorCode.BAD_CREDENTIAL, "User not found with email : " + username));
         var roles = users.getRoles().stream().distinct()
                 .map(e -> new SimpleGrantedAuthority(e.getName())).toList();
-        return new User(username, users.getPassword(), roles);
+        return new User(users.getUserName(), users.getPassword(), roles);
     }
 }

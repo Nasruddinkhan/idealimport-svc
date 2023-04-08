@@ -25,24 +25,24 @@ public class IdealResponseBuilder {
 
     public ResponseEntity<IdealErrorResponse> createErrorResponse(IdealException idealException, HttpServletRequest request,
                                                                   HttpServletResponse response) {
-        log.info("Start IdealResponseBuilder.createErrorResponse ");
+        log.error("Start IdealResponseBuilder.createErrorResponse ");
         var errorReply = createIdealError(idealException, request);
-        log.info("Start IdealResponseBuilder.createErrorResponse before add response header ");
+        log.error("Start IdealResponseBuilder.createErrorResponse before add response header ");
         addResponseHeaders(request, response);
-        log.info("Start IdealResponseBuilder.createErrorResponse after add response header ");
+        log.error("Start IdealResponseBuilder.createErrorResponse after add response header ");
         var responseEntityHeaders = new HttpHeaders();
 
         var headerNames = (List<String>) response.getHeaderNames();
         if (!CollectionUtils.isEmpty(headerNames)) {
             headerNames.forEach(headerName -> {
                 responseEntityHeaders.set(headerName, response.getHeader(headerName));
-                log.info("Start IdealResponseBuilder.createErrorResponse add set headers " + headerName);
+                log.error("Start IdealResponseBuilder.createErrorResponse add set headers " + headerName);
             });
         }
-        log.info("Start IdealResponseBuilder.createErrorResponse after set responseEntityHeaders ");
-        log.info("Start IdealResponseBuilder.createErrorResponse set status " + idealException.getError().getHttpStatus());
-        log.info("Start IdealResponseBuilder.createErrorResponse set body " + errorReply);
-        log.info("Start IdealResponseBuilder.createErrorResponse set responseEntityHeaders " + responseEntityHeaders);
+        log.error("Start IdealResponseBuilder.createErrorResponse after set responseEntityHeaders ");
+        log.error("Start IdealResponseBuilder.createErrorResponse set status " + idealException.getError().getHttpStatus());
+        log.error("Start IdealResponseBuilder.createErrorResponse set body " + errorReply);
+        log.error("Start IdealResponseBuilder.createErrorResponse set responseEntityHeaders " + responseEntityHeaders);
         return ResponseEntity.status(Optional.ofNullable(HttpStatus.resolve(idealException.getError().getHttpStatus())).orElse(HttpStatus.BAD_REQUEST))
                 .headers(responseEntityHeaders).body(errorReply);
     }
@@ -62,8 +62,18 @@ public class IdealResponseBuilder {
 
     public void addResponseHeaders(HttpServletRequest request, HttpServletResponse response) {
         var interactionId = request.getHeader("interaction-id");
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
+        response.setHeader("Access-Control-Max-Age", "3600");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
+        response.setHeader("X-XSS-Protection", "1; mode=block");
         response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        // Set XSS protection header
+        response.setHeader("X-XSS-Protection", "1; mode=block");
+        // Set Content Security Policy header
+        response.setHeader("Content-Security-Policy", "default-src 'self'");
+        // Set HTTP Strict Transport Security header
+        response.setHeader("Strict-Transport-Security", "max-age=31536000 ; includeSubDomains");
         response.setHeader("interaction-id", Optional.ofNullable(interactionId).orElse(UUID.randomUUID().toString())); // later will change with thread local
-        //later add correlation Id
     }
 }

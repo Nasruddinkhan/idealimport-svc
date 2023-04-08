@@ -1,4 +1,4 @@
 package ca.com.idealimport.service.permissions.entity.dto;
 
-public record PermissionDto(String name, String module) {
+public record PermissionDto(String name, String module, int sort) {
 }

@@ -10,7 +10,7 @@ public class PermissionMapper {
     }
 
     public static PermissionDto convertEntityToDto(final Permission permission) {
-        return new PermissionDto(permission.getName(), permission.getModule());
+        return new PermissionDto(permission.getName(), permission.getModule(), permission.getSort());
     }
 
     public static Permission convertEntityToDto(Permission permission, PermissionDto permissionDto) {
