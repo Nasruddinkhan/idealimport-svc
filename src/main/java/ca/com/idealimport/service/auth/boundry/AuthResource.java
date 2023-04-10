@@ -9,6 +9,9 @@ import ca.com.idealimport.service.users.entity.dto.UserRegistrationResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -37,6 +40,14 @@ public record AuthResource(AuthControl authControl) {
         return new ResponseEntity<>(userRegistrationResponse, HttpStatus.OK);
     }
 
+    @GetMapping("/token")
+    public ResponseEntity<AuthResponseDto> regenerateToken() {
+        var userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        log.info("AuthResource.regenerateToken start {}", userName);
+        var userRegistrationResponse = authControl.authRequest(userName);
+        log.info("AuthResource.regenerateToken end {}", userRegistrationResponse);
+        return new ResponseEntity<>(userRegistrationResponse, HttpStatus.OK);
+    }
 
 
 }
