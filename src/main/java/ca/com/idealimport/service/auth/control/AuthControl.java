@@ -48,8 +48,16 @@ public record AuthControl(UserControl userControl, AuthenticationManager authent
                .map(userControl::findUserByEmailOrId).findFirst()
                .orElseThrow(()-> new IdealException(IdealResponseErrorCode.BAD_CREDENTIAL));
        */
+        return getToken(authenticate.getName());
 
-        var user = userControl.findUserByEmailOrId(authenticate.getName());
+    }
+
+    public AuthResponseDto authRequest(String userName) {
+        return getToken(userName);
+    }
+
+    public AuthResponseDto getToken(String  name) {
+        var user = userControl.findUserByEmailOrId(name);
         var claims = objectMapper.convertValue(user, Map.class);
         var token = jwtService.generateToken(claims, user);
         tokenControl.revokeAllUserTokens(user);
