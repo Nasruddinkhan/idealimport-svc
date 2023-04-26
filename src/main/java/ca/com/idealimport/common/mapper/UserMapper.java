@@ -1,4 +1,4 @@
-package ca.com.idealimport.service.users.control.mapper;
+package ca.com.idealimport.common.mapper;
 
 import ca.com.idealimport.common.util.RandomValueGenerator;
 import ca.com.idealimport.service.role.entity.Role;

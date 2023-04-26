@@ -16,7 +16,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 		in = SecuritySchemeIn.HEADER
 )
 public class IdealImportSvcApplication {
-
+	
 	public static void main(String[] args) {
 		SpringApplication.run(IdealImportSvcApplication.class, args);
 	}

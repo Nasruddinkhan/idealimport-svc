@@ -1,6 +1,6 @@
 package ca.com.idealimport.config.handler;
 
-import ca.com.idealimport.service.token.control.repository.TokenRepository;
+import ca.com.idealimport.service.token.boundry.TokenRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

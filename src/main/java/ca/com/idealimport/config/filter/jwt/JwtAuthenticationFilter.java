@@ -1,7 +1,7 @@
 package ca.com.idealimport.config.filter.jwt;
 
 import ca.com.idealimport.config.jwt.JwtService;
-import ca.com.idealimport.service.token.control.repository.TokenRepository;
+import ca.com.idealimport.service.token.boundry.TokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

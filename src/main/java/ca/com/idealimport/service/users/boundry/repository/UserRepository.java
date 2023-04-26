@@ -1,4 +1,4 @@
-package ca.com.idealimport.service.users.control.repository;
+package ca.com.idealimport.service.users.boundry.repository;
 
 import ca.com.idealimport.service.users.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;

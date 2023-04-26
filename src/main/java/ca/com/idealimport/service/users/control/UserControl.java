@@ -1,8 +1,8 @@
 package ca.com.idealimport.service.users.control;
 
 import ca.com.idealimport.service.role.control.RoleControl;
-import ca.com.idealimport.service.users.control.mapper.UserMapper;
-import ca.com.idealimport.service.users.control.repository.UserRepository;
+import ca.com.idealimport.common.mapper.UserMapper;
+import ca.com.idealimport.service.users.boundry.repository.UserRepository;
 import ca.com.idealimport.service.users.entity.User;
 import ca.com.idealimport.service.users.entity.dto.UserDto;
 import ca.com.idealimport.service.users.entity.dto.UserRegistrationResponse;

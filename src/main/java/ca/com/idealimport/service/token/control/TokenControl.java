@@ -1,8 +1,8 @@
 package ca.com.idealimport.service.token.control;
 
-import ca.com.idealimport.service.token.Token;
-import ca.com.idealimport.service.token.TokenType;
-import ca.com.idealimport.service.token.control.repository.TokenRepository;
+import ca.com.idealimport.service.token.entity.Token;
+import ca.com.idealimport.service.token.entity.TokenType;
+import ca.com.idealimport.service.token.boundry.TokenRepository;
 import ca.com.idealimport.service.users.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

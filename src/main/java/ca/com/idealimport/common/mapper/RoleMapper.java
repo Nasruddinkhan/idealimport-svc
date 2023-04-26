@@ -1,6 +1,6 @@
-package ca.com.idealimport.service.role.control.mapper;
+package ca.com.idealimport.common.mapper;
 
-import ca.com.idealimport.service.permissions.control.mapper.PermissionMapper;
+import ca.com.idealimport.common.mapper.PermissionMapper;
 import ca.com.idealimport.service.permissions.entity.Permission;
 import ca.com.idealimport.service.role.entity.Role;
 import ca.com.idealimport.service.role.entity.dto.RoleDto;
