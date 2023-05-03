@@ -1,4 +1,4 @@
-package ca.com.idealimport.service.permissions.control.repository;
+package ca.com.idealimport.service.permissions.boundry.repository;
 
 import ca.com.idealimport.service.permissions.entity.Permission;
 import org.springframework.data.domain.Page;

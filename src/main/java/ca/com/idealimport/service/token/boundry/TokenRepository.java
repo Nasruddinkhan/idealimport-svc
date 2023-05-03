@@ -1,6 +1,6 @@
-package ca.com.idealimport.service.token.control.repository;
+package ca.com.idealimport.service.token.boundry;
 
-import ca.com.idealimport.service.token.Token;
+import ca.com.idealimport.service.token.entity.Token;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

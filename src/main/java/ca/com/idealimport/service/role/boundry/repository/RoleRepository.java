@@ -1,4 +1,4 @@
-package ca.com.idealimport.service.role.control.repository;
+package ca.com.idealimport.service.role.boundry.repository;
 
 
 import ca.com.idealimport.service.permissions.entity.Permission;

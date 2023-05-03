@@ -5,6 +5,7 @@ import ca.com.idealimport.service.permissions.entity.dto.PermissionDto;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Request;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,5 +59,13 @@ public record PermissionResources(PermissionControl permissionControl) {
         permissionControl.deleteByName(name);
         log.debug("PermissionResources.findByName end");
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{permissionId}/permission")
+    public ResponseEntity<PermissionDto> findByPermissionId(@PathVariable Long permissionId) {
+        log.debug("PermissionResources.findByPermissionId start {}", permissionId);
+        final var permissionDto = permissionControl.findByPermissionId(permissionId);
+        log.debug("PermissionResources.findByPermissionId end {}", permissionDto);
+        return new ResponseEntity<>(permissionDto, HttpStatus.OK);
     }
 }

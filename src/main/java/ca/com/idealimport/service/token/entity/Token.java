@@ -1,4 +1,4 @@
-package ca.com.idealimport.service.token;
+package ca.com.idealimport.service.token.entity;
 
 import ca.com.idealimport.service.users.entity.User;
 import jakarta.persistence.*;

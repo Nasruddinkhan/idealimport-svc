@@ -1,8 +1,8 @@
-package ca.com.idealimport.service.users.control.service;
+package ca.com.idealimport.common.service;
 
 import ca.com.idealimport.config.exception.IdealException;
 import ca.com.idealimport.config.exception.enums.IdealResponseErrorCode;
-import ca.com.idealimport.service.users.control.repository.UserRepository;
+import ca.com.idealimport.service.users.boundry.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;

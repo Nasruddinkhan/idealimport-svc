@@ -3,8 +3,8 @@ package ca.com.idealimport.service.permissions.control;
 import ca.com.idealimport.common.pagination.CommonPageable;
 import ca.com.idealimport.config.exception.IdealException;
 import ca.com.idealimport.config.exception.enums.IdealResponseErrorCode;
-import ca.com.idealimport.service.permissions.control.mapper.PermissionMapper;
-import ca.com.idealimport.service.permissions.control.repository.PermissionRepository;
+import ca.com.idealimport.common.mapper.PermissionMapper;
+import ca.com.idealimport.service.permissions.boundry.repository.PermissionRepository;
 import ca.com.idealimport.service.permissions.entity.Permission;
 import ca.com.idealimport.service.permissions.entity.dto.PermissionDto;
 import io.micrometer.observation.annotation.Observed;
@@ -15,10 +15,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -31,13 +29,17 @@ public class PermissionControl {
 
     public PermissionDto createPermission(final PermissionDto permissionDto) {
         log.debug("PermissionControl.createPermission start {}", permissionDto);
-        final var dto = permissionRepository.findByName(permissionDto.name())
-                .map(PermissionMapper::setIsActivePermission).map(permissionRepository::save)
-                .map(PermissionMapper::convertEntityToDto).orElseGet(() -> Optional.of(permissionDto)
-                        .map(PermissionMapper::convertDtoToEntity)
-                        .map(permissionRepository::save)
-                        .map(PermissionMapper::convertEntityToDto)
-                        .orElse(null));
+//        final var dto = permissionRepository.findByName(permissionDto.name())
+//                .map(PermissionMapper::setIsActivePermission).map(permissionRepository::save)
+//                .map(PermissionMapper::convertEntityToDto).orElseGet(() -> Optional.of(permissionDto)
+//                        .map(PermissionMapper::convertDtoToEntity)
+//                        .map(permissionRepository::save)
+//                        .map(PermissionMapper::convertEntityToDto)
+//                        .orElse(null));
+        var dto = Optional.of(permissionDto)
+                .map(PermissionMapper::convertDtoToEntity)
+                .map(permissionRepository::save)
+                .map(PermissionMapper::convertEntityToDto).orElseThrow(()-> new IdealException(IdealResponseErrorCode.UNEXPECTED_ERROR, "Object cannot be null or empty"));
         log.debug("PermissionControl.createPermission end dto {}", dto);
         return dto;
     }
@@ -56,7 +58,7 @@ public class PermissionControl {
         final var pageable = new CommonPageable(page, size, Sort.by("module", "sort").ascending());
         final var dto = permissionRepository
                 .findAllAndIsActiveTrue(pageable)
-                .map(permission -> new PermissionDto(permission.getName(), permission.getModule(), permission.getSort()));
+                .map(permission -> new PermissionDto(permission.getPermissionId(), permission.getName(), permission.getModule(), permission.getSort()));
         log.debug("PermissionControl.findAllPermission end {}", dto);
         return dto;
     }
@@ -90,5 +92,14 @@ public class PermissionControl {
                 .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND, "record not present " + name));
         log.debug("PermissionControl.deleteByName end ", dto);
 
+    }
+
+    public PermissionDto findByPermissionId(Long permissionId) {
+        log.debug("PermissionControl.findByPermissionId start ");
+        var permissionDto = permissionRepository.findById(permissionId)
+                        .map(PermissionMapper::convertEntityToDto)
+                .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND, "record not present " + permissionId));
+        log.debug("PermissionControl.findByPermissionId end ", permissionDto);
+        return permissionDto;
     }
 }
