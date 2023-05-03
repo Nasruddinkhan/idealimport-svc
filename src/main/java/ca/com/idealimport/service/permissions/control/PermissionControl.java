@@ -29,13 +29,17 @@ public class PermissionControl {
 
     public PermissionDto createPermission(final PermissionDto permissionDto) {
         log.debug("PermissionControl.createPermission start {}", permissionDto);
-        final var dto = permissionRepository.findByName(permissionDto.name())
-                .map(PermissionMapper::setIsActivePermission).map(permissionRepository::save)
-                .map(PermissionMapper::convertEntityToDto).orElseGet(() -> Optional.of(permissionDto)
-                        .map(PermissionMapper::convertDtoToEntity)
-                        .map(permissionRepository::save)
-                        .map(PermissionMapper::convertEntityToDto)
-                        .orElse(null));
+//        final var dto = permissionRepository.findByName(permissionDto.name())
+//                .map(PermissionMapper::setIsActivePermission).map(permissionRepository::save)
+//                .map(PermissionMapper::convertEntityToDto).orElseGet(() -> Optional.of(permissionDto)
+//                        .map(PermissionMapper::convertDtoToEntity)
+//                        .map(permissionRepository::save)
+//                        .map(PermissionMapper::convertEntityToDto)
+//                        .orElse(null));
+        var dto = Optional.of(permissionDto)
+                .map(PermissionMapper::convertDtoToEntity)
+                .map(permissionRepository::save)
+                .map(PermissionMapper::convertEntityToDto).orElseThrow(()-> new IdealException(IdealResponseErrorCode.UNEXPECTED_ERROR, "Object cannot be null or empty"));
         log.debug("PermissionControl.createPermission end dto {}", dto);
         return dto;
     }

@@ -8,6 +8,7 @@ public class PermissionMapper {
     public static Permission convertDtoToEntity(final PermissionDto permissionDto) {
         return Permission.builder().name(permissionDto.name()).isActive(true)
                 .permissionId(permissionDto.permissionId())
+                .sort(permissionDto.sort())
                 .module(permissionDto.module()).build();
     }
 
