@@ -62,7 +62,7 @@ public class IdealResponseBuilder {
 
     public void addResponseHeaders(HttpServletRequest request, HttpServletResponse response) {
         var interactionId = request.getHeader("interaction-id");
-        response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
+        response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
         response.setHeader("Access-Control-Max-Age", "3600");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
