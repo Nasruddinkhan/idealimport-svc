@@ -15,8 +15,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -101,5 +104,26 @@ public class PermissionControl {
                 .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND, "record not present " + permissionId));
         log.debug("PermissionControl.findByPermissionId end ", permissionDto);
         return permissionDto;
+    }
+
+
+    public Map<String, List<PermissionDto>> findAllPermissionByModule() {
+        log.debug("PermissionControl.findAllPermission start ");
+        final var dto = permissionRepository
+                .findAllAndIsActiveTrue();
+        if (dto.isEmpty()) throw new IdealException(IdealResponseErrorCode.NOT_FOUND,  "record not present ");
+        var permissions = dto.stream().map(PermissionMapper::convertEntityToDto).collect(Collectors.toList())
+                        .stream().collect(Collectors.groupingBy(PermissionDto::module));
+        log.debug("PermissionControl.findAllPermission end {}", permissions);
+        return permissions;
+    }
+
+    public List<PermissionDto> findAllPermission() {
+        log.debug("PermissionControl.findAllPermission start ");
+        final var dto = permissionRepository.findAllAndIsActiveTrue();
+        if (dto.isEmpty()) throw new IdealException(IdealResponseErrorCode.NOT_FOUND,  "record not present ");
+        var permissions = dto.stream().map(PermissionMapper::convertEntityToDto).toList();
+        log.debug("PermissionControl.findAllPermission end {}", permissions);
+        return permissions;
     }
 }

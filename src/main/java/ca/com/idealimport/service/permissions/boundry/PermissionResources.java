@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/permission/v1.0")
@@ -67,5 +68,21 @@ public record PermissionResources(PermissionControl permissionControl) {
         final var permissionDto = permissionControl.findByPermissionId(permissionId);
         log.debug("PermissionResources.findByPermissionId end {}", permissionDto);
         return new ResponseEntity<>(permissionDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/all/module")
+    public ResponseEntity<Map<String,List<PermissionDto>>> findAllPermissionByModule() {
+        log.debug("PermissionResources.findByName start");
+        final var permissionDtos = permissionControl.findAllPermissionByModule();
+        log.debug("PermissionResources.findByName end");
+        return new ResponseEntity<>(permissionDtos, HttpStatus.OK);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<PermissionDto>> findAllPermission() {
+        log.debug("PermissionResources.findByName start");
+        final var permissionDtos = permissionControl.findAllPermission();
+        log.debug("PermissionResources.findByName end");
+        return new ResponseEntity<>(permissionDtos, HttpStatus.OK);
     }
 }
