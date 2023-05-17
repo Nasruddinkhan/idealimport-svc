@@ -6,7 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -23,4 +22,6 @@ public interface PermissionRepository extends JpaRepository<Permission, Long> {
 
     @Query("SELECT u FROM Permission u WHERE u.isActive = true")
     List<Permission> findAllAndIsActiveTrue();
+
+    Set<Permission> findByPermissionIdIn(Set<Long> permissionId);
 }

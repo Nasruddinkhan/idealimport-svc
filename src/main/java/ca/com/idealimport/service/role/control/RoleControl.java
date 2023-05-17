@@ -1,12 +1,13 @@
 package ca.com.idealimport.service.role.control;
 
+import ca.com.idealimport.common.mapper.RoleMapper;
 import ca.com.idealimport.service.permissions.control.PermissionControl;
 import ca.com.idealimport.service.permissions.entity.Permission;
 import ca.com.idealimport.service.permissions.entity.dto.PermissionDto;
-import ca.com.idealimport.common.mapper.RoleMapper;
 import ca.com.idealimport.service.role.boundry.repository.RoleRepository;
 import ca.com.idealimport.service.role.entity.Role;
 import ca.com.idealimport.service.role.entity.dto.RoleDto;
+import ca.com.idealimport.service.role.entity.dto.RoleResponseDto;
 import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,10 +30,9 @@ public class RoleControl {
     private final RoleRepository roleRepository;
 
     @Observed(name = "createRole", contextualName = "roles")
-    public RoleDto createRole(RoleDto roleDto) {
+    public RoleResponseDto createRole(RoleDto roleDto) {
         log.debug("RoleControl.createRole start {}", roleDto);
-        final var permissionName = roleDto.permissions().stream().map(PermissionDto::name).collect(Collectors.toUnmodifiableSet());
-        final var permission = permissionControl.findAllPermission(permissionName);
+        final var permission = permissionControl.findAllPermission(roleDto.permissions());
         final var roleDos = Optional.of(roleDto)
                 .map(r -> RoleMapper.convertDtoToEntity(r, permission))
                 .map(roleRepository::save)
@@ -43,7 +43,7 @@ public class RoleControl {
     }
 
     @Observed(name = "findRoleByName", contextualName = "roles")
-    public RoleDto findRoleByName(String name) {
+    public RoleResponseDto findRoleByName(String name) {
         log.debug("RoleControl.findRoleByName start {}", name);
         final var roles = roleRepository.findByNameAndIsActiveTrue(name)
                 .map(RoleMapper::convertEntityToDto)
@@ -53,7 +53,7 @@ public class RoleControl {
     }
 
     @Observed(name = "findAllRoles", contextualName = "roles")
-    public List<RoleDto> findAllRoles() {
+    public List<RoleResponseDto> findAllRoles() {
         log.debug("RoleControl.findRoleByName start {}");
         final var roleDos = roleRepository.findByIsActiveTrue()
                 .stream().map(RoleMapper::convertEntityToDto)
@@ -63,14 +63,12 @@ public class RoleControl {
     }
 
     @Observed(name = "updateRole", contextualName = "roles")
-    public RoleDto updateRole(String name, RoleDto roleDto) {
+    public RoleResponseDto updateRole(String name, RoleDto roleDto) {
         log.debug("RoleControl.updateRole start name {}, roleDto {}", name, roleDto);
         final var role = findRoleByNames(name);
-        final var names = getPermissionNames(roleDto);
-        final var savedRoleDto = Optional.ofNullable(names)
-                .map(this::getPermissionNamesInControl)
-                .map(this::findAllPermissions)
-                .map(permissions -> RoleMapper.setPermissionToRole(permissions, role))
+        final var permissions = getPermissionNames(roleDto);
+        final var savedRoleDto = Optional.ofNullable(role)
+                .map(r -> RoleMapper.setPermissionToRole(permissions, r))
                 .map(roleRepository::save)
                 .map(RoleMapper::convertEntityToDto)
                 .orElseThrow(() -> new RuntimeException("permissions cannot be presents"));
@@ -90,11 +88,9 @@ public class RoleControl {
         return names;
     }
 
-    private Set<String> getPermissionNames(RoleDto roles) {
-        return roles.permissions()
-                .stream()
-                .map(PermissionDto::name)
-                .collect(Collectors.toSet());
+    private Set<Permission> getPermissionNames(RoleDto roles) {
+          return permissionControl.findAllPermission(roles.permissions())
+                   .stream().collect(Collectors.toSet());
     }
 
     private Set<String> getPermissionNamesInControl(Set<String> names) {
@@ -104,11 +100,7 @@ public class RoleControl {
                 .collect(Collectors.toSet());
     }
 
-    private Set<Permission> findAllPermissions(Set<String> names) {
-        return permissionControl.findAllPermission(names)
-                .stream()
-                .collect(Collectors.toSet());
-    }
+
 
     public void deleteRole(String name) {
         log.debug("RoleControl.deleteRole end name {}", name);
@@ -120,7 +112,7 @@ public class RoleControl {
         log.debug("RoleControl.deleteRole end role {}", role);
     }
 
-    public RoleDto activeAndInActiveRole(String name, Boolean status) {
+    public RoleResponseDto activeAndInActiveRole(String name, Boolean status) {
         log.debug("RoleControl.activeAndInActiveRole end name {}, status {}", name, status);
         final var rolesDto = roleRepository.findByName(name)
                 .map(e -> RoleMapper.setStatus(e, status))

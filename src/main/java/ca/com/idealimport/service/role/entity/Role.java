@@ -36,4 +36,10 @@ public class Role implements Serializable {
     @Column(name = "active", columnDefinition = "boolean default true")
     private Boolean isActive;
 
+    @Column(name = "module", length = 20)
+    private String module;
+
+    @Column(name = "sort")
+    private int sort;
+
 }
