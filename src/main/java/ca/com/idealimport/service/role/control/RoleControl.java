@@ -1,6 +1,8 @@
 package ca.com.idealimport.service.role.control;
 
 import ca.com.idealimport.common.mapper.RoleMapper;
+import ca.com.idealimport.config.exception.IdealException;
+import ca.com.idealimport.config.exception.enums.IdealResponseErrorCode;
 import ca.com.idealimport.service.permissions.control.PermissionControl;
 import ca.com.idealimport.service.permissions.entity.Permission;
 import ca.com.idealimport.service.permissions.entity.dto.PermissionDto;
@@ -93,13 +95,6 @@ public class RoleControl {
                    .stream().collect(Collectors.toSet());
     }
 
-    private Set<String> getPermissionNamesInControl(Set<String> names) {
-        return names.stream()
-                .map(permissionControl::findByName)
-                .map(PermissionDto::name)
-                .collect(Collectors.toSet());
-    }
-
 
 
     public void deleteRole(String name) {
@@ -120,5 +115,11 @@ public class RoleControl {
                 .map(RoleMapper::convertEntityToDto)
                 .orElseThrow(() -> new RuntimeException("passing invalid arguments"));
         return rolesDto;
+    }
+
+    public Set<Role> findRoleByIds(Set<Long> role) {
+        final var  roles = roleRepository.findByRoleIdIn(role);
+        if (roles.isEmpty()) throw new IdealException(IdealResponseErrorCode.NOT_FOUND, "no role found");
+        return roles;
     }
 }

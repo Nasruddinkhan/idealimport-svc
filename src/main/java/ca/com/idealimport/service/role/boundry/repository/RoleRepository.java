@@ -16,4 +16,6 @@ public interface RoleRepository extends JpaRepository<Role, Long> {
    List<Role> findByIsActiveTrue();
 
     Set<Role>  findByNameInAndIsActiveTrue(Set<String> name);
+
+    Set<Role> findByRoleIdIn(Set<Long> roleId);
 }

@@ -29,7 +29,7 @@ public class UserControl {
     public UserRegistrationResponse createUser(UserDto userDto) {
 
         log.debug("UserControl.createPermission start {}", userDto);
-        final var roles = roleControl.findRoleByNames(userDto.role());
+        final var roles = roleControl.findRoleByIds(userDto.role());
         var responseDto = Optional.ofNullable(userDto)
                 .map(e -> UserMapper.convertDtoToEntity(passwordEncoder, e, roles))
                 .map(userRepository::save)

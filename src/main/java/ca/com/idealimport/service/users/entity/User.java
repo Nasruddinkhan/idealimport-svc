@@ -38,6 +38,8 @@ public class User implements Serializable {
 
     @Column(name = "email", unique = true, length = 100)
     private String email;
+    @Column(name = "mobile_no", unique = true, length = 15)
+    private String mobileNo;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
