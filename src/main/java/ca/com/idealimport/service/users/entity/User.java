@@ -46,4 +46,7 @@ public class User implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
+    @Column(name = "active", columnDefinition = "boolean default true")
+    private Boolean isActive;
+
 }
