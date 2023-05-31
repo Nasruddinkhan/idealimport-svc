@@ -51,27 +51,36 @@ public class PermissionControl {
         log.debug("PermissionControl.createPermission start {}", name);
         final var dto = permissionRepository.findByNameAndIsActiveTrue(name)
                 .map(PermissionMapper::convertEntityToDto)
-                .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND, "record not present " + name));
+                .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND, "permission record not present " + name));
         log.debug("PermissionControl.createPermission end {}", name);
         return dto;
     }
 
     public Page<PermissionDto> findAllPermission(int page, int size) {
-        log.debug("PermissionControl.findAllPermission start ");
+        log.debug("PermissionControl.findAllPermission start page = {}, size ={} ", page, size);
         final var pageable = new CommonPageable(page, size, Sort.by("module", "sort").ascending());
         final var dto = permissionRepository
                 .findAllAndIsActiveTrue(pageable)
                 .map(permission -> new PermissionDto(permission.getPermissionId(), permission.getName(), permission.getModule(), permission.getSort()));
-        log.debug("PermissionControl.findAllPermission end {}", dto);
+        log.debug("PermissionControl.findAllPermission end dto = {}", dto);
         return dto;
     }
 
-    public Set<Permission> findAllPermission(Set<String> name) {
-        log.debug("PermissionControl.findAllPermission start ");
+    public Set<Permission> findAllPermissionByName(Set<String> name) {
+        log.debug("PermissionControl.findAllPermissionByName start ");
         Set<Permission> permission = permissionRepository.findByNameIn(name);
         if (permission.isEmpty())
             throw new IdealException(IdealResponseErrorCode.INVALID_PERMISSION, "passing invalid permissions please re verify");
-        log.debug("PermissionControl.findAllPermission end {}", permission);
+        log.debug("PermissionControl.findAllPermissionByName end {}", permission);
+        return permission;
+    }
+
+    public Set<Permission> findAllPermission(Set<Long> permissionId) {
+        log.debug("PermissionControl.findAllPermission start  permissionId = {}", permissionId);
+        Set<Permission> permission = permissionRepository.findByPermissionIdIn(permissionId);
+        if (permission.isEmpty())
+            throw new IdealException(IdealResponseErrorCode.INVALID_PERMISSION, "passing invalid permissions please re verify");
+        log.debug("PermissionControl.findAllPermission end permission =  {}", permission);
         return permission;
     }
 
@@ -93,7 +102,7 @@ public class PermissionControl {
                 .map(permissionRepository::save)
                 .map(PermissionMapper::convertEntityToDto)
                 .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND, "record not present " + name));
-        log.debug("PermissionControl.deleteByName end ", dto);
+        log.debug("PermissionControl.deleteByName end dto ={}", dto);
 
     }
 
@@ -112,8 +121,7 @@ public class PermissionControl {
         final var dto = permissionRepository
                 .findAllAndIsActiveTrue();
         if (dto.isEmpty()) throw new IdealException(IdealResponseErrorCode.NOT_FOUND,  "record not present ");
-        var permissions = dto.stream().map(PermissionMapper::convertEntityToDto).collect(Collectors.toList())
-                        .stream().collect(Collectors.groupingBy(PermissionDto::module));
+        var permissions = dto.stream().map(PermissionMapper::convertEntityToDto).toList().stream().collect(Collectors.groupingBy(PermissionDto::module));
         log.debug("PermissionControl.findAllPermission end {}", permissions);
         return permissions;
     }

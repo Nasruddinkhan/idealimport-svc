@@ -31,6 +31,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final LogoutHandler logoutHandler;
     private final UserDetailsService userDetailsService;
+    //"/auth/v1.0/register",
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
              http
@@ -40,7 +41,6 @@ public class SecurityConfig {
                 .disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/actuator/**","/swagger-ui/**","/v3/api-docs",
-                        "/auth/v1.0/register",
                         "/auth/v1.0/login",
                         "/v3/api-docs/swagger-config")
                 .permitAll()

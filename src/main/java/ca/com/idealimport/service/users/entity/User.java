@@ -38,10 +38,15 @@ public class User implements Serializable {
 
     @Column(name = "email", unique = true, length = 100)
     private String email;
+    @Column(name = "mobile_no", unique = true, length = 15)
+    private String mobileNo;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+
+    @Column(name = "active", columnDefinition = "boolean default true")
+    private Boolean isActive;
 
 }
