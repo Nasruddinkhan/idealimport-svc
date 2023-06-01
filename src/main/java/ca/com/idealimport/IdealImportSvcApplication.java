@@ -23,15 +23,15 @@ import java.util.Date;
 )
 public class IdealImportSvcApplication implements CommandLineRunner {
 
-	@Autowired
-	private UserControl userControl;
+	//@Autowired
+	//private UserControl userControl;
 	public static void main(String[] args) {
 		SpringApplication.run(IdealImportSvcApplication.class, args);
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
-		var users  = userControl.findAllUser(0, 10);
-		System.out.println("userControl users ="+ users.get().toList().size());
+		//var users  = userControl.findAllUser(0, 10);
+		//System.out.println("userControl users ="+ users.get().toList().size());
 	}
 }

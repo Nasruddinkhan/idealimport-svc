@@ -2,6 +2,7 @@ package ca.com.idealimport.service.users.control;
 
 import ca.com.idealimport.common.mapper.UserMapper;
 import ca.com.idealimport.common.pagination.CommonPageable;
+import ca.com.idealimport.common.util.SecurityUtils;
 import ca.com.idealimport.config.exception.IdealException;
 import ca.com.idealimport.config.exception.enums.IdealResponseErrorCode;
 import ca.com.idealimport.service.role.control.RoleControl;
@@ -63,10 +64,11 @@ public class UserControl {
     }
 
     public Page<UserResponseDto> findAllUser(int page, int size) {
+        System.out.println("name ["+ SecurityUtils.getLoggedInUserId()+"]");
         log.debug("UserControl.findAllUser page {}, size {}", page, size);
         final var pageable = new CommonPageable(page, size, Sort.by("userId").descending());
         final var users = userRepository
-                .findAllAndIsActiveTrue(pageable).map(UserMapper::convertEntityToUserDto);
+                .findAllAndIsActiveTrueAndUserNameNot(pageable, SecurityUtils.getLoggedInUserId()).map(UserMapper::convertEntityToUserDto);
         log.debug("UserControl.findAllUser users {}", users);
         return users;
     }
