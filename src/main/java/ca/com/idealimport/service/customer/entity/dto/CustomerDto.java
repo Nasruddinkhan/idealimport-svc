@@ -16,6 +16,6 @@ public record CustomerDto(@JsonProperty("customer_id") Long customerId,
                           @JsonProperty("remark") String remarks) {
     @Builder
     public CustomerDto{
-        throw new UnsupportedOperationException();
+       // throw new UnsupportedOperationException();
     }
 }
