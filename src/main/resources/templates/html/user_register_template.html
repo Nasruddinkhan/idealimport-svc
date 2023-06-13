@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration Confirmation</title>
+    <style>
+        /* Add your custom styles here */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f6f6f6;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        p {
+            margin-bottom: 20px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 3px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Registration Confirmation</h1>
+    <p>Dear <span th:text="${name}"/>,</p>
+    <p>Thank you for registering with our website. Your account has been successfully created.</p>
+    <p>To get started, please click the button below to activate your account:</p>
+    <p><a class="btn" href="#">Activate Account</a></p>
+    <p>If the above button doesn't work, you can also copy and paste the following link into your browser:</p>
+    <p>[ActivationLink]</p>
+    <p>Once your account is activated, you will be able to access all the features and benefits of our website.</p>
+    <p>If you have any questions or need further assistance, please don't hesitate to contact our support team.</p>
+    <p>Thank you again for joining us! please find the below login credential</p>
+    <p> username : <span th:text="${userId}"/> | <span th:text="${email}"/></p>
+    <p> password : <span th:text="${password}"/>
+    <p>Best regards,<br> Nasruddin khan</p>
+</div>
+</body>
+</html>

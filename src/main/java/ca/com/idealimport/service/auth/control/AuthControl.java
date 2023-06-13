@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 @Service
@@ -33,23 +34,16 @@ public record AuthControl(UserControl userControl, AuthenticationManager authent
      * @return
      */
 
-    public UserRegistrationResponse registerUser(@RequestBody UserDto userDto) {
+    public UserRegistrationResponse registerUser(@RequestBody UserDto userDto, String password) {
         log.info("AuthControl.registerUser start {}", userDto);
-        var userRegistrationResponse = userControl.createUser(userDto);
+        var userRegistrationResponse = userControl.createUser(userDto, password);
         log.info("AuthControl.registerUser end {}", userRegistrationResponse);
         return userRegistrationResponse;
     }
 
     public AuthResponseDto authRequest(AuthRequestDto authRequestDto) {
         var authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequestDto.userName(), authRequestDto.password()));
-      /*
-       var userObj = Stream.of(authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequestDto.userName(), authRequestDto.password())))
-               .map(Authentication::getName)
-               .map(userControl::findUserByEmailOrId).findFirst()
-               .orElseThrow(()-> new IdealException(IdealResponseErrorCode.BAD_CREDENTIAL));
-       */
         return getToken(authenticate.getName());
-
     }
 
     public AuthResponseDto authRequest(String userName) {

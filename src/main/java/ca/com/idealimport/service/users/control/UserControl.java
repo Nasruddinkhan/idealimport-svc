@@ -34,13 +34,13 @@ public class UserControl {
 
     private final RoleControl roleControl;
 
-    public UserRegistrationResponse createUser(UserDto userDto) {
+    public UserRegistrationResponse createUser(UserDto userDto, String password) {
 
         log.debug("UserControl.createPermission start {}", userDto);
         final var roles = roleControl.findRoleByIds(userDto.role());
         var responseDto = Optional.ofNullable(userDto)
                 .map(e -> UserMapper.convertDtoToEntity(e, roles))
-                .map(this::updatePassword)
+                .map(e-> updatePassword(e, password))
                 .map(userRepository::save)
                 .map(UserMapper::convertEntityToDto)
                 .orElseThrow(() -> new RuntimeException("Invalid argument exception"));
@@ -48,10 +48,8 @@ public class UserControl {
         return responseDto;
     }
 
-    private User updatePassword(User user) {
-        String password = UUID.randomUUID().toString();
-        System.out.println("password : ["+password+"]");
-        user.setPassword(password);
+    private User updatePassword(User user, String password) {
+        user.setPassword(passwordEncoder.encode(password));
         return user;
     }
 
@@ -64,7 +62,6 @@ public class UserControl {
     }
 
     public Page<UserResponseDto> findAllUser(int page, int size) {
-        System.out.println("name ["+ SecurityUtils.getLoggedInUserId()+"]");
         log.debug("UserControl.findAllUser page {}, size {}", page, size);
         final var pageable = new CommonPageable(page, size, Sort.by("userId").descending());
         final var users = userRepository
