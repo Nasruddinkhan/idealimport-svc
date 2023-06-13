@@ -12,7 +12,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class UserMapper {
+    private UserMapper(){}
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
     public static User convertDtoToEntity( UserDto userDto, Set<Role> roles) {
 
         return User.builder()
@@ -27,8 +29,6 @@ public class UserMapper {
     }
 
     public static User convertDtoToEntity(User user, Set<Role> roles, UserDto userDto) {
-
-
         user.setFirstName(userDto.firstName());
         user.setLastName(userDto.lastName());
         user.setEmail(userDto.email().toLowerCase());
@@ -64,6 +64,6 @@ public class UserMapper {
     }
     public static UserRegistrationResponse convertEntityToDto(User user) {
         var msg = " has successfully register! your credential will be shared via email in 24 hours";
-        return new UserRegistrationResponse(String.format("%s %s", user.getEmail(), msg ));
+        return new UserRegistrationResponse(String.format("%s %s", user.getEmail(), msg ), user.getUserName());
     }
 }

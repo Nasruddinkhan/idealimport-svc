@@ -6,6 +6,20 @@ server:
 spring:
   application:
     name: @artifactId@
+  mail:
+    default-encoding: UTF-8
+    host: smtp.gmail.com
+    username: Nasruddin.nk44@gmail.com
+    password: ${mail.password}
+    port: 587
+    protocol: smtp
+    test-connection: false
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   datasource:
     url: ${MYSQL_HOST:jdbc:mysql://localhost:3306/ideal_import?useSSL=false&createDatabaseIfNotExist=true}
     username: root
@@ -46,3 +60,5 @@ management:
     web:
       exposure:
         include: "*"
+mail:
+  login-credential: user_register

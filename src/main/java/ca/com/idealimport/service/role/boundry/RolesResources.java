@@ -3,6 +3,7 @@ package ca.com.idealimport.service.role.boundry;
 import ca.com.idealimport.service.role.control.RoleControl;
 import ca.com.idealimport.service.role.entity.dto.RoleDto;
 import ca.com.idealimport.service.role.entity.dto.RoleResponseDto;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,7 @@ import java.util.List;
 @RequestMapping("/role/v1.0")
 @Slf4j
 @SecurityRequirement(name = "ideal-api")
-
+@OpenAPIDefinition()
 public record RolesResources(RoleControl roleControl) {
 
     /**
