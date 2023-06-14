@@ -20,6 +20,7 @@ public class CustomerMapper {
                 .balance(customer.balance())
                 .email(customer.email())
                 .remarks(customer.remarks())
+                .isActive(Boolean.TRUE)
                 .user(user)
                 .build();
     }
@@ -36,5 +37,10 @@ public class CustomerMapper {
                 .email(customer.getEmail())
                 .remarks(customer.getRemarks())
                 .build();
+    }
+
+    public Customer setActiveDeActiveFlag(Customer customer, Boolean isActiveFlag) {
+        customer.setIsActive(isActiveFlag);
+        return customer;
     }
 }
