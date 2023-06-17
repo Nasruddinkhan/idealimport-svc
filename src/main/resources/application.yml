@@ -40,6 +40,9 @@ spring:
     properties:
       hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
       hibernate.hbm2ddl.auto: update
+    repositories:
+      auditing:
+        enabled: true
 springdoc:
   show-actuator: true
   #use-management-port: true

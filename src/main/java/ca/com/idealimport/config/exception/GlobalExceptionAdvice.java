@@ -4,6 +4,7 @@ import ca.com.idealimport.common.dto.IdealErrorResponse;
 import ca.com.idealimport.config.exception.enums.IdealResponseErrorCode;
 import ca.com.idealimport.config.filter.builder.IdealResponseBuilder;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -29,5 +30,10 @@ public class GlobalExceptionAdvice {
     @ExceptionHandler(value = {IdealException.class})
     public ResponseEntity<IdealErrorResponse> handleIdealException(IdealException idealException, HttpServletRequest request, HttpServletResponse response) {
         return idealResponseBuilder.createErrorResponse(idealException, request, response);
+    }
+
+    @ExceptionHandler(value = {ExpiredJwtException.class})
+    public ResponseEntity<IdealErrorResponse> handleExpiredJwtException(ExpiredJwtException expiredJwtException, HttpServletRequest request, HttpServletResponse response) {
+        return idealResponseBuilder.createErrorResponse(new IdealException(IdealResponseErrorCode.TOKEN_EXPIRED), request, response);
     }
 }

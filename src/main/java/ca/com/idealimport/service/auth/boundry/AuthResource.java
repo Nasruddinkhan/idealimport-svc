@@ -47,6 +47,7 @@ public class AuthResource {
         return new ResponseEntity<>(userRegistrationResponse, HttpStatus.CREATED);
     }
 
+
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDto> authRequest(@RequestBody AuthRequestDto authRequestDto) {
         log.info("AuthResource.authRequest start {}", authRequestDto);
