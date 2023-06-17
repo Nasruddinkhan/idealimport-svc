@@ -40,10 +40,12 @@ public class PartyResource {
     @GetMapping("/all")
     public ResponseEntity<Page<PartyDto>> findAllParty(@RequestParam(name = "page", defaultValue = "0") int page,
                                                        @RequestParam(name ="size", defaultValue = "10") int size,
-                                                       @RequestParam(name = "full-name", required = false) String fullName)
+                                                       @RequestParam(name = "full-name", required = false) String fullName,
+                                                       @RequestParam(name = "order-by", required = false, defaultValue = "DESC") String orderBy,
+                                                       @RequestParam(name = "active", required = false, defaultValue = "true") Boolean isActive)
     {
         log.info("PartyResource.findAllParty start page ={}, size={}", page,size );
-        final var party = control.findAllParty(page, size, fullName);
+        final var party = control.findAllParty(page, size, fullName, isActive, orderBy);
         log.info("PartyResource.findAllParty end page ={}, size={}", party );
         return ResponseEntity.ok(party);
     }
