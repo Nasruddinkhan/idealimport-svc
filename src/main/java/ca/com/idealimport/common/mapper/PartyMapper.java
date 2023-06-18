@@ -5,8 +5,6 @@ import ca.com.idealimport.service.party.entity.dto.PartyDto;
 import ca.com.idealimport.service.users.entity.User;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-
 @Component
 public class PartyMapper {
     public Party convertPartyDtoToParty(PartyDto partyDto, User loggedInUserId) {
@@ -32,6 +30,11 @@ public class PartyMapper {
         party.setFullName(partyDto.fullName());
         party.setShortName(partyDto.shortName());
 
+        return party;
+    }
+
+    public Party setInActive(Party party) {
+        party.setIsActive(Boolean.FALSE);
         return party;
     }
 }
