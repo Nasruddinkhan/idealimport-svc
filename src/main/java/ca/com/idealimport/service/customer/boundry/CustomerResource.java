@@ -27,10 +27,27 @@ public record CustomerResource(CustomerControl customerControl) {
 
     @GetMapping
     public ResponseEntity<Page<CustomerDto>> findAllCustomer(@RequestParam("page") int page,
-                                                             @RequestParam("size") int size){
+                                                             @RequestParam("size") int size) {
         log.info("UserResource.findAllCustomer start");
         final var allUser = customerControl.findAllCustomer(page, size);
         log.info("UserResource.findAllCustomer end");
-        return new ResponseEntity<>(allUser, HttpStatus.OK);
+        return ResponseEntity.ok(allUser);
+    }
+
+    @GetMapping("/{customer-Id}")
+    public ResponseEntity<CustomerDto> findCustomerByCustomerId(@PathVariable("customer-Id") Long customerId) {
+        log.info("UserResource.findCustomerByCustomerId start customerId = {}", customerId);
+        final var customerDto = customerControl.findCustomerByCustomerId(customerId);
+        log.info("UserResource.findCustomerByCustomerId end customerDto = {}", customerDto);
+        return ResponseEntity.ok(customerDto);
+    }
+
+    @DeleteMapping("/{customer-Id}")
+    public ResponseEntity<Void> deleteCustomerByCustomerId(@PathVariable("customer-Id") Long customerId) {
+        log.info("UserResource.deleteCustomerByCustomerId start customerId = {}", customerId);
+        final var customerDto = customerControl.deleteCustomerByCustomerId(customerId);
+        log.info("UserResource.deleteCustomerByCustomerId end customerDto = {}", customerDto);
+        return ResponseEntity.noContent().build();
+
     }
 }

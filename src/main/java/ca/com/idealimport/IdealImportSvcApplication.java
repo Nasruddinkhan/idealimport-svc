@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import javax.xml.crypto.Data;
 import java.util.Date;
@@ -21,6 +22,7 @@ import java.util.Date;
 		paramName = "Authorization",
 		in = SecuritySchemeIn.HEADER
 )
+@EnableJpaAuditing
 public class IdealImportSvcApplication implements CommandLineRunner {
 
 	//@Autowired
