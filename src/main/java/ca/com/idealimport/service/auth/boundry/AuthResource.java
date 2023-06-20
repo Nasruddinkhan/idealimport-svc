@@ -1,6 +1,7 @@
 package ca.com.idealimport.service.auth.boundry;
 
 import ca.com.idealimport.common.mapper.EmailMapper;
+import ca.com.idealimport.config.logging.LogRequestResponse;
 import ca.com.idealimport.service.auth.control.AuthControl;
 import ca.com.idealimport.service.auth.entity.dto.AuthRequestDto;
 import ca.com.idealimport.service.auth.entity.dto.AuthResponseDto;
@@ -48,6 +49,7 @@ public class AuthResource {
     }
 
 
+    @LogRequestResponse
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDto> authRequest(@RequestBody AuthRequestDto authRequestDto) {
         log.info("AuthResource.authRequest start {}", authRequestDto);
