@@ -60,6 +60,9 @@ public class PartyControl {
         return partyDto;
     }
 
+
+
+
     private Specification<Party> buildWhereConditions(String fullName, Boolean isActive) {
         final List<Specification<Party>> specificationsList = new ArrayList<>();
         specificationsList.add(Specifications.fieldProperty(Constants.ACTIVE, isActive));
