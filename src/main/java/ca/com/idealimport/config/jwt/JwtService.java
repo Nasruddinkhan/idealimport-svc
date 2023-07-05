@@ -1,11 +1,7 @@
 package ca.com.idealimport.config.jwt;
 
-import ca.com.idealimport.config.exception.IdealException;
-import ca.com.idealimport.config.exception.IdealUnknownException;
-import ca.com.idealimport.config.exception.enums.IdealResponseErrorCode;
 import ca.com.idealimport.service.users.entity.User;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -20,7 +16,7 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-    private static final String SECRET_KEY = "505E635266556A586E3272357538782F413F4428472B4B6250645367566B5790";
+    private static final String SECRET_KEY = "A31E8C6D5BF7E9A08C6D7E528A4F01B5E26C9D0F387E4A1B5C76D4E7A9081B5A3E28C76D7A08C6D5B7E9A0B4C76D8A4F012E5C6D9A";
 
     public String generateToken(Map<String, Object> extraClaims, User user) {
         extraClaims.entrySet().removeIf(e -> e.getKey().equals("password"));
