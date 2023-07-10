@@ -1,6 +1,7 @@
 package ca.com.idealimport.service.product.entity;
 
 import ca.com.idealimport.common.entity.AuditableEntity;
+import ca.com.idealimport.service.users.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,6 +15,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Product extends AuditableEntity implements Serializable {
 
     @EmbeddedId
@@ -38,4 +40,11 @@ public class Product extends AuditableEntity implements Serializable {
     private Integer quantityInHand;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", fetch = FetchType.LAZY)
     private List<ProductItem> productItems;
+
+    @Column(name = "active", columnDefinition = "boolean default true")
+    private Boolean isActive;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

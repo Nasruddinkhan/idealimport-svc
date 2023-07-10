@@ -2,16 +2,22 @@ package ca.com.idealimport.service.product.entity;
 
 import ca.com.idealimport.service.party.entity.Party;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 @Embeddable
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@EqualsAndHashCode
+
 public class ProductKey implements Serializable {
 
 
     @Column(name = "product_id")
-    private UUID productId;
+    private String productId;
 
 
     @ManyToOne(fetch = FetchType.LAZY)

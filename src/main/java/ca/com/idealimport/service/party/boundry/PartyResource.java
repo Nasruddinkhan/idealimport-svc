@@ -50,7 +50,7 @@ public class PartyResource {
     }
 
     @GetMapping("/{party-id}/party-id")
-    public ResponseEntity<PartyDto> findPartyById(@PathVariable("party-id") String partyId) {
+    public ResponseEntity<PartyDto> findPartyById(@PathVariable("party-id") Long partyId) {
         log.info("PartyResource.findPartyById start partyId ={}", partyId);
         final var party = control.findPartyById(partyId);
         log.info("PartyResource.findPartyById end  party={}", party);
@@ -58,7 +58,7 @@ public class PartyResource {
     }
 
     @DeleteMapping("/{party-id}")
-    public ResponseEntity<Void> deletePartyById(@PathVariable("party-id") String partyId) {
+    public ResponseEntity<Void> deletePartyById(@PathVariable("party-id") Long partyId) {
         log.info("PartyResource.deletePartyById partyId ={}", partyId);
         final var party = control.deletePartyById(partyId);
         log.info("PartyResource.deletePartyById end  party={}", party);

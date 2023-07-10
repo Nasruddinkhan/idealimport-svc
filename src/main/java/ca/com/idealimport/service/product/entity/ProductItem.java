@@ -1,6 +1,7 @@
 package ca.com.idealimport.service.product.entity;
 
 import ca.com.idealimport.common.entity.AuditableEntity;
+import ca.com.idealimport.service.users.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,6 +14,7 @@ import java.io.Serializable;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class ProductItem extends AuditableEntity implements Serializable {
 
     @Id
@@ -55,4 +57,9 @@ public class ProductItem extends AuditableEntity implements Serializable {
 
     @Column(name = "sub_total", columnDefinition = "INT")
     private Integer subTotal;
+    @Column(name = "active", columnDefinition = "boolean default true")
+    private Boolean isActive;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }
