@@ -1,5 +1,6 @@
 package ca.com.idealimport.service.product.entity.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 
 import java.util.List;
@@ -16,7 +17,8 @@ public record ProductDTO(List<ProductItemDTO> productItems,
                          String packingPolyBag,
                          String packingBox,
                          String packingColors,
-                         Integer quantityInHand) {
+
+                         @JsonProperty("quantityInhand") Integer quantityInHand) {
 
     @java.beans.ConstructorProperties({"productItems", "productId", "partyId", "itemCode", "contents", "style", "label", "weight", "packingPolyBag", "packingBox", "packingColors","quantityInHand"})
     public ProductDTO{
