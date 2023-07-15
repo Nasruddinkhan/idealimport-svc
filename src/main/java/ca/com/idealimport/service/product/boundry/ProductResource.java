@@ -2,18 +2,17 @@ package ca.com.idealimport.service.product.boundry;
 
 import ca.com.idealimport.common.dto.DropDownDto;
 import ca.com.idealimport.service.product.control.ProductControl;
+import ca.com.idealimport.service.product.entity.dto.ProductCreationResponse;
+import ca.com.idealimport.service.product.entity.dto.ProductDTO;
+import ca.com.idealimport.service.product.entity.dto.ProductResponseDto;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/product/v1.0")
@@ -37,4 +36,24 @@ public class ProductResource {
         return ResponseEntity.ok(dropDownDtos);
 
     }
+
+
+    @PostMapping
+    public ResponseEntity<ProductCreationResponse> createProduct(@RequestBody ProductDTO productDTO){
+        log.info("ProductResource.createProduct product={}", productDTO);
+        final var productCreationResponse = productControl.createProduct(productDTO);
+        log.info("ProductResource.findAllParty end productCreationResponse ={}", productCreationResponse);
+        return new ResponseEntity<>(productCreationResponse, HttpStatus.CREATED);
+    }
+
+
+    @GetMapping
+    public ResponseEntity<Page<ProductResponseDto>> getProducts(@RequestParam(name = "page", defaultValue = "0") int page,
+                                                                @RequestParam(name = "size", defaultValue = "10") int size){
+        log.info("ProductResource.createProduct getProducts");
+         var products =   productControl.getProducts( page,  size);
+        log.info("ProductResource.createProduct product={}", products);
+        return ResponseEntity.ok(products);
+    }
+
 }

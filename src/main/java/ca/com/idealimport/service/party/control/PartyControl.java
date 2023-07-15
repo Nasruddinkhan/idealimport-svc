@@ -1,8 +1,8 @@
 package ca.com.idealimport.service.party.control;
 
 import ca.com.idealimport.common.Constants;
+import ca.com.idealimport.common.constants.ErrorConstants;
 import ca.com.idealimport.common.mapper.PartyMapper;
-import ca.com.idealimport.common.pagination.CommonPageable;
 import ca.com.idealimport.common.specifications.SpecificationUtils;
 import ca.com.idealimport.common.specifications.Specifications;
 import ca.com.idealimport.common.util.PageUtils;
@@ -16,7 +16,6 @@ import ca.com.idealimport.service.users.control.UserControl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,23 +71,28 @@ public class PartyControl {
         return SpecificationUtils.and(specificationsList);
     }
 
-    public PartyDto findPartyById(String partyId) {
+    public PartyDto findPartyById(Long partyId) {
         log.debug("PartyControl.findPartyById start partyId = {}", partyId);
         final var partyDto = partyRepository.findByPartyIdAndIsActiveTrue(partyId)
                 .map(partyMapper::convertPartyToPartyDto)
-                .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND, String.format("no record present for this id %s ", partyId)));
+                .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND, String.format(ErrorConstants.PARTY_NOT_PRESENT, partyId)));
         log.debug("PartyControl.findPartyById end partyDto = {}", partyDto);
         return partyDto;
     }
 
-    public PartyDto deletePartyById(String partyId) {
+    public PartyDto deletePartyById(Long partyId) {
         log.debug("PartyControl.deletePartyById start partyId = {}", partyId);
         final var partyDto = partyRepository.findByPartyIdAndIsActiveTrue(partyId)
                 .map(partyMapper::setInActive)
                 .map(partyRepository::save)
                 .map(partyMapper::convertPartyToPartyDto)
-                .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND, String.format("no record present for this id %s ", partyId)));
+                .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND, String.format(ErrorConstants.PARTY_NOT_PRESENT, partyId)));
         log.debug("PartyControl.deletePartyById end partyDto = {}", partyDto);
         return partyDto;
+    }
+
+    public Party findParty(Long partyId) {
+        return  partyRepository.findByPartyIdAndIsActiveTrue(partyId)
+                .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND, String.format(ErrorConstants.PARTY_NOT_PRESENT, partyId)));
     }
 }
