@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class ProductMapper {
-    private final PartyMapper partyMapper;
 
     public ProductKey getProductKey(String uuId, Party party) {
         return ProductKey.builder()
@@ -41,7 +40,7 @@ public class ProductMapper {
 
     public ProductResponseDto convertProductToProductResponse(Product product) {
         return ProductResponseDto.builder()
-                .party(partyMapper.convertPartyToPartyDto(product.getProductKey().getParty()))
+                .partyName(product.getProductKey().getParty().getFullName())
                 .label(product.getLabel())
                 .itemCode(product.getItemCode())
                 .style(product.getStyle())
