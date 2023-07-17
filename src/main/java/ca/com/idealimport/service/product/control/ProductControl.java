@@ -69,4 +69,16 @@ public class ProductControl {
         log.debug("ProductControl.getProducts products ={}", products );
         return products;
     }
+
+    public ProductDTO findByProductById(String productId, String name){
+        log.debug("ProductControl.findByProductById start productId ={}, name ={}", productId, name);
+        final var party = partyControl.findParty(name);
+        final var productKey =  productMapper.getProductKey(productId, party);
+        final var product = productRepository.findByProductKeyAndIsActiveTrue(productKey)
+               .map(productMapper::convertProductEntityToProductDto)
+               .orElseThrow(()-> new RuntimeException("no product found for this id"));
+        log.debug("ProductControl.findByProductById end product ={}", product);
+        return product;
+
+    }
 }

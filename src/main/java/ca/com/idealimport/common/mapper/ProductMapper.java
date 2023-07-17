@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class ProductMapper {
-    private final PartyMapper partyMapper;
 
+    private final ProductItemMapper productItemMapper;
     public ProductKey getProductKey(String uuId, Party party) {
         return ProductKey.builder()
                 .productId(uuId)
@@ -41,7 +41,7 @@ public class ProductMapper {
 
     public ProductResponseDto convertProductToProductResponse(Product product) {
         return ProductResponseDto.builder()
-                .party(partyMapper.convertPartyToPartyDto(product.getProductKey().getParty()))
+                .partyName(product.getProductKey().getParty().getFullName())
                 .label(product.getLabel())
                 .itemCode(product.getItemCode())
                 .style(product.getStyle())
@@ -52,6 +52,23 @@ public class ProductMapper {
                 .contents(product.getContents())
                 .quantityInHand(product.getQuantityInHand())
                 .productId(product.getProductKey().getProductId())
+                .build();
+    }
+
+    public ProductDTO convertProductEntityToProductDto(Product product) {
+        return ProductDTO.builder()
+                .productId(product.getProductKey().getProductId())
+                .partyId(product.getProductKey().getParty().getPartyId())
+                .label(product.getLabel())
+                .itemCode(product.getItemCode())
+                .style(product.getStyle())
+                .packingBox(product.getPackingBox())
+                .packingColors(product.getPackingColors())
+                .packingPolyBag(product.getPackingPolyBag())
+                .weight(product.getWeight())
+                .contents(product.getContents())
+                .quantityInHand(product.getQuantityInHand())
+                .productItems(productItemMapper.convertProductItemEntityToDto(product))
                 .build();
     }
 }

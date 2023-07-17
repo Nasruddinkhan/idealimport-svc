@@ -15,4 +15,5 @@ public interface PartyRepository extends JpaRepository<Party, Long> {
     Page<Party> findAll( Specification<Party> specification, Pageable partyPage);
 
     Optional<Party> findByPartyIdAndIsActiveTrue(Long partyId);
+    Optional<Party> findByFullNameAndIsActiveTrue(String partyId);
 }

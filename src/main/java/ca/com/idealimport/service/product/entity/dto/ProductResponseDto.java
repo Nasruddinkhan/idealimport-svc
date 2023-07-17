@@ -1,11 +1,10 @@
 package ca.com.idealimport.service.product.entity.dto;
 
-import ca.com.idealimport.service.party.entity.dto.PartyDto;
 import lombok.Builder;
 
 @Builder
 public record ProductResponseDto(String productId,
-                                 PartyDto party,
+                                 String partyName,
                                  String itemCode,
                                  String contents,
                                  String style,
@@ -16,7 +15,7 @@ public record ProductResponseDto(String productId,
                                  String packingColors,
                                  Integer quantityInHand) {
 
-    @java.beans.ConstructorProperties({"productId", "party", "itemCode", "contents", "style", "label", "weight", "packingPolyBag", "packingBox", "packingColors", "quantityInHand"})
+    @java.beans.ConstructorProperties({"productId", "partyName", "itemCode", "contents", "style", "label", "weight", "packingPolyBag", "packingBox", "packingColors", "quantityInHand"})
     public ProductResponseDto {
 
     }
