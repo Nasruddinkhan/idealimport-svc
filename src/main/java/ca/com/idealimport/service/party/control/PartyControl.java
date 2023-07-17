@@ -95,4 +95,9 @@ public class PartyControl {
         return  partyRepository.findByPartyIdAndIsActiveTrue(partyId)
                 .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND, String.format(ErrorConstants.PARTY_NOT_PRESENT, partyId)));
     }
+
+    public Party findParty(String name){
+        return  partyRepository.findByFullNameAndIsActiveTrue(name)
+                .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND, String.format(ErrorConstants.PARTY_NAME_NOT_PRESENT, name)));
+    }
 }

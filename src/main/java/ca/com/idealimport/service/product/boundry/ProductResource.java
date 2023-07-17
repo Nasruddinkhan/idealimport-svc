@@ -7,6 +7,7 @@ import ca.com.idealimport.service.product.entity.dto.ProductDTO;
 import ca.com.idealimport.service.product.entity.dto.ProductResponseDto;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -55,5 +56,15 @@ public class ProductResource {
         log.info("ProductResource.createProduct product={}", products);
         return ResponseEntity.ok(products);
     }
+
+    @GetMapping("/product-id/{product-id}/{name}")
+    public ResponseEntity<ProductDTO> getProducts(@PathParam("product-id") String productId,
+                                                                @PathParam("name") String fullName){
+        log.info("ProductResource.getProducts productId={}, fullName={}", productId, fullName);
+        final var  products =   productControl.findByProductById( productId,  fullName);
+        log.info("ProductResource.getProducts product={}", products);
+        return ResponseEntity.ok(products);
+    }
+
 
 }

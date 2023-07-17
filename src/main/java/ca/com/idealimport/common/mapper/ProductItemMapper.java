@@ -43,5 +43,24 @@ public class ProductItemMapper {
                 .build();
     }
 
+    public List<ProductItemDTO> convertProductItemEntityToDto(Product product){
+        return product.getProductItems().stream().map(e-> convertProductItemToDto(e)).toList();
+    }
 
+    private ProductItemDTO convertProductItemToDto(ProductItem productItem) {
+        return ProductItemDTO.builder()
+                .productItemId(productItem.getProductItemId())
+                .s(productItem.getS())
+                .l(productItem.getL())
+                .xl(productItem.getXl())
+                .m(productItem.getM())
+                .xs(productItem.getXs())
+                .xxl(productItem.getXxl())
+                .xxxl(productItem.getXxxl())
+                .mixed(productItem.getMixed())
+                .details(productItem.getDetails())
+                .subTotal(productItem.getSubTotal())
+                .build();
+
+    }
 }
