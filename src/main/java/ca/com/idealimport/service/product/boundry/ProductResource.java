@@ -57,9 +57,9 @@ public class ProductResource {
         return ResponseEntity.ok(products);
     }
 
-    @GetMapping("/product-id/{product-id}/{name}")
-    public ResponseEntity<ProductDTO> getProducts(@PathParam("product-id") String productId,
-                                                                @PathParam("name") String fullName){
+    @GetMapping("/product-id/name")
+    public ResponseEntity<ProductDTO> getProducts(@RequestParam("product-id") String productId,
+                                                  @RequestParam("name") String fullName){
         log.info("ProductResource.getProducts productId={}, fullName={}", productId, fullName);
         final var  products =   productControl.findByProductById( productId,  fullName);
         log.info("ProductResource.getProducts product={}", products);
