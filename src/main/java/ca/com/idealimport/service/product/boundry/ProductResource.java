@@ -5,6 +5,7 @@ import ca.com.idealimport.service.product.control.ProductControl;
 import ca.com.idealimport.service.product.entity.dto.ProductCreationResponse;
 import ca.com.idealimport.service.product.entity.dto.ProductDTO;
 import ca.com.idealimport.service.product.entity.dto.ProductResponseDto;
+import ca.com.idealimport.service.product.entity.dto.SearchProductDto;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -47,11 +48,11 @@ public class ProductResource {
     }
 
 
-    @GetMapping
+    @PostMapping("/search")
     public ResponseEntity<Page<ProductResponseDto>> getProducts(@RequestParam(name = "page", defaultValue = "0") int page,
-                                                                @RequestParam(name = "size", defaultValue = "10") int size){
+                                                                @RequestParam(name = "size", defaultValue = "10") int size, @RequestBody SearchProductDto searchProductDto){
         log.info("ProductResource.createProduct getProducts");
-         var products =   productControl.getProducts( page,  size);
+         var products =   productControl.getProducts( page,  size, searchProductDto);
         log.info("ProductResource.createProduct product={}", products);
         return ResponseEntity.ok(products);
     }
@@ -60,10 +61,9 @@ public class ProductResource {
     public ResponseEntity<ProductDTO> getProducts(@RequestParam("product-id") String productId,
                                                   @RequestParam("name") String fullName){
         log.info("ProductResource.getProducts productId={}, fullName={}", productId, fullName);
-        final var  products =   productControl.findByProductById( productId,  fullName);
+        final var  products = productControl.findByProductById( productId,  fullName);
         log.info("ProductResource.getProducts product={}", products);
         return ResponseEntity.ok(products);
     }
-
 
 }

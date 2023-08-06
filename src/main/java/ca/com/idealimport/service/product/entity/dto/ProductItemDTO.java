@@ -14,7 +14,5 @@ public record ProductItemDTO(String productItemId,
                              Integer subTotal,
                              Integer s,
                              Integer m) {
-    @java.beans.ConstructorProperties({"productItemId", "details", "xs", "l", "xl", "xxl", "xxl", "mixed", "subTotal", "s", "m"})
-    public ProductItemDTO {
-    }
+
 }

@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,6 +31,11 @@ public class GlobalExceptionAdvice {
     @ExceptionHandler(value = {IdealException.class})
     public ResponseEntity<IdealErrorResponse> handleIdealException(IdealException idealException, HttpServletRequest request, HttpServletResponse response) {
         return idealResponseBuilder.createErrorResponse(idealException, request, response);
+    }
+
+    @ExceptionHandler(value = {InvalidDataAccessApiUsageException.class})
+    public ResponseEntity<IdealErrorResponse> invalidDataAccessUsageException(InvalidDataAccessApiUsageException invalidDataAccessApiUsageException, HttpServletRequest request, HttpServletResponse response) {
+        return idealResponseBuilder.createErrorResponse(new IdealException(IdealResponseErrorCode.UNEXPECTED_ERROR, invalidDataAccessApiUsageException.getMessage()), request, response);
     }
 
     @ExceptionHandler(value = {ExpiredJwtException.class})

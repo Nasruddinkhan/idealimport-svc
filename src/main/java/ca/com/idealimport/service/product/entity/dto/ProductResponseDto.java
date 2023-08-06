@@ -15,8 +15,5 @@ public record ProductResponseDto(String productId,
                                  String packingColors,
                                  Integer quantityInHand) {
 
-    @java.beans.ConstructorProperties({"productId", "partyName", "itemCode", "contents", "style", "label", "weight", "packingPolyBag", "packingBox", "packingColors", "quantityInHand"})
-    public ProductResponseDto {
 
-    }
 }
