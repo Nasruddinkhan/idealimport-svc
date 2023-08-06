@@ -21,6 +21,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static ca.com.idealimport.config.exception.enums.IdealResponseErrorCode.INVALID_ARGUMENT;
+
 @Service
 @Transactional
 @Slf4j
@@ -49,18 +51,18 @@ public class RoleControl {
         log.debug("RoleControl.findRoleByName start {}", name);
         final var roles = roleRepository.findByNameAndIsActiveTrue(name)
                 .map(RoleMapper::convertEntityToDto)
-                .orElseThrow(() -> new RuntimeException("passing invalid argumentId"));
+                .orElseThrow(() -> new IdealException(INVALID_ARGUMENT));
         log.debug("RoleControl.findRoleByName end {}", roles);
         return roles;
     }
 
     @Observed(name = "findAllRoles", contextualName = "roles")
     public List<RoleResponseDto> findAllRoles() {
-        log.debug("RoleControl.findRoleByName start {}");
+        log.debug("RoleControl.findAllRoles start {}");
         final var roleDos = roleRepository.findByIsActiveTrue()
                 .stream().map(RoleMapper::convertEntityToDto)
                 .toList();
-        log.debug("RoleControl.findRoleByName end {}");
+        log.debug("RoleControl.findAllRoles end {}");
         return roleDos;
     }
 
@@ -86,7 +88,7 @@ public class RoleControl {
 
     public Set<Role> findRoleByNames(Set<String> name) {
         var names = roleRepository.findByNameInAndIsActiveTrue(name);
-        if (names.isEmpty()) throw new RuntimeException("passing invalid argumentId");
+        if (names.isEmpty()) throw new IdealException(INVALID_ARGUMENT);
         return names;
     }
 
@@ -108,12 +110,13 @@ public class RoleControl {
     }
 
     public RoleResponseDto activeAndInActiveRole(String name, Boolean status) {
-        log.debug("RoleControl.activeAndInActiveRole end name {}, status {}", name, status);
+        log.debug("RoleControl.activeAndInActiveRole start name {}, status {}", name, status);
         final var rolesDto = roleRepository.findByName(name)
                 .map(e -> RoleMapper.setStatus(e, status))
                 .map(roleRepository::save)
                 .map(RoleMapper::convertEntityToDto)
-                .orElseThrow(() -> new RuntimeException("passing invalid arguments"));
+                .orElseThrow(() -> new IdealException(INVALID_ARGUMENT));
+        log.debug("RoleControl.activeAndInActiveRole end rolesDto {}", rolesDto);
         return rolesDto;
     }
 

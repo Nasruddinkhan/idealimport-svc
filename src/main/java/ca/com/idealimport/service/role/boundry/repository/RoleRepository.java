@@ -1,7 +1,6 @@
 package ca.com.idealimport.service.role.boundry.repository;
 
 
-import ca.com.idealimport.service.permissions.entity.Permission;
 import ca.com.idealimport.service.role.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 

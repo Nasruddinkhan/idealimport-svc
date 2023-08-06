@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum IdealResponseErrorCode {
 
     INVALID_PERMISSION("Passing Invalid Permission", 400, "Passing invalid permission, kindly check & pass valid parameter"),
+    INVALID_ARGUMENT("Passing Invalid Argument", 400, "Passing invalid argument, kindly check & pass valid parameter"),
     NOT_FOUND("Not Found", 404, "Not Found ."),
     UNEXPECTED_ERROR("Unexceptional Error ",500 ,"Unexceptional Error "),
     BAD_CREDENTIAL("Bad Credential", 401 , "You have enter incorrect username & password" ),

@@ -18,10 +18,8 @@ public class IdealResponseBuilderFilter extends OncePerRequestFilter {
     private final IdealResponseBuilder idealResponseBuilder;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-      //  log.info("IdealResponseBuilderFilter.doFilterInternal start {}", request );
         idealResponseBuilder.addResponseHeaders(request, response);
         filterChain.doFilter(request, response);
-       // log.info("IdealResponseBuilderFilter.doFilterInternal end {}", response);
 
     }
 }

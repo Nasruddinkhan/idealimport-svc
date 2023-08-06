@@ -1,6 +1,5 @@
 package ca.com.idealimport.service.users.entity.dto;
 
-import ca.com.idealimport.service.role.entity.Role;
 import ca.com.idealimport.service.role.entity.dto.RoleResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

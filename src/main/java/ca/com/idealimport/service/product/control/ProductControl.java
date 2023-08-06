@@ -10,6 +10,7 @@ import ca.com.idealimport.common.util.SecurityUtils;
 import ca.com.idealimport.service.party.control.PartyControl;
 import ca.com.idealimport.service.party.entity.Party;
 import ca.com.idealimport.service.product.boundry.repository.ProductRepository;
+import ca.com.idealimport.service.product.entity.ProductKey;
 import ca.com.idealimport.service.product.entity.dto.ProductCreationResponse;
 import ca.com.idealimport.service.product.entity.dto.ProductDTO;
 import ca.com.idealimport.service.product.entity.dto.ProductResponseDto;
@@ -61,6 +62,7 @@ public class ProductControl {
         var product = productRepository.save(productEntity);
         return productItemMapper.convertProductItemToProductCreationResponse(product.getProductKey().getProductId());
     }
+
 
     public Page<ProductResponseDto> getProducts(int page, int size) {
         log.debug("ProductControl. getProducts");
