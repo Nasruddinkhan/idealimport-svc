@@ -20,7 +20,7 @@ public class ProductItemMapper {
 
        return ProductItem.builder()
                .product(product)
-               .productItemId(CommonUtils.getUUID(productItemDTO.productItemId()).toString())
+               .productItemId(CommonUtils.getUUID(productItemDTO.productItemId()))
                .s(productItemDTO.s())
                .l(productItemDTO.l())
                .xl(productItemDTO.xl())
@@ -44,7 +44,7 @@ public class ProductItemMapper {
     }
 
     public List<ProductItemDTO> convertProductItemEntityToDto(Product product){
-        return product.getProductItems().stream().map(e-> convertProductItemToDto(e)).toList();
+        return product.getProductItems().stream().map(this::convertProductItemToDto).toList();
     }
 
     private ProductItemDTO convertProductItemToDto(ProductItem productItem) {

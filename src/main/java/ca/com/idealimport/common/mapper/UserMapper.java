@@ -18,7 +18,7 @@ public class UserMapper {
     public static User convertDtoToEntity( UserDto userDto, Set<Role> roles) {
 
         return User.builder()
-                .userName(generateUserName(userDto.firstName(), userDto.lastName()))
+                .userName(generateUserName(userDto.firstName(), userDto.lastName(),  new Random()))
                 .firstName(userDto.firstName())
                 .lastName(userDto.lastName())
                 .email(userDto.email().toLowerCase())
@@ -39,14 +39,13 @@ public class UserMapper {
     }
 
 
-    public static String generateUserName(String firstName, String lastName) {
-        var random = new Random();
+    public static String generateUserName(String firstName, String lastName, Random random) {
         var userId = random.ints(10000, 100000)
                 .mapToObj(Integer::toString)
                 .findFirst().orElse("00000")
                 + lastName.substring(0, 2).toUpperCase()
                 + firstName.substring(0, 2).toUpperCase();
-        var twoStr = RandomValueGenerator.generateRandomString(1, CHARACTERS);
+        var twoStr = RandomValueGenerator.generateRandomString(1, CHARACTERS, random);
         return twoStr + userId;
     }
     public static UserResponseDto convertEntityToUserDto(User user) {

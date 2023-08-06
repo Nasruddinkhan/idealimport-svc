@@ -5,6 +5,8 @@ import lombok.Builder;
 
 import java.math.BigDecimal;
 
+
+@Builder
 public record CustomerDto(@JsonProperty("customer_id") Long customerId,
                           @JsonProperty("customer_name") String customerName,
                           @JsonProperty("company_name") String companyName,
@@ -14,7 +16,4 @@ public record CustomerDto(@JsonProperty("customer_id") Long customerId,
                           @JsonProperty("balance") BigDecimal balance,
                           @JsonProperty("address") String address,
                           @JsonProperty("remark") String remarks) {
-    @Builder
-    public CustomerDto{
-    }
 }

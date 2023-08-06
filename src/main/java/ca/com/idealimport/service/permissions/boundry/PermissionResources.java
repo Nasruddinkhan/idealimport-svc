@@ -56,9 +56,9 @@ public record PermissionResources(PermissionControl permissionControl) {
 
     @DeleteMapping("/{name}")
     public ResponseEntity<Void> deleteByName(@PathVariable("name") String name) {
-        log.debug("PermissionResources.findByName start");
+        log.debug("PermissionResources.deleteByName start");
         permissionControl.deleteByName(name);
-        log.debug("PermissionResources.findByName end");
+        log.debug("PermissionResources.deleteByName end");
         return ResponseEntity.noContent().build();
     }
 
@@ -72,17 +72,17 @@ public record PermissionResources(PermissionControl permissionControl) {
 
     @GetMapping("/all/module")
     public ResponseEntity<Map<String,List<PermissionDto>>> findAllPermissionByModule() {
-        log.debug("PermissionResources.findByName start");
+        log.debug("PermissionResources.findAllPermissionByModule start");
         final var permissionDtos = permissionControl.findAllPermissionByModule();
-        log.debug("PermissionResources.findByName end");
+        log.debug("PermissionResources.findAllPermissionByModule end");
         return new ResponseEntity<>(permissionDtos, HttpStatus.OK);
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<PermissionDto>> findAllPermission() {
-        log.debug("PermissionResources.findByName start");
+        log.debug("PermissionResources.findAllPermission start");
         final var permissionDtos = permissionControl.findAllPermission();
-        log.debug("PermissionResources.findByName end");
+        log.debug("PermissionResources.findAllPermission end");
         return new ResponseEntity<>(permissionDtos, HttpStatus.OK);
     }
 }

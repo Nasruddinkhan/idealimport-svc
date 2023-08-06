@@ -5,6 +5,4 @@ import lombok.Builder;
 @Builder(builderClassName = "ProductBuilder")
 public record ProductCreationResponse(String msg) {
 
-    @java.beans.ConstructorProperties({ "msg"})
-    public ProductCreationResponse{}
 }

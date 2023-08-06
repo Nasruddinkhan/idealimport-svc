@@ -1,5 +1,6 @@
 package ca.com.idealimport.service.permissions.control;
 
+import ca.com.idealimport.common.constants.ErrorConstants;
 import ca.com.idealimport.common.pagination.CommonPageable;
 import ca.com.idealimport.config.exception.IdealException;
 import ca.com.idealimport.config.exception.enums.IdealResponseErrorCode;
@@ -32,13 +33,6 @@ public class PermissionControl {
 
     public PermissionDto createPermission(final PermissionDto permissionDto) {
         log.debug("PermissionControl.createPermission start {}", permissionDto);
-//        final var dto = permissionRepository.findByName(permissionDto.name())
-//                .map(PermissionMapper::setIsActivePermission).map(permissionRepository::save)
-//                .map(PermissionMapper::convertEntityToDto).orElseGet(() -> Optional.of(permissionDto)
-//                        .map(PermissionMapper::convertDtoToEntity)
-//                        .map(permissionRepository::save)
-//                        .map(PermissionMapper::convertEntityToDto)
-//                        .orElse(null));
         var dto = Optional.of(permissionDto)
                 .map(PermissionMapper::convertDtoToEntity)
                 .map(permissionRepository::save)
@@ -101,7 +95,7 @@ public class PermissionControl {
                 .map(PermissionMapper::setIsInActivePermission)
                 .map(permissionRepository::save)
                 .map(PermissionMapper::convertEntityToDto)
-                .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND, "record not present " + name));
+                .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND, String.format(ErrorConstants.RECORD_NOT_PRESENT , name)));
         log.debug("PermissionControl.deleteByName end dto ={}", dto);
 
     }
@@ -110,7 +104,7 @@ public class PermissionControl {
         log.debug("PermissionControl.findByPermissionId start ");
         var permissionDto = permissionRepository.findById(permissionId)
                         .map(PermissionMapper::convertEntityToDto)
-                .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND, "record not present " + permissionId));
+                .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND,String.format(ErrorConstants.RECORD_NOT_PRESENT , permissionId) ));
         log.debug("PermissionControl.findByPermissionId end ", permissionDto);
         return permissionDto;
     }
@@ -120,7 +114,7 @@ public class PermissionControl {
         log.debug("PermissionControl.findAllPermission start ");
         final var dto = permissionRepository
                 .findAllAndIsActiveTrue();
-        if (dto.isEmpty()) throw new IdealException(IdealResponseErrorCode.NOT_FOUND,  "record not present ");
+        if (dto.isEmpty()) throw new IdealException(IdealResponseErrorCode.NOT_FOUND, ErrorConstants.RECORD_NOT_PRESENT);
         var permissions = dto.stream().map(PermissionMapper::convertEntityToDto).toList().stream().collect(Collectors.groupingBy(PermissionDto::module));
         log.debug("PermissionControl.findAllPermission end {}", permissions);
         return permissions;
@@ -129,7 +123,7 @@ public class PermissionControl {
     public List<PermissionDto> findAllPermission() {
         log.debug("PermissionControl.findAllPermission start ");
         final var dto = permissionRepository.findAllAndIsActiveTrue();
-        if (dto.isEmpty()) throw new IdealException(IdealResponseErrorCode.NOT_FOUND,  "record not present ");
+        if (dto.isEmpty()) throw new IdealException(IdealResponseErrorCode.NOT_FOUND,  ErrorConstants.RECORD_NOT_PRESENT);
         var permissions = dto.stream().map(PermissionMapper::convertEntityToDto).toList();
         log.debug("PermissionControl.findAllPermission end {}", permissions);
         return permissions;
