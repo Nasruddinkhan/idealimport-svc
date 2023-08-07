@@ -20,8 +20,5 @@ public record ProductDTO(List<ProductItemDTO> productItems,
 
                          @JsonProperty("quantityInhand") Integer quantityInHand) {
 
-    @java.beans.ConstructorProperties({"productItems", "productId", "partyId", "itemCode", "contents", "style", "label", "weight", "packingPolyBag", "packingBox", "packingColors","quantityInHand"})
-    public ProductDTO{
-
-    }
+  
 }

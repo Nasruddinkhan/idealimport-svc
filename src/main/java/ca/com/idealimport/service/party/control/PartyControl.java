@@ -65,9 +65,8 @@ public class PartyControl {
     private Specification<Party> buildWhereConditions(String fullName, Boolean isActive) {
         final List<Specification<Party>> specificationsList = new ArrayList<>();
         specificationsList.add(Specifications.fieldProperty(Constants.ACTIVE, isActive));
-        if (fullName != null) {
-            specificationsList.add(SpecificationUtils.and(List.of(Specifications.fieldContains(Constants.FULL_NAME, fullName))));
-        }
+        Optional.ofNullable(fullName)
+                .ifPresent(name -> specificationsList.add(Specifications.fieldContains(Constants.FULL_NAME, name)));
         return SpecificationUtils.and(specificationsList);
     }
 

@@ -1,6 +1,6 @@
 package ca.com.idealimport.service.token.control;
 
-import ca.com.idealimport.service.token.entity.Token;
+import ca.com.idealimport.service.token.entity.TokenEntity;
 import ca.com.idealimport.service.token.entity.TokenType;
 import ca.com.idealimport.service.token.boundry.TokenRepository;
 import ca.com.idealimport.service.users.entity.User;
@@ -28,7 +28,7 @@ public class TokenControl {
 
     @Transactional
     public void saveUserToken(User user, String jwtToken) {
-        var token = Token.builder()
+        var token = TokenEntity.builder()
                 .user(user)
                 .token(jwtToken)
                 .tokenType(TokenType.BEARER)

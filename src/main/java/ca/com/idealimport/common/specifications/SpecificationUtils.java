@@ -24,4 +24,6 @@ public class SpecificationUtils {
                         .reduce(criteriaBuilder::and)
                         .orElse(criteriaBuilder.conjunction());
     }
+
+
 }
