@@ -21,10 +21,10 @@ spring:
           starttls:
             enable: true
   datasource:
-    url: ${MYSQL_HOST:jdbc:mysql://localhost:3306/ideal_import?useSSL=false&createDatabaseIfNotExist=true}
+    url: ${MYSQL_HOST:jdbc:mysql://localhost:3306/ideal_import?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true}
     username: root
     password: root
-    driver-class-name: com.mysql.jdbc.Driver
+    #driver-class-name: com.mysql.jdbc.Driver
     tomcat:
       test-while-idle: true
       validation-query: SELECT 1
@@ -48,9 +48,6 @@ springdoc:
   #use-management-port: true
 
 management:
-  httpexchanges:
-    recording:
-      enabled: true
   endpoint:
     health:
       show-details: always

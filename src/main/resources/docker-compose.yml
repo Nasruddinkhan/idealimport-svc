@@ -1,0 +1,29 @@
+version: '3'
+services:
+  mysql: # MySQL service
+    image: mysql:latest
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: root
+    volumes:
+      - ./volume/data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - mysql-db-network
+  phpmyadmin: #php myadmin
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin-ui
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "8111:80"
+    depends_on:
+      - mysql
+    networks:
+      - mysql-db-network
+networks:
+  mysql-db-network:

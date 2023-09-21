@@ -18,11 +18,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 )
 @EnableJpaAuditing
 public class IdealImportSvcApplication {
-
-
 	public static void main(String[] args) {
 		SpringApplication.run(IdealImportSvcApplication.class, args);
 	}
-
-
 }

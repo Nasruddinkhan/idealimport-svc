@@ -2,6 +2,7 @@ package ca.com.idealimport.service.permissions.boundry;
 
 import ca.com.idealimport.service.permissions.control.PermissionControl;
 import ca.com.idealimport.service.permissions.entity.dto.PermissionDto;
+import io.micrometer.observation.annotation.Observed;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;

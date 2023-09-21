@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.aspectj.lang.annotation.AfterThrowing; // Import the AfterThrowing annotation
 
 @Aspect
 @Component
@@ -39,5 +40,10 @@ public class RequestResponseLoggingAspect {
     @AfterReturning(pointcut = "logRequestResponsePointcut()", returning = "response")
     public void logResponse(JoinPoint joinPoint, Object response) throws JsonProcessingException {
         log.info("Response: {}", objectMapper.writeValueAsString(response));
+    }
+
+    @AfterThrowing(pointcut = "logRequestResponsePointcut()", throwing = "exception")
+    public void logException(JoinPoint joinPoint, Exception exception) {
+        log.error("Exception thrown: {}", exception.getMessage());
     }
 }
