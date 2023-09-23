@@ -38,7 +38,7 @@ spring:
     open-in-view: true
     show-sql: false
     properties:
-      hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
+      hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
       hibernate.hbm2ddl.auto: update
     repositories:
       auditing:
