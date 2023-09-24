@@ -3,7 +3,6 @@ package ca.com.idealimport.config.exception;
 import ca.com.idealimport.common.dto.IdealErrorResponse;
 import ca.com.idealimport.config.exception.enums.IdealResponseErrorCode;
 import ca.com.idealimport.config.filter.builder.IdealResponseBuilder;
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,8 +23,8 @@ public class GlobalExceptionAdvice {
     private final IdealResponseBuilder idealResponseBuilder;
 
 
-    @ExceptionHandler(value = {SQLIntegrityConstraintViolationException.class, MySQLIntegrityConstraintViolationException.class})
-    public ResponseEntity<IdealErrorResponse> handleIntegrityConstraintViolationException(MySQLIntegrityConstraintViolationException idealException, HttpServletRequest request, HttpServletResponse response) {
+    @ExceptionHandler(value = {SQLIntegrityConstraintViolationException.class})
+    public ResponseEntity<IdealErrorResponse> handleIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException idealException, HttpServletRequest request, HttpServletResponse response) {
         return idealResponseBuilder.createErrorResponse( new IdealException(IdealResponseErrorCode.DUPLICATE_RECORD, idealException.getMessage()), request, response);
     }
     @ExceptionHandler(value = {IdealException.class})

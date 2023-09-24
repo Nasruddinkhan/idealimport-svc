@@ -22,7 +22,7 @@ public class Product extends AuditableEntity implements Serializable {
     private ProductKey productKey;
     @Column(name = "item_code", length = 50)
     private String itemCode;
-    @Column(name = "contents", length = 2000)
+    @Column(name = "contents",columnDefinition = "TEXT")
     private String contents;
     @Column(name = "style", length = 100)
     private String style;

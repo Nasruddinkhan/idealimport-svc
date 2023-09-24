@@ -52,7 +52,6 @@ public class ProductControl {
     }
 
     public ProductCreationResponse createProduct(ProductDTO productDTO) {
-
         return Optional.ofNullable(productDTO)
                 .map(dto -> partyControl.findParty(dto.partyId()))
                 .map(foundParty -> this.processProduct(foundParty, productDTO))
