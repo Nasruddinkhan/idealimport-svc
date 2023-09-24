@@ -35,4 +35,7 @@ public class Tax  extends AuditableEntity implements Serializable {
 
     @Column(name = "tax_rate_2")
     private BigDecimal taxRate2;
+
+    @Column(name = "active", columnDefinition = "boolean default true")
+    private Boolean isActive;
 }
