@@ -1,6 +1,7 @@
 package ca.com.idealimport.config.observe;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.micrometer.observation.ObservationRegistry;
 import io.micrometer.observation.aop.ObservedAspect;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,8 @@ public class ObservedAspectConfiguration {
 
     @Bean("objectMapper")
     public ObjectMapper objectMapper() {
-        return new ObjectMapper();
+        final var objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        return objectMapper;
     }
 }
