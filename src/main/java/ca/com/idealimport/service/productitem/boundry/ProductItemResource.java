@@ -1,6 +1,5 @@
 package ca.com.idealimport.service.productitem.boundry;
 
-import ca.com.idealimport.service.product.entity.ProductItem;
 import ca.com.idealimport.service.productitem.control.ProductItemControl;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -29,4 +28,5 @@ public class ProductItemResource {
         log.info("ProductItemResource.deleteByProductItem");
         return ResponseEntity.noContent().build();
     }
+
 }
