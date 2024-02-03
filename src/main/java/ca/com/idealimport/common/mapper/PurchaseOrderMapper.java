@@ -5,6 +5,7 @@ import ca.com.idealimport.service.purchaseorder.entity.PurchaseOrder;
 import ca.com.idealimport.service.purchaseorder.entity.PurchaseOrderIdKey;
 import ca.com.idealimport.service.purchaseorder.entity.dto.PurchaseOrderDto;
 import ca.com.idealimport.service.purchaseorder.entity.dto.PurchaseOrderResponse;
+import ca.com.idealimport.service.purchaseorder.entity.dto.PurchaseOrderResponseDto;
 import ca.com.idealimport.service.users.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class PurchaseOrderMapper {
 
-    private PurchaseOrderItemMapper purchaseOrderItemMapper;
+    private final PurchaseOrderItemMapper purchaseOrderItemMapper;
 
     public PurchaseOrderIdKey getPurchaseOrderIdKey(String uuId, Party party) {
         return PurchaseOrderIdKey.builder()
@@ -25,7 +26,7 @@ public class PurchaseOrderMapper {
     public PurchaseOrder getPurchaseOrderDtoToEntity(PurchaseOrderIdKey purchaseOrderIdKey, PurchaseOrderDto purchaseOrderDto, User user) {
 
         return PurchaseOrder.builder()
-                .purchaseOrderId(purchaseOrderIdKey)
+                .purchaseOrderKey(purchaseOrderIdKey)
                 .itemCode(purchaseOrderDto.addPurchaseOrderDto().itemCode())
                 .orderDate(purchaseOrderDto.orderDate())
                 .departureDate(purchaseOrderDto.departureDate())
@@ -41,6 +42,20 @@ public class PurchaseOrderMapper {
     public PurchaseOrderResponse convertProductItemToProductCreationResponse(String productId) {
         return PurchaseOrderResponse.builder()
                 .msg(String.format("create the purchase successfully with the order id %s", productId))
+                .build();
+    }
+
+
+    public PurchaseOrderResponseDto convertPurchaseOrderToDtoResponse(PurchaseOrder purchaseOrder) {
+        return PurchaseOrderResponseDto.builder()
+                .orderDate(purchaseOrder.getOrderDate())
+                .lotNumber(purchaseOrder.getLotNumber())
+                .containerName(purchaseOrder.getContainerName())
+                .departureDate(purchaseOrder.getDepartureDate())
+                .isActive(purchaseOrder.getIsActive())
+                .shippingStatus(purchaseOrder.getShippingStatus())
+                .itemName(purchaseOrder.getItemCode())
+                .purchaseOrderItems(purchaseOrderItemMapper.getPurchaseOrderItemDto(purchaseOrder.getPurchaseOrderItems()))
                 .build();
     }
 }

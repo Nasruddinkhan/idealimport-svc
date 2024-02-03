@@ -22,7 +22,7 @@ import java.util.List;
 public class PurchaseOrder extends AuditableEntity implements Serializable {
 
     @EmbeddedId
-    private PurchaseOrderIdKey purchaseOrderId;
+    private PurchaseOrderIdKey purchaseOrderKey;
 
     @Column(name = "lot_number", length = 20)
     private String lotNumber;
