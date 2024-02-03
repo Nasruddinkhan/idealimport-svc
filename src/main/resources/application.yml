@@ -24,7 +24,7 @@ spring:
           starttls:
             enable: true
   datasource:
-    url: ${MYSQL_HOST:jdbc:mysql://localhost:3306/ideal_import?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&characterEncoding=utf8&default-storage-engine=myisam&createDatabaseIfNotExist=true}
+    url: ${MYSQL_HOST:jdbc:mysql://localhost:3306/idealimport?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&characterEncoding=utf8&default-storage-engine=myisam&createDatabaseIfNotExist=true}
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -40,12 +40,13 @@ spring:
   jpa:
     open-in-view: true
     show-sql: true
-    generate-ddl: true
     hibernate:
-      ddl-auto: update
-#    properties:
-#      hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
-#      hibernate.hbm2ddl.auto: update
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        storage_engine: innodb
+      hibernate.hbm2ddl.auto: update
     repositories:
       auditing:
         enabled: true

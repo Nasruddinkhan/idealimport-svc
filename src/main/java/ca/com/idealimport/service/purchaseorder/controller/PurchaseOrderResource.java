@@ -1,8 +1,9 @@
-package ca.com.idealimport.service.purchaseorder.boundry;
+package ca.com.idealimport.service.purchaseorder.controller;
 
 
 import ca.com.idealimport.service.purchaseorder.entity.dto.PurchaseOrderDto;
 import ca.com.idealimport.service.purchaseorder.entity.dto.PurchaseOrderResponse;
+import ca.com.idealimport.service.purchaseorder.service.PurchaseOrderService;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -15,18 +16,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/purchase-order/v1.0")
+@RequestMapping("/purchase-order/v1")
 @Slf4j
 @SecurityRequirement(name = "ideal-api")
 @OpenAPIDefinition()
 @RequiredArgsConstructor
 public class PurchaseOrderResource {
+
+    private final PurchaseOrderService purchaseOrderService;
+
     @PostMapping
     public ResponseEntity<PurchaseOrderResponse> createPurchaseOrder(
-            @RequestBody PurchaseOrderDto purchaseOrderDto){
-        log.info("PurchaseOrderResource.createPurchaseOrder purchaseOrderDto={}", purchaseOrderDto);
-        return new ResponseEntity<>(PurchaseOrderResponse.builder()
-                .msg("create purchase order successfully")
-                .build(), HttpStatus.CREATED);
+            @RequestBody PurchaseOrderDto purchaseOrderDto) {
+        log.info("PurchaseOrderResource.createPurchaseOrder start purchaseOrderDto={}", purchaseOrderDto);
+        PurchaseOrderResponse response = purchaseOrderService.savePurchaseOrder(purchaseOrderDto);
+        log.info("PurchaseOrderResource.createPurchaseOrder end response={}", response);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 }
