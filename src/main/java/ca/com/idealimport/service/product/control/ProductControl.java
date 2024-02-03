@@ -44,8 +44,10 @@ public class ProductControl {
 
     @Transactional(readOnly = true)
     public Page<DropDownDto> findAllParty(int page, int size, String fullName, Boolean isActive, String orderBy) {
-        log.debug("ProductControl.findAllParty page ={} , size ={}, fullName ={}, isActive={}, orderBy ={}", page, size, fullName, isActive, orderBy);
-        final var parties = partyControl.findAllParty(page, size, fullName, isActive, orderBy).map(e -> new DropDownDto(e.partyId().toString(), e.fullName()));
+        log.debug("ProductControl.findAllParty page ={} , size ={}, fullName ={}, isActive={}, orderBy ={}",
+                page, size, fullName, isActive, orderBy);
+        final var parties = partyControl.findAllParty(page, size, fullName, isActive, orderBy)
+                .map(e -> new DropDownDto(e.partyId().toString(), e.fullName()));
         log.debug("ProductControl.findAllParty  ={}", parties);
         return parties;
 

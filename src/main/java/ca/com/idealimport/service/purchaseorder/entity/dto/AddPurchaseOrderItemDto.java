@@ -13,6 +13,6 @@ public record AddPurchaseOrderItemDto(
         Integer mixed,
         Integer subTotal,
         Integer s,
-        Integer m
-) {
+        Integer m,
+        String details) {
 }

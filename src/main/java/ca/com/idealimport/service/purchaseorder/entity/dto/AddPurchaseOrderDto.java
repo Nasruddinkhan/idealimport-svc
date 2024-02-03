@@ -8,9 +8,9 @@ import java.util.List;
 @Builder
 public record AddPurchaseOrderDto(
         String addPurchaseOrderId,
-        String partyName,
-        String itemName,
-        double totalQuantity,
+        Long partyId,
+        String itemCode,
+        Integer totalQuantity,
         ShippingStatus status,
         List<AddPurchaseOrderItemDto> addPurchaseOrderItemDto
 ) {
