@@ -1,6 +1,5 @@
 package ca.com.idealimport.service.purchaseorder.entity.dto;
 
-import ca.com.idealimport.service.purchaseorder.entity.enums.ShippingStatus;
 import lombok.Builder;
 
 import java.util.List;
@@ -11,7 +10,6 @@ public record AddPurchaseOrderDto(
         Long partyId,
         String itemCode,
         Integer totalQuantity,
-        ShippingStatus status,
         List<AddPurchaseOrderItemDto> addPurchaseOrderItemDto
 ) {
 }

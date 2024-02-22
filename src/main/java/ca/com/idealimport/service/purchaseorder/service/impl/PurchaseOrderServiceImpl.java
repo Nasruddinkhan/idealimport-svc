@@ -1,20 +1,19 @@
 package ca.com.idealimport.service.purchaseorder.service.impl;
 
 import ca.com.idealimport.common.Constants;
-import ca.com.idealimport.common.mapper.PurchaseOrderItemMapper;
-import ca.com.idealimport.common.mapper.PurchaseOrderMapper;
 import ca.com.idealimport.common.specifications.SpecificationUtils;
 import ca.com.idealimport.common.specifications.Specifications;
 import ca.com.idealimport.common.util.CommonUtils;
 import ca.com.idealimport.common.util.PageUtils;
 import ca.com.idealimport.common.util.SecurityUtils;
 import ca.com.idealimport.service.party.control.PartyControl;
-import ca.com.idealimport.service.party.entity.Party;
 import ca.com.idealimport.service.purchaseorder.entity.PurchaseOrder;
-import ca.com.idealimport.service.purchaseorder.entity.dto.PurchaseOrderDto;
 import ca.com.idealimport.service.purchaseorder.entity.dto.PurchaseOrderResponse;
-import ca.com.idealimport.service.purchaseorder.entity.dto.PurchaseOrderResponseDto;
-import ca.com.idealimport.service.purchaseorder.entity.dto.SearchPurchaseOrderDto;
+import ca.com.idealimport.service.purchaseorder.entity.dto.request.PurchaseOrderDto;
+import ca.com.idealimport.service.purchaseorder.entity.dto.request.SearchPurchaseOrderDto;
+import ca.com.idealimport.service.purchaseorder.entity.dto.response.PurchaseOrderResponseDto;
+import ca.com.idealimport.service.purchaseorder.mapper.PurchaseOrderItemMapper;
+import ca.com.idealimport.service.purchaseorder.mapper.PurchaseOrderMapper;
 import ca.com.idealimport.service.purchaseorder.repository.PurchaseOrderRepository;
 import ca.com.idealimport.service.purchaseorder.service.PurchaseOrderService;
 import ca.com.idealimport.service.users.control.UserControl;
@@ -44,9 +43,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     @Override
     @Transactional
     public PurchaseOrderResponse savePurchaseOrder(PurchaseOrderDto purchaseOrderDto) {
-        return Optional.ofNullable(purchaseOrderDto).map(dto ->
-                        partyControl.findParty(dto.addPurchaseOrderDto().partyId()))
-                .map(foundParty -> this.processPurchaseOrder(foundParty, purchaseOrderDto))
+        return Optional.ofNullable(purchaseOrderDto)
+                .map(this::processPurchaseOrder)
                 .orElseThrow(() -> new RuntimeException("purchase order cannot be empty"));
     }
 
@@ -55,7 +53,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     public Page<PurchaseOrderResponseDto> getPurchaseOrder(int page, int size, SearchPurchaseOrderDto searchProductDto) {
         log.debug("PurchaseOrderServiceImpl.getPurchaseOrder page = {}, size = {}," +
                 " searchProductDto = {}", page, size, searchProductDto);
-        final var productPage = pageUtils.getPageableOrder(page, size, Sort.Direction.DESC.name(), Constants.PURCHASE_ORDER_ID);
+        final var productPage = pageUtils.getPageableOrder(page, size, Sort.Direction.DESC.name(), Constants.CREATED_DATE);
         Specification<PurchaseOrder> specification = buildWhereConditions(searchProductDto, Boolean.TRUE);
         var products = purchaseOrderRepository.findAll(specification, productPage)
                 .map(purchaseOrderMapper::convertPurchaseOrderToDtoResponse);
@@ -72,19 +70,66 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
 
+    private PurchaseOrderResponse processPurchaseOrder(PurchaseOrderDto purchaseOrderDto) {
 
-    private PurchaseOrderResponse processPurchaseOrder(Party foundParty, PurchaseOrderDto purchaseOrderDto) {
-        final var generatedProductId = CommonUtils.getUUID(purchaseOrderDto.purchaseOrderId());
-        final var productKey = purchaseOrderMapper.getPurchaseOrderIdKey(generatedProductId, foundParty);
+        final var purchaseOrderId = CommonUtils.getUUID(purchaseOrderDto.purchaseOrderId());
         final var user = userControl.findUserByEmailOrId(SecurityUtils.getLoggedInUserId());
-        final var purchaseOrderEntity = purchaseOrderMapper.getPurchaseOrderDtoToEntity(
-                productKey, purchaseOrderDto, user);
-        final var purchaseOrderItems = purchaseOrderItemMapper
-                .convertPurchaseOrderItemDtosToEntity(
-                        purchaseOrderEntity, purchaseOrderDto.addPurchaseOrderDto().addPurchaseOrderItemDto(), user);
+        final var purchaseOrderEntity = purchaseOrderMapper
+                .getPurchaseOrderDtoToEntity(purchaseOrderDto, purchaseOrderId, user);
+        final var purchaseOrderItems = purchaseOrderDto.addPurchaseOrderDto().stream().map(e -> purchaseOrderItemMapper
+                        .getPurchaseOrderItemsDtoToEntity(purchaseOrderEntity, e, user))
+                .toList();
+        purchaseOrderItems.stream()
+                .forEach(purchaseOrderItem -> purchaseOrderItem.getPurchaseOrderItem().forEach(e -> e.setPurchaseOrderItems(purchaseOrderItem)));
         purchaseOrderEntity.setPurchaseOrderItems(purchaseOrderItems);
         final var purchaseOrderRes = purchaseOrderRepository.save(purchaseOrderEntity);
         return purchaseOrderMapper
-                .convertProductItemToProductCreationResponse(purchaseOrderRes.getPurchaseOrderKey().getPurchaseOrderId());
+                .convertProductItemToProductCreationResponse(purchaseOrderRes.getPurchaseOrderId());
     }
+    /*
+   private PurchaseOrderResponse processPurchaseOrder(PurchaseOrderDto purchaseOrderDto) {
+       final String purchaseOrderId = generatePurchaseOrderId(purchaseOrderDto);
+       final User user = retrieveUser();
+       final PurchaseOrder purchaseOrderEntity = createPurchaseOrderEntity(purchaseOrderDto, purchaseOrderId, user);
+       final List<PurchaseOrderItems> purchaseOrderItems = mapPurchaseOrderItems(purchaseOrderDto, purchaseOrderEntity, user);
+       setPurchaseOrderItems(purchaseOrderItems);
+       final PurchaseOrder savedPurchaseOrderEntity = savePurchaseOrder(purchaseOrderEntity);
+       return createPurchaseOrderResponse(savedPurchaseOrderEntity);
+   }
+
+    private String generatePurchaseOrderId(final PurchaseOrderDto purchaseOrderDto) {
+        return CommonUtils.getUUID(purchaseOrderDto.purchaseOrderId());
+    }
+
+    private User retrieveUser() {
+        return userControl.findUserByEmailOrId(SecurityUtils.getLoggedInUserId());
+    }
+
+    private PurchaseOrder createPurchaseOrderEntity(PurchaseOrderDto purchaseOrderDto, String purchaseOrderId, User user) {
+        return purchaseOrderMapper.getPurchaseOrderDtoToEntity(purchaseOrderDto, purchaseOrderId, user);
+    }
+
+    private List<PurchaseOrderItems> mapPurchaseOrderItems(PurchaseOrderDto purchaseOrderDto, PurchaseOrder purchaseOrderEntity, User user) {
+        return purchaseOrderDto.addPurchaseOrderDto().stream()
+                .map(dto -> purchaseOrderItemMapper.getPurchaseOrderItemsDtoToEntity(purchaseOrderEntity, dto, user))
+                .toList();
+    }
+
+    private void setPurchaseOrderItems(List<PurchaseOrderItems> purchaseOrderItems) {
+        purchaseOrderItems.forEach(item ->
+                item.getPurchaseOrderItem().forEach(subItem ->
+                        subItem.setPurchaseOrderItems(item)
+                )
+        );
+    }
+
+    private PurchaseOrder savePurchaseOrder(PurchaseOrder purchaseOrderEntity) {
+        return purchaseOrderRepository.save(purchaseOrderEntity);
+    }
+
+    private PurchaseOrderResponse createPurchaseOrderResponse(PurchaseOrder purchaseOrderEntity) {
+        return purchaseOrderMapper.convertProductItemToProductCreationResponse(purchaseOrderEntity.getPurchaseOrderId());
+    }
+    *
+     */
 }

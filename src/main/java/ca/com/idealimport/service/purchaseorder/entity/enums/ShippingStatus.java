@@ -6,7 +6,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum ShippingStatus {
-    ARRIVED,
-    IN_TRANSIT,
-    APPROVED
+    ARRIVED, //2 System object
+    IN_TRANSIT,// 1
+    APPROVED // --- ?
 }

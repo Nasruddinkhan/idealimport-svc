@@ -13,10 +13,10 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode
-public class PurchaseOrderIdKey implements Serializable {
+public class PurchaseOrderItemIdKey implements Serializable {
 
-    @Column(name = "purchase_order_id")
-    private String purchaseOrderId;
+    @Column(name = "purchase_order_item_id")
+    private String purchaseOrderItemId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "party_id")

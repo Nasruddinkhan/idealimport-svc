@@ -6,6 +6,7 @@ public class Constants {
     public static final String FULL_NAME = "fullName";
     public static final String PRODUCT_ID = "productKey.productId";
     public static final String PURCHASE_ORDER_ID = "purchaseOrderKey.purchaseOrderId";
+    public static final String CREATED_DATE = "createdDate";
 
     private Constants(){}
 }
