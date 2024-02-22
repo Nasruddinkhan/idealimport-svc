@@ -1,10 +1,10 @@
 package ca.com.idealimport.service.purchaseorder.controller;
 
 
-import ca.com.idealimport.service.purchaseorder.entity.dto.PurchaseOrderDto;
 import ca.com.idealimport.service.purchaseorder.entity.dto.PurchaseOrderResponse;
-import ca.com.idealimport.service.purchaseorder.entity.dto.PurchaseOrderResponseDto;
-import ca.com.idealimport.service.purchaseorder.entity.dto.SearchPurchaseOrderDto;
+import ca.com.idealimport.service.purchaseorder.entity.dto.request.PurchaseOrderDto;
+import ca.com.idealimport.service.purchaseorder.entity.dto.request.SearchPurchaseOrderDto;
+import ca.com.idealimport.service.purchaseorder.entity.dto.response.PurchaseOrderResponseDto;
 import ca.com.idealimport.service.purchaseorder.service.PurchaseOrderService;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -37,7 +37,7 @@ public class PurchaseOrderResource {
     @PostMapping("/search")
     public ResponseEntity<Page<PurchaseOrderResponseDto>> getPurchaseOrder(@RequestParam(name = "page", defaultValue = "0") int page,
                                                                            @RequestParam(name = "size", defaultValue = "10") int size,
-                                                                           @RequestBody SearchPurchaseOrderDto searchProductDto) {
+                                                                           SearchPurchaseOrderDto searchProductDto) {
         log.info("ProductResource.createProduct getProducts");
         final var products = purchaseOrderService.getPurchaseOrder(page, size, searchProductDto);
         log.info("ProductResource.createProduct product={}", products);

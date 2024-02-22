@@ -1,11 +1,10 @@
-package ca.com.idealimport.common.mapper;
+package ca.com.idealimport.service.purchaseorder.mapper;
 
-import ca.com.idealimport.service.party.entity.Party;
+import ca.com.idealimport.common.dto.AuditDto;
 import ca.com.idealimport.service.purchaseorder.entity.PurchaseOrder;
-import ca.com.idealimport.service.purchaseorder.entity.PurchaseOrderIdKey;
-import ca.com.idealimport.service.purchaseorder.entity.dto.PurchaseOrderDto;
 import ca.com.idealimport.service.purchaseorder.entity.dto.PurchaseOrderResponse;
-import ca.com.idealimport.service.purchaseorder.entity.dto.PurchaseOrderResponseDto;
+import ca.com.idealimport.service.purchaseorder.entity.dto.request.PurchaseOrderDto;
+import ca.com.idealimport.service.purchaseorder.entity.dto.response.PurchaseOrderResponseDto;
 import ca.com.idealimport.service.users.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -16,24 +15,18 @@ public class PurchaseOrderMapper {
 
     private final PurchaseOrderItemMapper purchaseOrderItemMapper;
 
-    public PurchaseOrderIdKey getPurchaseOrderIdKey(String uuId, Party party) {
-        return PurchaseOrderIdKey.builder()
-                .purchaseOrderId(uuId)
-                .party(party)
-                .build();
-    }
 
-    public PurchaseOrder getPurchaseOrderDtoToEntity(PurchaseOrderIdKey purchaseOrderIdKey, PurchaseOrderDto purchaseOrderDto, User user) {
+    public PurchaseOrder getPurchaseOrderDtoToEntity(final PurchaseOrderDto purchaseOrderDto,
+                                                     final String purchaseOrderId,
+                                                     final User user) {
 
         return PurchaseOrder.builder()
-                .purchaseOrderKey(purchaseOrderIdKey)
-                .itemCode(purchaseOrderDto.addPurchaseOrderDto().itemCode())
+                .purchaseOrderId(purchaseOrderId)
                 .orderDate(purchaseOrderDto.orderDate())
                 .departureDate(purchaseOrderDto.departureDate())
                 .containerName(purchaseOrderDto.containerName())
-                .totalQuantity(purchaseOrderDto.addPurchaseOrderDto().totalQuantity())
                 .lotNumber(purchaseOrderDto.lotNumber())
-                .shippingStatus(purchaseOrderDto.addPurchaseOrderDto().status())
+                .shippingStatus(purchaseOrderDto.status())
                 .isActive(Boolean.TRUE)
                 .user(user)
                 .build();
@@ -48,14 +41,19 @@ public class PurchaseOrderMapper {
 
     public PurchaseOrderResponseDto convertPurchaseOrderToDtoResponse(PurchaseOrder purchaseOrder) {
         return PurchaseOrderResponseDto.builder()
+                .auditDto(AuditDto.builder().lastModifiedBy(purchaseOrder.getLastModifiedBy())
+                        .createdBy(purchaseOrder.getCreatedBy())
+                        .lastModifiedDate(purchaseOrder.getLastModifiedDate())
+                        .createdDate(purchaseOrder.getCreatedDate())
+                        .build())
+                .purchaseOrderId(purchaseOrder.getPurchaseOrderId())
                 .orderDate(purchaseOrder.getOrderDate())
                 .lotNumber(purchaseOrder.getLotNumber())
                 .containerName(purchaseOrder.getContainerName())
                 .departureDate(purchaseOrder.getDepartureDate())
                 .isActive(purchaseOrder.getIsActive())
                 .shippingStatus(purchaseOrder.getShippingStatus())
-                .itemName(purchaseOrder.getItemCode())
-                .purchaseOrderItems(purchaseOrderItemMapper.getPurchaseOrderItemDto(purchaseOrder.getPurchaseOrderItems()))
+                .purchaseOrderItems(purchaseOrderItemMapper.getPurchaseOrderItemsResponse(purchaseOrder.getPurchaseOrderItems()))
                 .build();
     }
 }

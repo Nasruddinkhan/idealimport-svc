@@ -1,9 +1,12 @@
-package ca.com.idealimport.service.purchaseorder.entity.dto;
+package ca.com.idealimport.service.purchaseorder.entity.dto.request;
 
+import ca.com.idealimport.service.purchaseorder.entity.dto.AddPurchaseOrderDto;
+import ca.com.idealimport.service.purchaseorder.entity.enums.ShippingStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Builder
 public record PurchaseOrderDto(
@@ -14,6 +17,7 @@ public record PurchaseOrderDto(
         @JsonFormat(pattern = "yyyy-MM-dd", shape = JsonFormat.Shape.STRING)
         LocalDate departureDate,
         String containerName,
-        AddPurchaseOrderDto addPurchaseOrderDto
+        ShippingStatus status,
+        List<AddPurchaseOrderDto> addPurchaseOrderDto
 ) {
 }

@@ -21,8 +21,9 @@ import java.util.List;
 @Builder
 public class PurchaseOrder extends AuditableEntity implements Serializable {
 
-    @EmbeddedId
-    private PurchaseOrderIdKey purchaseOrderKey;
+    @Id
+    @Column(name = "purchase_order_id", length = 50)
+    private String purchaseOrderId;
 
     @Column(name = "lot_number", length = 20)
     private String lotNumber;
@@ -45,16 +46,10 @@ public class PurchaseOrder extends AuditableEntity implements Serializable {
     @Column(name = "active", columnDefinition = "boolean default true")
     private Boolean isActive;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "purchaseOrder", fetch = FetchType.LAZY)
-    private List<PurchaseOrderItem> purchaseOrderItems;
-
-    @Column(name = "item_code", length = 50)
-    private String itemCode;
-
-    @Column(name = "totalQuantity")
-    private Integer totalQuantity;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "purchaseOrder", fetch = FetchType.LAZY)
+    private List<PurchaseOrderItems> purchaseOrderItems;
 }
