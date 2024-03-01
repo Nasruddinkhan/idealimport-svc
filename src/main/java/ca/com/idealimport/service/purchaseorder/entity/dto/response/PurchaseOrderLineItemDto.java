@@ -5,7 +5,7 @@ import lombok.Builder;
 
 @Builder
 public record PurchaseOrderLineItemDto(String purchaseOrderLineItemId,
-                                       String details,
+                                       String color,
                                        Integer xs,
                                        Integer l,
                                        Integer xl,

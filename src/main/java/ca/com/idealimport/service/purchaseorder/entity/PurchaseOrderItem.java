@@ -29,8 +29,8 @@ public class PurchaseOrderItem extends AuditableEntity implements Serializable {
     })
     private PurchaseOrderItems purchaseOrderItems;
 
-    @Column(name = "details", length = 1000)
-    private String details;
+    @Column(name = "color", length = 50)
+    private String color;
 
     @Column(name = "xs", columnDefinition = "INT")
     private Integer xs;

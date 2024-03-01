@@ -27,6 +27,7 @@ public class PurchaseOrderMapper {
                 .containerName(purchaseOrderDto.containerName())
                 .lotNumber(purchaseOrderDto.lotNumber())
                 .shippingStatus(purchaseOrderDto.status())
+                .totalQuantity(purchaseOrderDto.totalQuantity())
                 .isActive(Boolean.TRUE)
                 .user(user)
                 .build();
@@ -40,6 +41,7 @@ public class PurchaseOrderMapper {
 
 
     public PurchaseOrderResponseDto convertPurchaseOrderToDtoResponse(PurchaseOrder purchaseOrder) {
+        System.out.println(purchaseOrder.getTotalQuantity());
         return PurchaseOrderResponseDto.builder()
                 .auditDto(AuditDto.builder().lastModifiedBy(purchaseOrder.getLastModifiedBy())
                         .createdBy(purchaseOrder.getCreatedBy())
@@ -52,6 +54,7 @@ public class PurchaseOrderMapper {
                 .containerName(purchaseOrder.getContainerName())
                 .departureDate(purchaseOrder.getDepartureDate())
                 .isActive(purchaseOrder.getIsActive())
+                .totalQuantity(purchaseOrder.getTotalQuantity())
                 .shippingStatus(purchaseOrder.getShippingStatus())
                 .purchaseOrderItems(purchaseOrderItemMapper.getPurchaseOrderItemsResponse(purchaseOrder.getPurchaseOrderItems()))
                 .build();
