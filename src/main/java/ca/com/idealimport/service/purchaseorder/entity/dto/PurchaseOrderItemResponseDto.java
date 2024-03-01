@@ -5,7 +5,7 @@ import lombok.Builder;
 @Builder
 public record PurchaseOrderItemResponseDto(
                                            String purchaseOrderItemId,
-                                           String details,
+                                           String color,
                                            int xs,
                                            int s,
                                            int m,

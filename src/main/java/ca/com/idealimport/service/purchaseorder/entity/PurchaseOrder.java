@@ -25,10 +25,10 @@ public class PurchaseOrder extends AuditableEntity implements Serializable {
     @Column(name = "purchase_order_id", length = 50)
     private String purchaseOrderId;
 
-    @Column(name = "lot_number", length = 20)
+    @Column(name = "lot_number", length = 20, unique = true)
     private String lotNumber;
 
-    @Column(name = "container_name", length = 20)
+    @Column(name = "container_name", length = 20, unique = true)
     private String containerName;
 
     @Column(name = "order_date")
@@ -49,6 +49,9 @@ public class PurchaseOrder extends AuditableEntity implements Serializable {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Column(name = "total_quantity")
+    private Integer totalQuantity;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "purchaseOrder", fetch = FetchType.LAZY)
     private List<PurchaseOrderItems> purchaseOrderItems;

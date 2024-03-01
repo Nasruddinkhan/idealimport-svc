@@ -62,7 +62,7 @@ public class PurchaseOrderItemMapper {
                 .xxl(addPurchaseOrderItemDto.xxl())
                 .xxxl(addPurchaseOrderItemDto.xxxl())
                 .mixed(addPurchaseOrderItemDto.mixed())
-                .details(addPurchaseOrderItemDto.details())
+                .color(addPurchaseOrderItemDto.color())
                 .subTotal(addPurchaseOrderItemDto.subTotal())
                 .isActive(Boolean.TRUE)
                 .user(user)
@@ -82,7 +82,7 @@ public class PurchaseOrderItemMapper {
                 .xxl(purchaseOrderItem.getXxl())
                 .xxxl(purchaseOrderItem.getXxxl())
                 .mixed(purchaseOrderItem.getMixed())
-                .details(purchaseOrderItem.getDetails())
+                .color(purchaseOrderItem.getColor())
                 .subTotal(purchaseOrderItem.getSubTotal())
                 .build();
 
@@ -129,7 +129,7 @@ public class PurchaseOrderItemMapper {
                 .xxl(lineItem.getXxl())
                 .xxxl(lineItem.getXxxl())
                 .mixed(lineItem.getMixed())
-                .details(lineItem.getDetails())
+                .color(lineItem.getColor())
                 .subTotal(lineItem.getSubTotal())
                 .auditDto(AuditDto.builder().lastModifiedBy(lineItem.getLastModifiedBy())
                         .createdBy(lineItem.getCreatedBy())

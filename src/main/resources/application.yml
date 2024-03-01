@@ -35,7 +35,7 @@ spring:
       pool-name: ideal_import-pool
       maximum-pool-size: 50
       minimum-idle: 10
-      idle-timeout: 30000
+      idle-timeout: 50000
       connection-test-query: SELECT 1
   jpa:
     open-in-view: true

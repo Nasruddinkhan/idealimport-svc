@@ -18,6 +18,7 @@ public record PurchaseOrderDto(
         LocalDate departureDate,
         String containerName,
         ShippingStatus status,
+        Integer totalQuantity,
         List<AddPurchaseOrderDto> addPurchaseOrderDto
 ) {
 }

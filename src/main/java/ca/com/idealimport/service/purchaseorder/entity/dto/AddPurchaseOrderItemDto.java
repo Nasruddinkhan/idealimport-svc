@@ -14,5 +14,5 @@ public record AddPurchaseOrderItemDto(
         Integer subTotal,
         Integer s,
         Integer m,
-        String details) {
+        String color) {
 }
