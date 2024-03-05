@@ -5,6 +5,7 @@ import ca.com.idealimport.service.purchaseorder.entity.PurchaseOrder;
 import ca.com.idealimport.service.purchaseorder.entity.dto.PurchaseOrderResponse;
 import ca.com.idealimport.service.purchaseorder.entity.dto.request.PurchaseOrderDto;
 import ca.com.idealimport.service.purchaseorder.entity.dto.response.PurchaseOrderResponseDto;
+import ca.com.idealimport.service.purchaseorder.entity.enums.ShippingStatus;
 import ca.com.idealimport.service.users.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -58,5 +59,10 @@ public class PurchaseOrderMapper {
                 .shippingStatus(purchaseOrder.getShippingStatus())
                 .purchaseOrderItems(purchaseOrderItemMapper.getPurchaseOrderItemsResponse(purchaseOrder.getPurchaseOrderItems()))
                 .build();
+    }
+
+    public PurchaseOrder mapShippingStatus(PurchaseOrder purchaseOrder) {
+        purchaseOrder.setShippingStatus(ShippingStatus.ARRIVED);
+        return purchaseOrder;
     }
 }

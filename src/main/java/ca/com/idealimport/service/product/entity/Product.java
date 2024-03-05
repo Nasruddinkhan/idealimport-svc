@@ -20,7 +20,7 @@ public class Product extends AuditableEntity implements Serializable {
 
     @EmbeddedId
     private ProductKey productKey;
-    @Column(name = "item_code", length = 50)
+    @Column(name = "item_code", length = 50, unique = true)
     private String itemCode;
     @Column(name = "contents",columnDefinition = "TEXT")
     private String contents;

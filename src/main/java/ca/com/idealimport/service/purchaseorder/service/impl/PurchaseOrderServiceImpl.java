@@ -6,9 +6,10 @@ import ca.com.idealimport.common.specifications.Specifications;
 import ca.com.idealimport.common.util.CommonUtils;
 import ca.com.idealimport.common.util.PageUtils;
 import ca.com.idealimport.common.util.SecurityUtils;
-import ca.com.idealimport.service.party.control.PartyControl;
+import ca.com.idealimport.service.product.service.ProductService;
 import ca.com.idealimport.service.purchaseorder.entity.PurchaseOrder;
 import ca.com.idealimport.service.purchaseorder.entity.dto.PurchaseOrderResponse;
+import ca.com.idealimport.service.purchaseorder.entity.dto.UpdatePurchaseOrderBean;
 import ca.com.idealimport.service.purchaseorder.entity.dto.request.PurchaseOrderDto;
 import ca.com.idealimport.service.purchaseorder.entity.dto.request.SearchPurchaseOrderDto;
 import ca.com.idealimport.service.purchaseorder.entity.dto.response.PurchaseOrderResponseDto;
@@ -27,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -34,11 +36,11 @@ import java.util.Optional;
 @Slf4j
 public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     private final PurchaseOrderRepository purchaseOrderRepository;
-    private final PartyControl partyControl;
     private final PurchaseOrderMapper purchaseOrderMapper;
     private final PurchaseOrderItemMapper purchaseOrderItemMapper;
     private final UserControl userControl;
     private final PageUtils pageUtils;
+    private final ProductService productService;
 
     @Override
     @Transactional
@@ -59,6 +61,26 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 .map(purchaseOrderMapper::convertPurchaseOrderToDtoResponse);
         log.debug("PurchaseOrderServiceImpl.getProducts products ={}", products);
         return products;
+    }
+
+    @Override
+    @Transactional
+    public Map<String, String> movePurchaseOrderIntoProduct(List<String> purchaseOrderId) {
+        List<UpdatePurchaseOrderBean> items = purchaseOrderRepository.findAllById(purchaseOrderId).stream()
+                .flatMap(purchaseOrder -> purchaseOrder.getPurchaseOrderItems().stream())
+                .flatMap(purchaseOrderItem -> purchaseOrderItem.getPurchaseOrderItem().stream()
+                        .map(item -> UpdatePurchaseOrderBean.builder()
+                                .itemCode(purchaseOrderItem.getItemCode())
+                                .orderItem(item)
+                                .party(purchaseOrderItem.getPurchaseOrderItemIdKey().getParty())
+                                .build()))
+                .toList();
+        items.stream().forEach(productService::updateProductStock);
+        purchaseOrderRepository.findAllById(purchaseOrderId)
+                .stream().map(purchaseOrderMapper::mapShippingStatus)
+                .map(purchaseOrderRepository::save).forEach(e ->
+                        System.out.println(String.format("%s lot has been updated with %s shipping status", e.getLotNumber(), e.getShippingStatus())));
+        return Map.of("msg", "Stock has been updated successfully");
     }
 
     private Specification<PurchaseOrder> buildWhereConditions(SearchPurchaseOrderDto searchProductDto,

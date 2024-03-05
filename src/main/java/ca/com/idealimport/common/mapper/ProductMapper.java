@@ -2,6 +2,7 @@ package ca.com.idealimport.common.mapper;
 
 import ca.com.idealimport.service.party.entity.Party;
 import ca.com.idealimport.service.product.entity.Product;
+import ca.com.idealimport.service.product.entity.ProductItem;
 import ca.com.idealimport.service.product.entity.ProductKey;
 import ca.com.idealimport.service.product.entity.dto.ProductDTO;
 import ca.com.idealimport.service.product.entity.dto.ProductResponseDto;
@@ -70,5 +71,10 @@ public class ProductMapper {
                 .quantityInHand(product.getQuantityInHand())
                 .productItems(productItemMapper.convertProductItemEntityToDto(product))
                 .build();
+    }
+
+    public Product updateProductQuantity(ProductItem productItem, Product product) {
+        product.setQuantityInHand(product.getQuantityInHand() + productItem.getSubTotal());
+        return product;
     }
 }

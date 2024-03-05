@@ -5,6 +5,8 @@ import ca.com.idealimport.service.product.entity.Product;
 import ca.com.idealimport.service.product.entity.ProductItem;
 import ca.com.idealimport.service.product.entity.dto.ProductCreationResponse;
 import ca.com.idealimport.service.product.entity.dto.ProductItemDTO;
+import ca.com.idealimport.service.purchaseorder.entity.PurchaseOrderItem;
+import ca.com.idealimport.service.purchaseorder.entity.dto.UpdatePurchaseOrderBean;
 import ca.com.idealimport.service.users.entity.User;
 import org.springframework.stereotype.Component;
 
@@ -62,5 +64,19 @@ public class ProductItemMapper {
                 .subTotal(productItem.getSubTotal())
                 .build();
 
+    }
+
+    public ProductItem mapPurchaseOrderItenToProductItem(ProductItem productItem, UpdatePurchaseOrderBean orderBean) {
+        PurchaseOrderItem item = orderBean.orderItem();
+        productItem.setL(productItem.getL() + item.getL());
+        productItem.setM(productItem.getM() + item.getM());
+        productItem.setXl(productItem.getXl() + item.getXl());
+        productItem.setS(productItem.getS() + item.getS());
+        productItem.setMixed(productItem.getMixed() + item.getMixed());
+        productItem.setSubTotal(productItem.getSubTotal() + item.getSubTotal());
+        productItem.setXxl(productItem.getXxl() + item.getXxl());
+        productItem.setXxxl(productItem.getXxxl() + item.getXxxl());
+        productItem.setXs(productItem.getXs() + item.getXs());
+        return productItem;
     }
 }

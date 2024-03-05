@@ -15,6 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/purchase-order/v1")
 @Slf4j
@@ -42,5 +45,10 @@ public class PurchaseOrderResource {
         final var products = purchaseOrderService.getPurchaseOrder(page, size, searchProductDto);
         log.info("ProductResource.createProduct product={}", products);
         return ResponseEntity.ok(products);
+    }
+
+    @PostMapping("update-order-to-stock")
+    public Map<String, String> movePurchaseOrderIntoProduct(@RequestBody List<String> purchaseOrderId) {
+        return purchaseOrderService.movePurchaseOrderIntoProduct(purchaseOrderId);
     }
 }
