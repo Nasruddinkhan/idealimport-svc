@@ -1,13 +1,20 @@
 package ca.com.idealimport.service.purchaseorder.service.impl;
 
 import ca.com.idealimport.common.Constants;
+import ca.com.idealimport.common.constants.ErrorConstants;
 import ca.com.idealimport.common.specifications.SpecificationUtils;
 import ca.com.idealimport.common.specifications.Specifications;
 import ca.com.idealimport.common.util.CommonUtils;
 import ca.com.idealimport.common.util.PageUtils;
 import ca.com.idealimport.common.util.SecurityUtils;
+import ca.com.idealimport.config.exception.IdealException;
+import ca.com.idealimport.config.exception.enums.IdealResponseErrorCode;
+import ca.com.idealimport.service.party.control.PartyControl;
 import ca.com.idealimport.service.product.service.ProductService;
 import ca.com.idealimport.service.purchaseorder.entity.PurchaseOrder;
+import ca.com.idealimport.service.purchaseorder.entity.PurchaseOrderItem;
+import ca.com.idealimport.service.purchaseorder.entity.PurchaseOrderItemIdKey;
+import ca.com.idealimport.service.purchaseorder.entity.PurchaseOrderItems;
 import ca.com.idealimport.service.purchaseorder.entity.dto.PurchaseOrderResponse;
 import ca.com.idealimport.service.purchaseorder.entity.dto.UpdatePurchaseOrderBean;
 import ca.com.idealimport.service.purchaseorder.entity.dto.request.PurchaseOrderDto;
@@ -15,6 +22,8 @@ import ca.com.idealimport.service.purchaseorder.entity.dto.request.SearchPurchas
 import ca.com.idealimport.service.purchaseorder.entity.dto.response.PurchaseOrderResponseDto;
 import ca.com.idealimport.service.purchaseorder.mapper.PurchaseOrderItemMapper;
 import ca.com.idealimport.service.purchaseorder.mapper.PurchaseOrderMapper;
+import ca.com.idealimport.service.purchaseorder.repository.PurchaseOrderItemRepository;
+import ca.com.idealimport.service.purchaseorder.repository.PurchaseOrderItemsRepository;
 import ca.com.idealimport.service.purchaseorder.repository.PurchaseOrderRepository;
 import ca.com.idealimport.service.purchaseorder.service.PurchaseOrderService;
 import ca.com.idealimport.service.users.control.UserControl;
@@ -41,6 +50,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     private final UserControl userControl;
     private final PageUtils pageUtils;
     private final ProductService productService;
+    private final PurchaseOrderItemRepository itemRepository;
+    private final PurchaseOrderItemsRepository orderItemsRepository;
+    private final PartyControl partyControl;
 
     @Override
     @Transactional
@@ -81,6 +93,41 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                 .map(purchaseOrderRepository::save).forEach(e ->
                         System.out.println(String.format("%s lot has been updated with %s shipping status", e.getLotNumber(), e.getShippingStatus())));
         return Map.of("msg", "Stock has been updated successfully");
+    }
+
+    @Override
+    @Transactional
+    public void deletePurchaseOrderItem(String purchaseOrderId) {
+        PurchaseOrderItem orderItem = itemRepository.findById(purchaseOrderId)
+                .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND, String.format(ErrorConstants.PURCHASE_ORDER_LINE_NOT_PRESENT, purchaseOrderId)));
+        itemRepository.deleteById(purchaseOrderId);
+        PurchaseOrderItems items = orderItem.getPurchaseOrderItems();
+        items.setTotalQuantity(items.getTotalQuantity() - orderItem.getSubTotal());
+        orderItemsRepository.save(items);
+        PurchaseOrder order = items.getPurchaseOrder();
+        order.setTotalQuantity(order.getTotalQuantity() - orderItem.getSubTotal());
+        purchaseOrderRepository.save(order);
+
+    }
+
+    @Override
+    @Transactional
+    public void deletePurchaseOrderId(String purchaseOrderItemId, Long partyId) {
+
+        PurchaseOrderItems items = orderItemsRepository.findById(
+                        new PurchaseOrderItemIdKey(purchaseOrderItemId, partyControl.findParty(partyId)))
+                .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND,
+                        String.format(ErrorConstants.PURCHASE_ORDERS_NOT_PRESENT, purchaseOrderItemId)));
+        int totalQty = items.getTotalQuantity();
+        orderItemsRepository.deleteById(items.getPurchaseOrderItemIdKey());
+        PurchaseOrder order = items.getPurchaseOrder();
+        order.setTotalQuantity(order.getTotalQuantity() - totalQty);
+        purchaseOrderRepository.save(order);
+    }
+
+    @Override
+    public void deletePurchaseOrder(String purchaseOrderId) {
+        purchaseOrderRepository.deleteById(purchaseOrderId);
     }
 
     private Specification<PurchaseOrder> buildWhereConditions(SearchPurchaseOrderDto searchProductDto,

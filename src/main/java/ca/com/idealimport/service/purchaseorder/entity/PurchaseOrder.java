@@ -53,6 +53,6 @@ public class PurchaseOrder extends AuditableEntity implements Serializable {
     @Column(name = "total_quantity")
     private Integer totalQuantity;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "purchaseOrder", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "purchaseOrder", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<PurchaseOrderItems> purchaseOrderItems;
 }

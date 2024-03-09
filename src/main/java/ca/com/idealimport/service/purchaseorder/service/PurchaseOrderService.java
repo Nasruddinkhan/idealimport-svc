@@ -15,4 +15,10 @@ public interface PurchaseOrderService {
     Page<PurchaseOrderResponseDto> getPurchaseOrder(int page, int size, SearchPurchaseOrderDto searchProductDto);
 
     Map<String, String> movePurchaseOrderIntoProduct(List<String> purchaseOrderId);
+
+    void deletePurchaseOrderItem(String purchaseOrderId);
+
+    void deletePurchaseOrderId(String purchaseOrderItemId, Long partyId);
+
+    void deletePurchaseOrder(String purchaseOrderId);
 }
