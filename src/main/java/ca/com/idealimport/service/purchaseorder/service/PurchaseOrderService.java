@@ -6,9 +6,20 @@ import ca.com.idealimport.service.purchaseorder.entity.dto.request.SearchPurchas
 import ca.com.idealimport.service.purchaseorder.entity.dto.response.PurchaseOrderResponseDto;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+import java.util.Map;
+
 public interface PurchaseOrderService {
     PurchaseOrderResponse savePurchaseOrder(PurchaseOrderDto orderDto);
 
     Page<PurchaseOrderResponseDto> getPurchaseOrder(int page, int size, SearchPurchaseOrderDto searchProductDto);
+
+    Map<String, String> movePurchaseOrderIntoProduct(List<String> purchaseOrderId);
+
+    void deletePurchaseOrderItem(String purchaseOrderId);
+
+    void deletePurchaseOrderId(String purchaseOrderItemId, Long partyId);
+
+    void deletePurchaseOrder(String purchaseOrderId);
 
 }

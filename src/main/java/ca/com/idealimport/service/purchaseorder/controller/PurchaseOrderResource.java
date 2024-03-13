@@ -15,6 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/purchase-order/v1")
 @Slf4j
@@ -42,5 +45,35 @@ public class PurchaseOrderResource {
         final var products = purchaseOrderService.getPurchaseOrder(page, size, searchProductDto);
         log.info("ProductResource.createProduct product={}", products);
         return ResponseEntity.ok(products);
+    }
+
+    @PostMapping("update-order-to-stock")
+    public Map<String, String> movePurchaseOrderIntoProduct(@RequestBody List<String> purchaseOrderId) {
+        return purchaseOrderService.movePurchaseOrderIntoProduct(purchaseOrderId);
+    }
+
+    @DeleteMapping("/{purchase-order-line-item}")
+    public ResponseEntity<Void> deletePurchaseLineOrderId(@PathVariable("purchase-order-line-item") String purchaseOrderLineId) {
+        log.info("PurchaseOrderResource.deletePurchaseLineOrderId purchaseOrderLineId ={}", purchaseOrderLineId);
+        purchaseOrderService.deletePurchaseOrderItem(purchaseOrderLineId);
+        log.info("PurchaseOrderResource.deletePurchaseLineOrderId end  purchaseOrderLineId={}", purchaseOrderLineId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{purchase-order-item-id}/{party-id}/order")
+    public ResponseEntity<Void> deletePurchaseOrderId(@PathVariable("purchase-order-item-id") String purchaseOrderItemId,
+                                                      @PathVariable("party-id") Long partyId) {
+        log.info("PurchaseOrderResource.deletePurchaseOrderId purchaseOrderItemId ={}", purchaseOrderItemId);
+        purchaseOrderService.deletePurchaseOrderId(purchaseOrderItemId, partyId);
+        log.info("PurchaseOrderResource.deletePurchaseOrderId end  purchaseOrderLineId={}", purchaseOrderItemId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{purchase-order-id}/purchase-order")
+    public ResponseEntity<Void> deletePurchaseOrder(@PathVariable("purchase-order-id") String purchaseOrderId) {
+        log.info("PurchaseOrderResource.deletePurchaseOrder purchaseOrderId ={}", purchaseOrderId);
+        purchaseOrderService.deletePurchaseOrder(purchaseOrderId);
+        log.info("PurchaseOrderResource.deletePurchaseOrderId end  purchaseOrderId={}", purchaseOrderId);
+        return ResponseEntity.noContent().build();
     }
 }

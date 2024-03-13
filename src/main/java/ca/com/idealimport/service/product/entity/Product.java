@@ -20,7 +20,7 @@ public class Product extends AuditableEntity implements Serializable {
 
     @EmbeddedId
     private ProductKey productKey;
-    @Column(name = "item_code", length = 50)
+    @Column(name = "item_code", length = 50, unique = true)
     private String itemCode;
     @Column(name = "contents",columnDefinition = "TEXT")
     private String contents;
@@ -43,6 +43,9 @@ public class Product extends AuditableEntity implements Serializable {
 
     @Column(name = "active", columnDefinition = "boolean default true")
     private Boolean isActive;
+
+    @Column(name = "editable", columnDefinition = "boolean default true")
+    private Boolean isEditable;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

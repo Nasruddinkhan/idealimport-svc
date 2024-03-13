@@ -1,6 +1,9 @@
 package ca.com.idealimport.service.product.entity.dto;
 
+import ca.com.idealimport.common.dto.AuditDto;
 import lombok.Builder;
+
+import java.util.List;
 
 @Builder
 public record ProductResponseDto(String productId,
@@ -13,7 +16,11 @@ public record ProductResponseDto(String productId,
                                  String packingPolyBag,
                                  String packingBox,
                                  String packingColors,
-                                 Integer quantityInHand) {
+                                 AuditDto auditDto,
+                                 Integer quantityInHand,
+                                 List<ProductItemDTO> productItems,
+                                 Boolean isEditable,
+                                 Integer containerQuantity) {
 
 
 }
