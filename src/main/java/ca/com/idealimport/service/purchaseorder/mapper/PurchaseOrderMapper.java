@@ -42,7 +42,6 @@ public class PurchaseOrderMapper {
 
 
     public PurchaseOrderResponseDto convertPurchaseOrderToDtoResponse(PurchaseOrder purchaseOrder) {
-        System.out.println(purchaseOrder.getTotalQuantity());
         return PurchaseOrderResponseDto.builder()
                 .auditDto(AuditDto.builder().lastModifiedBy(purchaseOrder.getLastModifiedBy())
                         .createdBy(purchaseOrder.getCreatedBy())

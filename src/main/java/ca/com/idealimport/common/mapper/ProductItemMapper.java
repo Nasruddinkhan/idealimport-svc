@@ -49,7 +49,7 @@ public class ProductItemMapper {
         return product.getProductItems().stream().map(this::convertProductItemToDto).toList();
     }
 
-    private ProductItemDTO convertProductItemToDto(ProductItem productItem) {
+    public ProductItemDTO convertProductItemToDto(ProductItem productItem) {
         return ProductItemDTO.builder()
                 .productItemId(productItem.getProductItemId())
                 .s(productItem.getS())

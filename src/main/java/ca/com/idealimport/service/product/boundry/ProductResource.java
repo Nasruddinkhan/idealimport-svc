@@ -66,4 +66,5 @@ public class ProductResource {
         return ResponseEntity.ok(products);
     }
 
+
 }

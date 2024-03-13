@@ -44,6 +44,9 @@ public class Product extends AuditableEntity implements Serializable {
     @Column(name = "active", columnDefinition = "boolean default true")
     private Boolean isActive;
 
+    @Column(name = "editable", columnDefinition = "boolean default true")
+    private Boolean isEditable;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
