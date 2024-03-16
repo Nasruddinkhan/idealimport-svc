@@ -10,4 +10,5 @@ public interface ProductService {
 
     void updateProductStock(UpdatePurchaseOrderBean orderBean);
 
+    void deleteProduct(String productId);
 }
