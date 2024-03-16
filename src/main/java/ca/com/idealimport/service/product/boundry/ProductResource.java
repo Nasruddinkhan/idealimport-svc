@@ -6,6 +6,7 @@ import ca.com.idealimport.service.product.entity.dto.ProductCreationResponse;
 import ca.com.idealimport.service.product.entity.dto.ProductDTO;
 import ca.com.idealimport.service.product.entity.dto.ProductResponseDto;
 import ca.com.idealimport.service.product.entity.dto.SearchProductDto;
+import ca.com.idealimport.service.product.service.ProductService;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 public class ProductResource {
 
     private final ProductControl productControl;
+    private final ProductService productService;
     @GetMapping("/party")
     public ResponseEntity<Page<DropDownDto>> findAllParty(@RequestParam(name = "page", defaultValue = "0") int page,
                                                           @RequestParam(name = "size", defaultValue = "10") int size,
@@ -64,6 +66,12 @@ public class ProductResource {
         final var  products = productControl.findByProductById( productId,  fullName);
         log.info("ProductResource.getProducts product={}", products);
         return ResponseEntity.ok(products);
+    }
+
+    @DeleteMapping("/{product-id}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable("product-id") String productId) {
+        productService.deleteProduct(productId);
+        return ResponseEntity.noContent().build();
     }
 
 

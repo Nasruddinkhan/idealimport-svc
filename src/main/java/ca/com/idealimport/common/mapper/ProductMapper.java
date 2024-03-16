@@ -38,6 +38,7 @@ public class ProductMapper {
                 .contents(productDTO.contents())
                 .quantityInHand(productDTO.quantityInHand())
                 .user(user)
+                .isEditable(true)
                 .isActive(Boolean.TRUE)
                 .build();
     }

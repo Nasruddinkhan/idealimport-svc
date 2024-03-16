@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface PurchaseOrderItemsRepository extends JpaRepository<PurchaseOrderItems, PurchaseOrderItemIdKey> {
     @Query("""
@@ -21,4 +23,6 @@ public interface PurchaseOrderItemsRepository extends JpaRepository<PurchaseOrde
             AND poi.isActive = 1
             """)
     Integer getContainerQuantity(@Param("party") Party party, @Param("itemCode") String itemCode);
+
+    List<PurchaseOrderItems> findByPurchaseOrderItemIdKeyPartyAndItemCode(Party party, String itemCode);
 }

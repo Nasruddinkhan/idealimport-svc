@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -62,18 +61,18 @@ public class IdealResponseBuilder {
 
     public void addResponseHeaders(HttpServletRequest request, HttpServletResponse response) {
         var interactionId = request.getHeader("interaction-id");
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
-        response.setHeader("Access-Control-Max-Age", "3600");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
-        response.setHeader("X-XSS-Protection", "1; mode=block");
-        response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        //   response.setHeader("Access-Control-Allow-Origin", "*");
+        // response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
+        //   response.setHeader("Access-Control-Max-Age", "3600");
+        //  response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
+        //   response.setHeader("X-XSS-Protection", "1; mode=block");
+        //  response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         // Set XSS protection header
-        response.setHeader("X-XSS-Protection", "1; mode=block");
+        // response.setHeader("X-XSS-Protection", "1; mode=block");
         // Set Content Security Policy header
-        response.setHeader("Content-Security-Policy", "default-src 'self'");
+        //   response.setHeader("Content-Security-Policy", "default-src 'self'");
         // Set HTTP Strict Transport Security header
-        response.setHeader("Strict-Transport-Security", "max-age=31536000 ; includeSubDomains");
+        //   response.setHeader("Strict-Transport-Security", "max-age=31536000 ; includeSubDomains");
         response.setHeader("interaction-id", Optional.ofNullable(interactionId).orElse(UUID.randomUUID().toString())); // later will change with thread local
     }
 }

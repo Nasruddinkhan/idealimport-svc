@@ -38,7 +38,7 @@ public class Product extends AuditableEntity implements Serializable {
     private String packingColors;
     @Column(name = "quantity_in_hand")
     private Integer quantityInHand;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<ProductItem> productItems;
 
     @Column(name = "active", columnDefinition = "boolean default true")
