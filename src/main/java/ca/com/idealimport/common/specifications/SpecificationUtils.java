@@ -1,8 +1,10 @@
 package ca.com.idealimport.common.specifications;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
+import java.util.Optional;
 
 public class SpecificationUtils {
 
@@ -26,4 +28,9 @@ public class SpecificationUtils {
     }
 
 
+    public static <T> void addSpecificationIfNotBlank(String value, String fieldName, List<Specification<T>> specificationList) {
+        Optional.ofNullable(value)
+                .filter(StringUtils::isNotBlank)
+                .ifPresent(v -> specificationList.add(Specifications.fieldProperty(fieldName, v)));
+    }
 }

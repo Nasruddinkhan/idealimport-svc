@@ -10,16 +10,19 @@ import ca.com.idealimport.common.util.SecurityUtils;
 import ca.com.idealimport.config.exception.IdealException;
 import ca.com.idealimport.config.exception.enums.IdealResponseErrorCode;
 import ca.com.idealimport.service.party.control.PartyControl;
+import ca.com.idealimport.service.party.entity.Party;
 import ca.com.idealimport.service.product.service.ProductService;
 import ca.com.idealimport.service.purchaseorder.entity.PurchaseOrder;
 import ca.com.idealimport.service.purchaseorder.entity.PurchaseOrderItem;
 import ca.com.idealimport.service.purchaseorder.entity.PurchaseOrderItemIdKey;
 import ca.com.idealimport.service.purchaseorder.entity.PurchaseOrderItems;
+import ca.com.idealimport.service.purchaseorder.entity.dto.PurchaseOrderItemResponseDto;
 import ca.com.idealimport.service.purchaseorder.entity.dto.PurchaseOrderResponse;
 import ca.com.idealimport.service.purchaseorder.entity.dto.UpdatePurchaseOrderBean;
 import ca.com.idealimport.service.purchaseorder.entity.dto.request.PurchaseOrderDto;
 import ca.com.idealimport.service.purchaseorder.entity.dto.request.SearchPurchaseOrderDto;
 import ca.com.idealimport.service.purchaseorder.entity.dto.response.PurchaseOrderResponseDto;
+import ca.com.idealimport.service.purchaseorder.entity.enums.ShippingStatus;
 import ca.com.idealimport.service.purchaseorder.mapper.PurchaseOrderItemMapper;
 import ca.com.idealimport.service.purchaseorder.mapper.PurchaseOrderMapper;
 import ca.com.idealimport.service.purchaseorder.repository.PurchaseOrderItemRepository;
@@ -35,10 +38,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -128,6 +129,41 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     @Override
     public void deletePurchaseOrder(String purchaseOrderId) {
         purchaseOrderRepository.deleteById(purchaseOrderId);
+    }
+
+    @Override
+    public List<PurchaseOrderItemResponseDto> findAllItemByPartyAndItemCode(String itemCode, String partyName) {
+        Party party = partyControl.findParty(partyName);
+        return orderItemsRepository.findByPurchaseOrderItemIdKeyPartyAndItemCode(party, itemCode)
+                .stream().filter(e -> e.getPurchaseOrder().getShippingStatus().equals(ShippingStatus.IN_TRANSIT))
+                .map(PurchaseOrderItems::getPurchaseOrderItem)
+                .map(purchaseOrderItemMapper::getPurchaseOrderItemDto)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toMap(PurchaseOrderItemResponseDto::color, dto -> dto, (dto1, dto2) -> PurchaseOrderItemResponseDto.builder()
+                        .color(dto1.color())
+                        .s(dto1.s() + dto2.s())
+                        .m(dto1.m() + dto2.m())
+                        .xl(dto1.xl() + dto2.xl())
+                        .xs(dto1.xs() + dto2.xs())
+                        .xxl(dto1.xxl() + dto2.xxl())
+                        .xxxl(dto1.xxxl() + dto2.xxxl())
+                        .mixed(dto1.mixed() + dto2.mixed())
+                        .l(dto1.l() + dto1.l())
+                        .subTotal(dto1.subTotal() + dto2.subTotal())
+                        .build())).values().stream()
+                .map(dto -> PurchaseOrderItemResponseDto.builder()
+                        .color(dto.color())
+                        .s(dto.s())
+                        .m(dto.m())
+                        .xl(dto.xl())
+                        .xs(dto.xs())
+                        .xxl(dto.xxl())
+                        .xxxl(dto.xxxl())
+                        .mixed(dto.mixed())
+                        .l(dto.l())
+                        .subTotal(dto.subTotal())
+                        .build()).toList();
+
     }
 
     private Specification<PurchaseOrder> buildWhereConditions(SearchPurchaseOrderDto searchProductDto,
