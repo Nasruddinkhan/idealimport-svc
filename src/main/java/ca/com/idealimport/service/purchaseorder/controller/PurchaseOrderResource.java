@@ -1,6 +1,7 @@
 package ca.com.idealimport.service.purchaseorder.controller;
 
 
+import ca.com.idealimport.service.purchaseorder.entity.dto.PurchaseOrderItemResponseDto;
 import ca.com.idealimport.service.purchaseorder.entity.dto.PurchaseOrderResponse;
 import ca.com.idealimport.service.purchaseorder.entity.dto.request.PurchaseOrderDto;
 import ca.com.idealimport.service.purchaseorder.entity.dto.request.SearchPurchaseOrderDto;
@@ -75,5 +76,18 @@ public class PurchaseOrderResource {
         purchaseOrderService.deletePurchaseOrder(purchaseOrderId);
         log.info("PurchaseOrderResource.deletePurchaseOrderId end  purchaseOrderId={}", purchaseOrderId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{item-code}/{party-name}")
+    public ResponseEntity<List<PurchaseOrderItemResponseDto>> findAllPurchaseOrderItem(
+            @PathVariable("item-code") String itemCode,
+            @PathVariable("party-name") String partyName) {
+        log.info("PurchaseOrderResource.findAllPurchaseOrderItem itemCode ={}, partyName = {}"
+                , itemCode, partyName);
+        List<PurchaseOrderItemResponseDto> items = purchaseOrderService
+                .findAllItemByPartyAndItemCode(itemCode, partyName);
+        log.info("PurchaseOrderResource.findAllPurchaseOrderItem end");
+        return ResponseEntity.ok(items);
+
     }
 }
