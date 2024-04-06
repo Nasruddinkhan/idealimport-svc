@@ -39,4 +39,9 @@ public class LookupController {
         return ResponseEntity.ok(lookupService.findAllCustomer(page, size, fullName, isActive, orderBy));
 
     }
+
+    @GetMapping("/sale-order-status")
+    public ResponseEntity<List<DropDownDto>> findAllSaleOrderStatus() {
+        return ResponseEntity.ok(lookupService.findAllSaleOrderStatus());
+    }
 }
