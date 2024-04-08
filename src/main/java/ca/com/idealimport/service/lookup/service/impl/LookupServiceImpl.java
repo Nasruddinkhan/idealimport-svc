@@ -18,7 +18,6 @@ public class LookupServiceImpl implements LookupService {
     private final ProductService productService;
     private final CustomerControl customerControl;
     private final SaleOrderStatusService statusService;
-
     @Override
     public List<ItemPartyDto> getItemCodeByPartyId(Long partyId) {
         return productService.getItems(partyId);
