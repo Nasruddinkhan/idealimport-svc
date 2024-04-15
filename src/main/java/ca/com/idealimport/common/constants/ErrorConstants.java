@@ -10,6 +10,7 @@ public class ErrorConstants {
     public static final String PRODUCT_NOT_PRESENT = "no product present into inventory for this id %s ";
     public static final String PRODUCT_NOT_DELETE = "You cannot delete this product because" +
             " purchase order already created ";
+    public static final String PRODUCT_ITEM_NOT_FOUND = "No product item present for the item %s with color %";
 
     private ErrorConstants (){
 
