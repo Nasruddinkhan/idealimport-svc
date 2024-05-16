@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -36,6 +38,16 @@ public class ProductItemControl {
                         new IdealException(IdealResponseErrorCode.NOT_FOUND,
                                 String.format(ErrorConstants.PRODUCT_ITEM_NOT_FOUND, itemCode, color))
                 );
+
+    }
+
+    public List<ProductItemDTO> getProductItem(Long partyId, String itemCode) {
+        Party party = partyControl.findParty(partyId);
+        Product product = productRepository.findByProductKeyPartyAndItemCode(party, itemCode);
+        return product.getProductItems()
+                .stream()
+                .map(productItemMapper::convertProductItemToDto)
+                .toList();
 
     }
 }

@@ -22,7 +22,7 @@ public interface ProductRepository extends JpaRepository<Product, ProductKey> {
 
     List<Product> findByProductKeyParty(Party party);
 
-    Product findByProductKeyPartyAndItemCode(Party party, String s);
+    Product findByProductKeyPartyAndItemCode(Party party, String itemCode);
 
     Optional<Product> findByProductKeyProductIdAndIsActiveTrue(String productId);
 }

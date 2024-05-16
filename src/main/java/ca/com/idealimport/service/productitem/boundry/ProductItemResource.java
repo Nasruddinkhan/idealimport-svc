@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/product-item/v1.0")
 @Slf4j
@@ -38,6 +40,13 @@ public class ProductItemResource {
             @RequestParam("item-code") String itemCode,
             @RequestParam("color") String color) {
         return ResponseEntity.ok(productItemControl.getProductItem(partyId, itemCode, color));
+    }
+
+    @GetMapping("/item")
+    public ResponseEntity<List<ProductItemDTO>> getProductItem(
+            @RequestParam("party-id") Long partyId,
+            @RequestParam("item-code") String itemCode) {
+        return ResponseEntity.ok(productItemControl.getProductItem(partyId, itemCode));
     }
 
 }
