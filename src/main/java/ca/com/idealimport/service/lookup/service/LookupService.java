@@ -10,4 +10,6 @@ public interface LookupService {
     List<ItemPartyDto> getItemCodeByPartyId(Long partyId);
 
     Page<DropDownDto> findAllCustomer(int page, int size, String fullName, Boolean isActive, String orderBy);
+
+    List<DropDownDto> findAllSaleOrderStatus();
 }
