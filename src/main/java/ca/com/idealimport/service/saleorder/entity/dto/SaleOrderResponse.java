@@ -8,7 +8,6 @@ public record SaleOrderResponse(String name,
                                 String trackingId,
                                 String status,
                                 AmountDto amountDto,
-
                                 long qty) {
 
 }
