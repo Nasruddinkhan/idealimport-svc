@@ -38,7 +38,11 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -99,8 +103,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     @Override
     @Transactional
     public void deletePurchaseOrderItem(String purchaseOrderId) {
-        PurchaseOrderItem orderItem = itemRepository.findById(purchaseOrderId)
-                .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND, String.format(ErrorConstants.PURCHASE_ORDER_LINE_NOT_PRESENT, purchaseOrderId)));
+        PurchaseOrderItem orderItem = findPurchaseOrderItem(purchaseOrderId);
         itemRepository.deleteById(purchaseOrderId);
         PurchaseOrderItems items = orderItem.getPurchaseOrderItems();
         items.setTotalQuantity(items.getTotalQuantity() - orderItem.getSubTotal());
@@ -164,6 +167,12 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                         .subTotal(dto.subTotal())
                         .build()).toList();
 
+    }
+
+    @Override
+    public PurchaseOrderItem findPurchaseOrderItem(String purchaseOrderLineItemId) {
+        return itemRepository.findById(purchaseOrderLineItemId)
+                .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND, String.format(ErrorConstants.PURCHASE_ORDER_LINE_NOT_PRESENT, purchaseOrderLineItemId)));
     }
 
     private Specification<PurchaseOrder> buildWhereConditions(SearchPurchaseOrderDto searchProductDto,

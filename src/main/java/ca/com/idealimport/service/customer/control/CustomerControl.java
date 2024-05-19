@@ -1,15 +1,14 @@
 package ca.com.idealimport.service.customer.control;
 
 import ca.com.idealimport.common.mapper.CustomerMapper;
-import ca.com.idealimport.common.mapper.UserMapper;
 import ca.com.idealimport.common.pagination.CommonPageable;
 import ca.com.idealimport.common.util.SecurityUtils;
 import ca.com.idealimport.config.exception.IdealException;
 import ca.com.idealimport.config.exception.enums.IdealResponseErrorCode;
 import ca.com.idealimport.service.customer.boundry.repository.CustomerRepository;
+import ca.com.idealimport.service.customer.entity.Customer;
 import ca.com.idealimport.service.customer.entity.dto.CustomerDto;
 import ca.com.idealimport.service.users.control.UserControl;
-import ca.com.idealimport.service.users.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -57,6 +56,15 @@ public class CustomerControl {
                 .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND, String.format("no record present for this %s customer Id", customerId)));
         log.debug("CustomerControl.findAllCustomer end customer = {}", customerDto);
         return customerDto;
+
+    }
+
+    public Customer findCustomer(Long customerId) {
+        log.debug("CustomerControl.findCustomer start customerId = {}", customerId);
+        final var customer = customerRepository.findByCustomerIdAndIsActiveTrue(customerId)
+                .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND, String.format("no record present for this %s customer Id", customerId)));
+        log.debug("CustomerControl.findAllCustomer end customer = {}", customer);
+        return customer;
 
     }
 

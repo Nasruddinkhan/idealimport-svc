@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface ProductItemRepository extends JpaRepository<ProductItem,String > {
 
     Optional<ProductItem> findByDetailsAndProduct(String color, Product product);
+
+
 }
