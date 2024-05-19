@@ -1,5 +1,6 @@
 package ca.com.idealimport.service.purchaseorder.service;
 
+import ca.com.idealimport.service.purchaseorder.entity.PurchaseOrderItem;
 import ca.com.idealimport.service.purchaseorder.entity.dto.PurchaseOrderItemResponseDto;
 import ca.com.idealimport.service.purchaseorder.entity.dto.PurchaseOrderResponse;
 import ca.com.idealimport.service.purchaseorder.entity.dto.request.PurchaseOrderDto;
@@ -24,4 +25,6 @@ public interface PurchaseOrderService {
     void deletePurchaseOrder(String purchaseOrderId);
 
     List<PurchaseOrderItemResponseDto> findAllItemByPartyAndItemCode(String itemCode, String partyName);
+
+    PurchaseOrderItem findPurchaseOrderItem(String purchaseOrderLineItemId);
 }

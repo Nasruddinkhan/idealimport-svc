@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +45,15 @@ public class TaxServiceImpl implements TaxService {
         return taxDto;
     }
 
+    @Override
+    public Tax findTax(String taxId) {
+        log.info("TaxService.findTax start taxId = {}", taxId);
+        final Tax tax = taxRepository
+                .findByTaxIdAndIsActiveTrue(taxId)
+                .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND, String.format("no record present for this id %s", taxId)));
+        log.info("TaxService.findTax end taxId = {}", tax);
+        return tax;
+    }
     @Override
     public List<TaxDto> findAllTaxes() {
         log.info("TaxService.findAllTaxes start ");
