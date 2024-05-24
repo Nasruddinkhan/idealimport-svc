@@ -1,5 +1,6 @@
 package ca.com.idealimport.service.saleorder.entity;
 
+import ca.com.idealimport.common.entity.AuditableEntity;
 import ca.com.idealimport.service.tax.entity.Tax;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,7 +21,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Amount {
+public class Amount extends AuditableEntity {
 
     @Id
     @Column(name = "amount_id", length = 36)

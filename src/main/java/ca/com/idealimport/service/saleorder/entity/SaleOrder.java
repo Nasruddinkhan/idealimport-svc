@@ -1,5 +1,6 @@
 package ca.com.idealimport.service.saleorder.entity;
 
+import ca.com.idealimport.common.entity.AuditableEntity;
 import ca.com.idealimport.service.customer.entity.Customer;
 import ca.com.idealimport.service.users.entity.User;
 import jakarta.persistence.CascadeType;
@@ -25,7 +26,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SaleOrder {
+public class SaleOrder  extends AuditableEntity {
     @Id
     @Column(name = "sale_order_id", length = 36)
     private String saleOrderId;
