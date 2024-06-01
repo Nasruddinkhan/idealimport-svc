@@ -1,5 +1,6 @@
 package ca.com.idealimport.service.saleorder.entity;
 
+import ca.com.idealimport.common.entity.AuditableEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -15,7 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SaleOrderInfo {
+public class SaleOrderInfo extends AuditableEntity {
     @Id
     @Column(name = "sale_order_info_id", length = 36)
     private String saleOrderInfoId;

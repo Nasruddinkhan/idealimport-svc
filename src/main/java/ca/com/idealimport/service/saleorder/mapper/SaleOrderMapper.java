@@ -2,9 +2,13 @@ package ca.com.idealimport.service.saleorder.mapper;
 
 import ca.com.idealimport.common.constants.ErrorConstants;
 import ca.com.idealimport.common.constants.MessageConstants;
+import ca.com.idealimport.common.dto.DropDownDto;
+import ca.com.idealimport.common.dto.TaxDto;
 import ca.com.idealimport.common.util.CommonUtils;
 import ca.com.idealimport.config.exception.IdealException;
 import ca.com.idealimport.config.exception.enums.IdealResponseErrorCode;
+import ca.com.idealimport.service.customer.entity.Customer;
+import ca.com.idealimport.service.customer.entity.dto.CustomerDto;
 import ca.com.idealimport.service.product.entity.ProductItem;
 import ca.com.idealimport.service.saleorder.entity.Amount;
 import ca.com.idealimport.service.saleorder.entity.OrderItem;
@@ -12,15 +16,19 @@ import ca.com.idealimport.service.saleorder.entity.SaleOrder;
 import ca.com.idealimport.service.saleorder.entity.SaleOrderInfo;
 import ca.com.idealimport.service.saleorder.entity.SaleOrderItem;
 import ca.com.idealimport.service.saleorder.entity.dto.AmountDto;
+import ca.com.idealimport.service.saleorder.entity.dto.OrderItemDto;
 import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderInfoDto;
 import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderItemDto;
+import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderCreationResponse;
 import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderResponse;
+import ca.com.idealimport.service.tax.entity.Tax;
 import ca.com.idealimport.service.users.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static ca.com.idealimport.common.util.CommonUtils.safeValue;
 
@@ -72,18 +80,18 @@ public interface SaleOrderMapper {
     @Mapping(target = "subTotal", expression = "java(setScaleToTwoDecimals(amount.subTotal()))")
     Amount getSaleOrderAmount(AmountDto amount);
 
-    AmountDto getSaleOrderAmountDto(Amount amount);
+    AmountDto getSaleOrderAmount(Amount amount);
 
     default BigDecimal setScaleToTwoDecimals(BigDecimal value) {
         return value != null ? value.setScale(2, BigDecimal.ROUND_HALF_UP) : null;
     }
 
-    default SaleOrderResponse createSaleOrderResponse(SaleOrder saleOrder, AmountDto amountDto) {
+    default SaleOrderCreationResponse createSaleOrderResponse(SaleOrder saleOrder, AmountDto amountDto) {
         String name = saleOrder.getCustomer().getCustomerName();
         String trackingId = saleOrder.getTrackingId();
         long qty = saleOrder.getItems().stream().map(SaleOrderItem::getOrderItem)
                 .map(OrderItem::getSubTotal).reduce(0, Integer::sum);
-        return SaleOrderResponse.builder()
+        return SaleOrderCreationResponse.builder()
                 .msg(String.format(MessageConstants.SALE_ORDER_RES_MSG, name,
                         saleOrder.getTrackingId()))
                 .status(saleOrder.getOrderStatus().getName())
@@ -93,4 +101,31 @@ public interface SaleOrderMapper {
                 .qty(qty)
                 .build();
     }
+
+    default SaleOrderResponse convertSaleOrderToDtoResponse(SaleOrder saleOrder) {
+        return SaleOrderResponse.builder()
+                .orderInfo(getSaleOrderInfo(saleOrder.getSaleOrderInfo()))
+                .amount(saleOrder.getAmounts().stream().map(this::getSaleOrderAmount).toList())
+                .customer(getCustomer(saleOrder.getCustomer()))
+                .items(getSaleOrderItem(saleOrder.getItems()))
+                .trackingId(saleOrder.getTrackingId())
+                .build();
+    }
+
+    CustomerDto getCustomer(Customer customer);
+
+
+    default List<SaleOrderItemDto> getSaleOrderItem(List<SaleOrderItem> items) {
+        return items.stream().map(e -> SaleOrderItemDto.builder()
+                .party(DropDownDto.builder().key(e.getParty().getPartyId().toString()).value(e.getParty().getFullName()).build())
+                .itemCode(e.getItemCode())
+                .saleOrderItemId(e.getSaleOrderItemId())
+                .orderItem(getSaleOrderItem(e.getOrderItem()))
+                .build()).toList();
+    }
+
+    @Mapping(target = "productItemId", source = "item.productItemId.productItemId")
+    OrderItemDto getSaleOrderItem(OrderItem item);
+
+    SaleOrderInfoDto getSaleOrderInfo(SaleOrderInfo saleOrderInfo);
 }

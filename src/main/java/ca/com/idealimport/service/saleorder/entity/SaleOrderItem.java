@@ -1,5 +1,6 @@
 package ca.com.idealimport.service.saleorder.entity;
 
+import ca.com.idealimport.common.entity.AuditableEntity;
 import ca.com.idealimport.service.party.entity.Party;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -19,7 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SaleOrderItem {
+public class SaleOrderItem extends AuditableEntity {
 
     @Id
     @Column(name = "sale_order_item_id", length = 36)

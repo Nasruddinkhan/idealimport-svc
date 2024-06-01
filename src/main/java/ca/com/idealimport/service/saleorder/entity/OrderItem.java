@@ -1,5 +1,6 @@
 package ca.com.idealimport.service.saleorder.entity;
 
+import ca.com.idealimport.common.entity.AuditableEntity;
 import ca.com.idealimport.service.product.entity.ProductItem;
 import ca.com.idealimport.service.users.entity.User;
 import jakarta.persistence.Column;
@@ -21,7 +22,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class OrderItem {
+public class OrderItem extends AuditableEntity {
     @Id
     @Column(name = "order_item_id", length = 36)
     private String orderItemId;
