@@ -7,6 +7,8 @@ public class MessageConstants {
     public static final String  TRACKING_NOT_FOUND = "sale.order.not.found.tracking";
     public static final String SALE_ORDER_RES_MSG = "Dear %s,</br> You have create order successfully " +
             "please find the tracking number %s for your future reference";
+    public static final String  STATUS_FILE_PATH = "json/sale-order-status.json";
+
 
     private MessageConstants() {
     }

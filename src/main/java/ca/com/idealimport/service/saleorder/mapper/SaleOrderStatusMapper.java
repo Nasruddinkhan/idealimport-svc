@@ -11,6 +11,7 @@ import java.util.List;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring")
 public interface SaleOrderStatusMapper {
+    @Mapping(target = "isActive", constant = "true")
     SaleOrderStatus saleOrderStatusDtoToEntity(SaleOrderStatusDto saleOrderStatusDto);
 
     SaleOrderStatusDto saleOrderStatusEntityToDto(SaleOrderStatus saleOrderStatus);
