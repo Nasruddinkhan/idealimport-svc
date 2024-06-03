@@ -57,4 +57,5 @@ public class ConversionUtils {
     public static <T> List<T> jsonFileToList(File file, Class<T> valueType) throws IOException {
         return objectMapper.readValue(file, objectMapper.getTypeFactory().constructCollectionType(List.class, valueType));
     }
+
 }

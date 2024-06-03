@@ -3,7 +3,6 @@ package ca.com.idealimport.service.saleorder.mapper;
 import ca.com.idealimport.common.constants.ErrorConstants;
 import ca.com.idealimport.common.constants.MessageConstants;
 import ca.com.idealimport.common.dto.DropDownDto;
-import ca.com.idealimport.common.dto.TaxDto;
 import ca.com.idealimport.common.util.CommonUtils;
 import ca.com.idealimport.config.exception.IdealException;
 import ca.com.idealimport.config.exception.enums.IdealResponseErrorCode;
@@ -17,11 +16,10 @@ import ca.com.idealimport.service.saleorder.entity.SaleOrderInfo;
 import ca.com.idealimport.service.saleorder.entity.SaleOrderItem;
 import ca.com.idealimport.service.saleorder.entity.dto.AmountDto;
 import ca.com.idealimport.service.saleorder.entity.dto.OrderItemDto;
+import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderCreationResponse;
 import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderInfoDto;
 import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderItemDto;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderCreationResponse;
 import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderResponse;
-import ca.com.idealimport.service.tax.entity.Tax;
 import ca.com.idealimport.service.users.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -109,6 +107,8 @@ public interface SaleOrderMapper {
                 .customer(getCustomer(saleOrder.getCustomer()))
                 .items(getSaleOrderItem(saleOrder.getItems()))
                 .trackingId(saleOrder.getTrackingId())
+                .orderStatus(DropDownDto.builder().key(saleOrder.getOrderStatus().getSaleOrderStatusId())
+                        .value(saleOrder.getOrderStatus().getName()).build())
                 .build();
     }
 
