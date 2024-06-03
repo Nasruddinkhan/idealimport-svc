@@ -72,8 +72,8 @@ public class PermissionControl {
     public Set<Permission> findAllPermission(Set<Long> permissionId) {
         log.debug("PermissionControl.findAllPermission start  permissionId = {}", permissionId);
         Set<Permission> permission = permissionRepository.findByPermissionIdIn(permissionId);
-        if (permission.isEmpty())
-            throw new IdealException(IdealResponseErrorCode.INVALID_PERMISSION, "passing invalid permissions please re verify");
+     //   if (permission.isEmpty())
+       //     throw new IdealException(IdealResponseErrorCode.INVALID_PERMISSION, "passing invalid permissions please re verify");
         log.debug("PermissionControl.findAllPermission end permission =  {}", permission);
         return permission;
     }
@@ -123,7 +123,7 @@ public class PermissionControl {
     public List<PermissionDto> findAllPermission() {
         log.debug("PermissionControl.findAllPermission start ");
         final var dto = permissionRepository.findAllAndIsActiveTrue();
-        if (dto.isEmpty()) throw new IdealException(IdealResponseErrorCode.NOT_FOUND,  ErrorConstants.RECORD_NOT_PRESENT);
+      //  if (dto.isEmpty()) throw new IdealException(IdealResponseErrorCode.NOT_FOUND,  ErrorConstants.RECORD_NOT_PRESENT);
         var permissions = dto.stream().map(PermissionMapper::convertEntityToDto).toList();
         log.debug("PermissionControl.findAllPermission end {}", permissions);
         return permissions;
