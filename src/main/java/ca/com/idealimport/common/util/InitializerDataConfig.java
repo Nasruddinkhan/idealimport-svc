@@ -57,7 +57,7 @@ public class InitializerDataConfig {
             final File file = CommonUtils.readFileFromResources(filename, classLoader);
             UserDto userDto = ConversionUtils.jsonFileToObject(file, UserDto.class);
             userDto = userDto.addRoles(roles);
-            userControl.createUser(userDto, "eb3c1499-7182-418c-aafc-46652402ca7f");
+                userControl.createUser(userDto, "Nk@admin1992");
             log.info("Added {}  user records to the database", userDto);
 
         }
