@@ -13,5 +13,6 @@ public record AmountDto(
         BigDecimal totalAmount,
         TaxDto tax,
         BigDecimal paid,
+        Boolean isActive,
         BigDecimal balance) {
 }

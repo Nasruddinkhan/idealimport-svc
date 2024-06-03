@@ -71,6 +71,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         final List<SaleOrderItem> items = validateAndGetSaleOrderItem(saleOrderRequest.items(), user);
         final var saleOrderInfo = saleOrderMapper.getSaleOrderInfo(saleOrderRequest.saleOrderInfo());
         final var amount = saleOrderMapper.getSaleOrderAmount(saleOrderRequest.amount());
+        amount.setIsActive(true);
         amount.setTax(taxService.findTax(saleOrderRequest.amount().tax().getTaxId()));
         final var status = saleOrderStatusService.findStatus(saleOrderRequest.orderStatus().key());
         final SaleOrder order = getSaleOrder(saleOrderId, List.of(amount), customer, items, status, saleOrderInfo, user);

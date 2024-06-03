@@ -8,6 +8,7 @@ public class MessageConstants {
     public static final String SALE_ORDER_RES_MSG = "Dear %s,</br> You have create order successfully " +
             "please find the tracking number %s for your future reference";
     public static final String  STATUS_FILE_PATH = "json/sale-order-status.json";
+    public static final String PERMISSION_PATH = "json/permission.json";
 
 
     private MessageConstants() {
