@@ -5,7 +5,8 @@ server:
 # MapStruct configuration
 mapstruct:
   defaultComponentModel: spring
-
+default:
+  password: Jk@1992
 spring:
   application:
     name: @artifactId@
