@@ -40,4 +40,8 @@ public record UserResource(UserControl userControl) {
         log.info("UserResource.findUserById end");
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
+    //Change password
+
+
+
 }

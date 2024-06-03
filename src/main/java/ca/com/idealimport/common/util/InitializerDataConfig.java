@@ -38,6 +38,7 @@ public class InitializerDataConfig {
     private final PermissionControl permissionControl;
     private final RoleControl roleControl;
     private final UserControl userControl;
+
     @PostConstruct
     public void loadData() throws IOException {
         log.info("Initializing data loading...");
@@ -55,7 +56,7 @@ public class InitializerDataConfig {
             Set<Long> roles = roleControl.findAllRoles().stream().map(RoleResponseDto::roleId).collect(Collectors.toSet());
             final File file = CommonUtils.readFileFromResources(filename, classLoader);
             UserDto userDto = ConversionUtils.jsonFileToObject(file, UserDto.class);
-            userDto.addRoles(roles);
+            userDto = userDto.addRoles(roles);
             userControl.createUser(userDto, "eb3c1499-7182-418c-aafc-46652402ca7f");
             log.info("Added {}  user records to the database", userDto);
 
@@ -69,7 +70,7 @@ public class InitializerDataConfig {
             RoleDto roleDto = ConversionUtils.jsonFileToObject(file, RoleDto.class);
             Set<Long> longs = permissionControl.findAllPermission().stream()
                     .map(PermissionDto::permissionId).collect(Collectors.toSet());
-            roleDto.addPermissions(longs);
+            roleDto = roleDto.addPermissions(longs);
             RoleResponseDto role = roleControl.createRole(roleDto);
             log.info("Added {}  role records to the database", role);
         }

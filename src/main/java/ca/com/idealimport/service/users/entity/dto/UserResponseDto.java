@@ -15,16 +15,10 @@ import java.util.Set;
 public class UserResponseDto {
     private Long userId;
     private String userName;
-
     private String firstName;
-
     private String lastName;
-
-
     private String email;
     private String mobileNo;
-
     private Set<RoleResponseDto> roles;
-
     private Boolean isActive;
 }
