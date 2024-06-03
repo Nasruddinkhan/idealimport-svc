@@ -9,6 +9,8 @@ public class MessageConstants {
             "please find the tracking number %s for your future reference";
     public static final String  STATUS_FILE_PATH = "json/sale-order-status.json";
     public static final String PERMISSION_PATH = "json/permission.json";
+    public static final String ROLE_PATH = "json/role.json";
+    public static final String USER_PATH = "json/user.json";
 
 
     private MessageConstants() {

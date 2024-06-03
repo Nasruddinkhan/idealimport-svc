@@ -7,18 +7,24 @@ import ca.com.idealimport.service.users.entity.dto.UserDto;
 import ca.com.idealimport.service.users.entity.dto.UserRegistrationResponse;
 import ca.com.idealimport.service.users.entity.dto.UserResponseDto;
 
+import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class UserMapper {
-    private UserMapper(){}
+    private UserMapper() {
+    }
+
     private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    public static User convertDtoToEntity( UserDto userDto, Set<Role> roles) {
+    public static User convertDtoToEntity(UserDto userDto, Set<Role> roles) {
 
         return User.builder()
-                .userName(generateUserName(userDto.firstName(), userDto.lastName(),  new Random()))
+                .userName(
+                        Optional.ofNullable(userDto.userName()).orElse(
+                                generateUserName(userDto.firstName(), userDto.lastName(), new Random()))
+                )
                 .firstName(userDto.firstName())
                 .lastName(userDto.lastName())
                 .email(userDto.email().toLowerCase())
@@ -35,7 +41,7 @@ public class UserMapper {
         user.setRoles(roles);
         user.setMobileNo(userDto.mobileNo());
         user.setIsActive(true);
-      return user;
+        return user;
     }
 
 
@@ -48,6 +54,7 @@ public class UserMapper {
         var twoStr = RandomValueGenerator.generateRandomString(1, CHARACTERS, random);
         return twoStr + userId;
     }
+
     public static UserResponseDto convertEntityToUserDto(User user) {
 
         return UserResponseDto.builder()
@@ -61,8 +68,9 @@ public class UserMapper {
                 .isActive(user.getIsActive())
                 .build();
     }
+
     public static UserRegistrationResponse convertEntityToDto(User user) {
         var msg = " has successfully register! your credential will be shared via email in 24 hours";
-        return new UserRegistrationResponse(String.format("%s %s", user.getEmail(), msg ), user.getUserName());
+        return new UserRegistrationResponse(String.format("%s %s", user.getEmail(), msg), user.getUserName());
     }
 }
