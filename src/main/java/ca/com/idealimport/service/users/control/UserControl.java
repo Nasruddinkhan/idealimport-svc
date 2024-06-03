@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -69,6 +70,12 @@ public class UserControl {
         return users;
     }
 
+    public List<UserResponseDto> findAllUser() {
+        log.debug("UserControl.findAllUser start");
+        final var users = userRepository.findAll().stream().map(UserMapper::convertEntityToUserDto).toList();
+        log.debug("UserControl.findAllUser end");
+        return users;
+    }
     public UserResponseDto updateUser(UserDto userDto) {
 
         log.debug("UserControl.updateUser start {}", userDto);

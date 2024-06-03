@@ -1,0 +1,6 @@
+{
+  "roleId": 12345,
+  "name": "SUPER_ADMIN",
+  "module": "RoleManagement",
+  "sort": 1
+}
