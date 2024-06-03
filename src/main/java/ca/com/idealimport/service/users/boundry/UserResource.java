@@ -1,6 +1,9 @@
 package ca.com.idealimport.service.users.boundry;
 
+import ca.com.idealimport.common.util.SecurityUtils;
 import ca.com.idealimport.service.users.control.UserControl;
+import ca.com.idealimport.service.users.entity.dto.ChangePasswordRequest;
+import ca.com.idealimport.service.users.entity.dto.ChangePasswordResponse;
 import ca.com.idealimport.service.users.entity.dto.UserDto;
 import ca.com.idealimport.service.users.entity.dto.UserResponseDto;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -42,6 +45,11 @@ public record UserResource(UserControl userControl) {
     }
     //Change password
 
+    @PostMapping("/change-password")
+    public ResponseEntity<ChangePasswordResponse> changePassword(@RequestBody ChangePasswordRequest passwordRequest){
+        ChangePasswordResponse passwordResponse = userControl.changePassword(passwordRequest);
+        return new ResponseEntity<>(passwordResponse, HttpStatus.OK);
+    }
 
 
 }

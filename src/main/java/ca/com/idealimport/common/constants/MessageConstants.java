@@ -11,6 +11,7 @@ public class MessageConstants {
     public static final String PERMISSION_PATH = "json/permission.json";
     public static final String ROLE_PATH = "json/role.json";
     public static final String USER_PATH = "json/user.json";
+    public static final String CHANGE_PASSWORD_MSG ="change.password.success.msg" ;
 
 
     private MessageConstants() {

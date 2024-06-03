@@ -15,6 +15,7 @@ import ca.com.idealimport.service.users.entity.dto.UserResponseDto;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
@@ -38,7 +39,8 @@ public class InitializerDataConfig {
     private final PermissionControl permissionControl;
     private final RoleControl roleControl;
     private final UserControl userControl;
-
+    @Value("${default.password}")
+    private String defaultPassword;
     @PostConstruct
     public void loadData() throws IOException {
         log.info("Initializing data loading...");
@@ -57,7 +59,7 @@ public class InitializerDataConfig {
             final File file = CommonUtils.readFileFromResources(filename, classLoader);
             UserDto userDto = ConversionUtils.jsonFileToObject(file, UserDto.class);
             userDto = userDto.addRoles(roles);
-            userControl.createUser(userDto, "eb3c1499-7182-418c-aafc-46652402ca7f");
+                userControl.createUser(userDto, defaultPassword);
             log.info("Added {}  user records to the database", userDto);
 
         }
