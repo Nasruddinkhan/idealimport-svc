@@ -1,5 +1,6 @@
 package ca.com.idealimport.service.role.boundry;
 
+import ca.com.idealimport.common.enums.RoleEnum;
 import ca.com.idealimport.service.role.control.RoleControl;
 import ca.com.idealimport.service.role.entity.dto.RoleDto;
 import ca.com.idealimport.service.role.entity.dto.RoleResponseDto;
@@ -8,8 +9,17 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -53,6 +63,14 @@ public record RolesResources(RoleControl roleControl) {
         log.info("RolesResources.findAllRoles end");
         return new ResponseEntity<>(role, HttpStatus.OK);
     }
+
+    @GetMapping("/roles")
+    public ResponseEntity<List<String>> allRoles() {
+        return new ResponseEntity<>(Arrays.stream(RoleEnum.values())
+                .map(Enum::name)
+                .toList(), HttpStatus.OK);
+    }
+
 
     /**
      * @param name
