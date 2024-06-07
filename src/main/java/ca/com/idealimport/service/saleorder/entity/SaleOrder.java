@@ -7,6 +7,8 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -17,8 +19,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 import java.util.List;
+
+import static ca.com.idealimport.common.util.SaleOrderPrefixedSequenceIdGenerator.NUMBER_FORMAT_PARAMETER;
+import static ca.com.idealimport.common.util.SaleOrderPrefixedSequenceIdGenerator.VALUE_PREFIX_PARAMETER;
+import static org.hibernate.id.OptimizableGenerator.INCREMENT_PARAM;
 
 @Entity
 @Table(name = "sale_order")
@@ -27,8 +35,17 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class SaleOrder  extends AuditableEntity {
+    public static final String TEN_DIGIT = "%010d";
     @Id
     @Column(name = "sale_order_id", length = 36)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SO_SEQ")
+    @GenericGenerator(
+            name = "SO_SEQ",
+            strategy = "ca.com.idealimport.common.util.SaleOrderPrefixedSequenceIdGenerator",
+            parameters = {
+                    @Parameter(name = INCREMENT_PARAM, value = "1"),
+                    @Parameter(name = VALUE_PREFIX_PARAMETER, value = "SO-"),
+                    @Parameter(name = NUMBER_FORMAT_PARAMETER, value = TEN_DIGIT)})
     private String saleOrderId;
 
     @OneToOne(cascade = CascadeType.ALL)
