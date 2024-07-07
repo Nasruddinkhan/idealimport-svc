@@ -107,6 +107,7 @@ public interface SaleOrderMapper {
                 .customer(getCustomer(saleOrder.getCustomer()))
                 .items(getSaleOrderItem(saleOrder.getItems()))
                 .trackingId(saleOrder.getTrackingId())
+                .saleOrderId(saleOrder.getSaleOrderId())
                 .orderStatus(DropDownDto.builder().key(saleOrder.getOrderStatus().getSaleOrderStatusId())
                         .value(saleOrder.getOrderStatus().getName()).build())
                 .build();

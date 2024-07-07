@@ -9,5 +9,6 @@ public enum RoleEnum {
     GUEST,
     SUPER_ADMIN,
     READ_USER,
-    CUSTOMER
+    CUSTOMER,
+    EMPLOYEE
 }
