@@ -12,5 +12,6 @@ public record SaleOrderResponse(SaleOrderInfoDto orderInfo,
                                 CustomerDto customer,
                                 List<AmountDto> amount,
                                 DropDownDto orderStatus,
+                                String saleOrderId,
                                 String trackingId) {
 }
