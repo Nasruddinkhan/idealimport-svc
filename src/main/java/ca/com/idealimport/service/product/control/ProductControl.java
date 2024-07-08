@@ -93,6 +93,8 @@ public class ProductControl {
         Optional.ofNullable(searchProductDto.itemCode())
                 .filter(style -> !style.isEmpty())
                 .ifPresent(itemCode -> specificationsList.add(Specifications.fieldProperty("itemCode", itemCode)));
+        if (!SecurityUtils.isAdmin())
+            specificationsList.add(Specifications.fieldProperty(Constants.CREATED_BY, SecurityUtils.getLoggedInUserId()));
         return SpecificationUtils.and(specificationsList);
     }
 

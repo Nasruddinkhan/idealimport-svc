@@ -105,7 +105,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
                                                           Boolean isActiveOnly) {
         List<Specification<SaleOrder>> specificationsList = new ArrayList<>();
         specificationsList.add(Specifications.fieldProperty(Constants.ACTIVE, isActiveOnly));
-        specificationsList.add(Specifications.fieldProperty(Constants.CREATED_BY, SecurityUtils.getLoggedInUserId()));
+        if (!SecurityUtils.isAdmin())
+            specificationsList.add(Specifications.fieldProperty(Constants.CREATED_BY, SecurityUtils.getLoggedInUserId()));
         return SpecificationUtils.and(specificationsList);
     }
 
