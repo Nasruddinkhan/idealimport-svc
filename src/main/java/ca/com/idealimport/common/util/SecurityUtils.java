@@ -1,11 +1,17 @@
 package ca.com.idealimport.common.util;
 
+import ca.com.idealimport.common.enums.RoleEnum;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.List;
+
 public class SecurityUtils {
-    private SecurityUtils(){}
+    private SecurityUtils() {
+    }
+
     public static String getLoggedInUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
@@ -13,4 +19,16 @@ public class SecurityUtils {
         }
         return null;
     }
+
+    public static List<String> getLoggedInUserRole() {
+        UserDetails details = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return details.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+    }
+
+    public static boolean isAdmin() {
+        List<String> roles = SecurityUtils.getLoggedInUserRole();
+        return roles.stream()
+                .anyMatch(role -> RoleEnum.ADMIN.name().equals(role) || RoleEnum.SUPER_ADMIN.name().equals(role));
+    }
+
 }
