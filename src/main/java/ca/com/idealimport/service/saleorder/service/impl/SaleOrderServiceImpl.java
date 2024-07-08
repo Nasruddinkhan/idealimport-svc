@@ -45,6 +45,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -105,6 +106,13 @@ public class SaleOrderServiceImpl implements SaleOrderService {
                                                           Boolean isActiveOnly) {
         List<Specification<SaleOrder>> specificationsList = new ArrayList<>();
         specificationsList.add(Specifications.fieldProperty(Constants.ACTIVE, isActiveOnly));
+        Optional.ofNullable(saleOrderSearch.saleOrderNo())
+                .ifPresent(soNo -> specificationsList.add(Specifications.fieldProperty("saleOrderId", soNo)));
+        Optional.ofNullable(saleOrderSearch.status())
+                .ifPresent(status -> specificationsList.add(Specifications.fieldProperty(status, "orderStatus",
+                        "saleOrderStatusId")));
+        Optional.ofNullable(saleOrderSearch.trackingNo())
+                .ifPresent(trackingNo -> specificationsList.add(Specifications.fieldProperty("trackingId", trackingNo)));
         if (!SecurityUtils.isAdmin())
             specificationsList.add(Specifications.fieldProperty(Constants.CREATED_BY, SecurityUtils.getLoggedInUserId()));
         return SpecificationUtils.and(specificationsList);
