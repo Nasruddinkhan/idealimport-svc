@@ -84,6 +84,9 @@ public class CustomerControl {
 
     }
 
+    public Customer findCustomer(String email) {
+        return customerRepository.findByEmail(email);
+    }
     public CustomerDto deleteCustomerByCustomerId(Long customerId) {
         log.debug("CustomerControl.deleteCustomerByCustomerId start customerId = {}", customerId);
         final var customerDto = customerRepository.findByCustomerIdAndIsActiveTrue(customerId)

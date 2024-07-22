@@ -1,8 +1,11 @@
 package ca.com.idealimport.service.auth.control;
 
+import ca.com.idealimport.common.enums.RoleEnum;
 import ca.com.idealimport.config.jwt.JwtService;
 import ca.com.idealimport.service.auth.entity.dto.AuthRequestDto;
 import ca.com.idealimport.service.auth.entity.dto.AuthResponseDto;
+import ca.com.idealimport.service.customer.control.CustomerControl;
+import ca.com.idealimport.service.customer.entity.Customer;
 import ca.com.idealimport.service.token.control.TokenControl;
 import ca.com.idealimport.service.users.control.UserControl;
 import ca.com.idealimport.service.users.entity.dto.UserDto;
@@ -20,6 +23,8 @@ import java.util.Map;
 public record AuthControl(UserControl userControl, AuthenticationManager authenticationManager,
                           ObjectMapper objectMapper,
                           JwtService jwtService,
+
+                          CustomerControl customerControl,
                           TokenControl tokenControl) {
 
 
@@ -47,6 +52,10 @@ public record AuthControl(UserControl userControl, AuthenticationManager authent
     public AuthResponseDto getToken(String  name) {
         var user = userControl.findUserByEmailOrId(name);
         var claims = objectMapper.convertValue(user, Map.class);
+        if (user.getRoles().stream().anyMatch(e -> e.getName().equals(RoleEnum.CUSTOMER.name()))) {
+            Customer customer = customerControl.findCustomer(user.getEmail());
+            claims.put("parties", customer.getParties());
+        }
         var token = jwtService.generateToken(claims, user);
         tokenControl.revokeAllUserTokens(user);
         tokenControl.saveUserToken(user, token);
