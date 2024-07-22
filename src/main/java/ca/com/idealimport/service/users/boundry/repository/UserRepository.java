@@ -17,4 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE u.isActive = true and (lower(u.email) NOT IN (lower(:USER_NAME)) and lower(u.userName) NOT IN (lower(:USER_NAME)))")
     Page<User> findAllAndIsActiveTrueAndUserNameNot(CommonPageable pageable,@Param("USER_NAME") String username);
+
+    Optional<User> findUserByEmail(String email);
 }

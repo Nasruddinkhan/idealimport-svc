@@ -12,4 +12,6 @@ public interface LookupService {
     Page<DropDownDto> findAllCustomer(int page, int size, String fullName, Boolean isActive, String orderBy);
 
     List<DropDownDto> findAllSaleOrderStatus();
+
+    List<DropDownDto> findAllParty();
 }

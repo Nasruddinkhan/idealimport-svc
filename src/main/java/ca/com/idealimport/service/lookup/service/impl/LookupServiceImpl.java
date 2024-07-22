@@ -3,6 +3,7 @@ package ca.com.idealimport.service.lookup.service.impl;
 import ca.com.idealimport.common.dto.DropDownDto;
 import ca.com.idealimport.service.customer.control.CustomerControl;
 import ca.com.idealimport.service.lookup.service.LookupService;
+import ca.com.idealimport.service.party.control.PartyControl;
 import ca.com.idealimport.service.product.entity.dto.ItemPartyDto;
 import ca.com.idealimport.service.product.service.ProductService;
 import ca.com.idealimport.service.saleorder.service.SaleOrderStatusService;
@@ -18,7 +19,7 @@ public class LookupServiceImpl implements LookupService {
     private final ProductService productService;
     private final CustomerControl customerControl;
     private final SaleOrderStatusService statusService;
-
+    private final PartyControl partyControl;
     @Override
     public List<ItemPartyDto> getItemCodeByPartyId(Long partyId) {
         return productService.getItems(partyId);
@@ -40,5 +41,12 @@ public class LookupServiceImpl implements LookupService {
                         .value(e.statusDto().name())
                         .build())
                 .toList();
+    }
+
+    @Override
+    public List<DropDownDto> findAllParty() {
+        return partyControl.findAllParty().stream().map(e -> DropDownDto.builder().key(e.getPartyId().toString())
+                .value(String.format("%s - %s", e.getFullName(), e.getShortName()))
+                .build()).toList();
     }
 }

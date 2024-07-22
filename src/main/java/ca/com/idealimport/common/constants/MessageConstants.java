@@ -7,10 +7,10 @@ public class MessageConstants {
     public static final String  TRACKING_NOT_FOUND = "sale.order.not.found.tracking";
     public static final String SALE_ORDER_RES_MSG = "Dear %s,</br> You have create order successfully " +
             "please find the tracking number %s for your future reference";
-    public static final String  STATUS_FILE_PATH = "json/sale-order-status.json";
-    public static final String PERMISSION_PATH = "json/permission.json";
-    public static final String ROLE_PATH = "json/role.json";
-    public static final String USER_PATH = "json/user.json";
+    public static final String STATUS_FILE_PATH = "templates/json/sale-order-status.json";
+    public static final String PERMISSION_PATH = "templates/json/permission.json";
+    public static final String ROLE_PATH = "templates/json/role.json";
+    public static final String USER_PATH = "templates/json/user.json";
     public static final String CHANGE_PASSWORD_MSG ="change.password.success.msg" ;
 
 

@@ -44,4 +44,9 @@ public class LookupController {
     public ResponseEntity<List<DropDownDto>> findAllSaleOrderStatus() {
         return ResponseEntity.ok(lookupService.findAllSaleOrderStatus());
     }
+
+    @GetMapping("/parties")
+    public ResponseEntity<List<DropDownDto>> findAllParty() {
+        return ResponseEntity.ok(lookupService.findAllParty());
+    }
 }

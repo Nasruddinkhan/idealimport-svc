@@ -1,13 +1,25 @@
 package ca.com.idealimport.service.customer.entity;
 
+import ca.com.idealimport.common.dto.DropDownDto;
+import ca.com.idealimport.common.entity.AuditableEntity;
+import ca.com.idealimport.common.util.DropDownDtoListConverter;
 import ca.com.idealimport.service.users.entity.User;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "customers")
@@ -15,7 +27,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Customer {
+public class Customer extends AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,4 +58,8 @@ public class Customer {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Column(name = "party_ids", columnDefinition = "nvarchar(1000)")
+    @Convert(converter = DropDownDtoListConverter.class)
+    private List<DropDownDto> parties;
 }

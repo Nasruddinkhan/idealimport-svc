@@ -1,5 +1,6 @@
 package ca.com.idealimport.common.mapper;
 
+import ca.com.idealimport.common.dto.DropDownDto;
 import ca.com.idealimport.service.customer.entity.Customer;
 import ca.com.idealimport.service.customer.entity.dto.CustomerDto;
 import ca.com.idealimport.service.users.entity.User;
@@ -22,6 +23,7 @@ public class CustomerMapper {
                 .remarks(customer.remarks())
                 .isActive(Boolean.TRUE)
                 .user(user)
+                .parties(customer.parties())
                 .build();
     }
 
@@ -36,6 +38,7 @@ public class CustomerMapper {
                 .balance(customer.getBalance())
                 .email(customer.getEmail())
                 .remarks(customer.getRemarks())
+                .parties(customer.getParties().stream().map(e -> new DropDownDto(e.key(), e.value())).toList())
                 .build();
     }
 

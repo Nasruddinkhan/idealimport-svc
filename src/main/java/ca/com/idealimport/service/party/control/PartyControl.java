@@ -32,7 +32,6 @@ public class PartyControl {
     private final PartyMapper partyMapper;
     private final UserControl userControl;
     private final PartyRepository partyRepository;
-
     private final PageUtils pageUtils;
 
     public PartyDto createParty(PartyDto partyDto) {
@@ -59,6 +58,9 @@ public class PartyControl {
         return partyDto;
     }
 
+    public List<Party> findAllParty() {
+        return partyRepository.findAll();
+    }
 
 
 
