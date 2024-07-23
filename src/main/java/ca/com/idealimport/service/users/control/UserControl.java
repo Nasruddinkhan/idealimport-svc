@@ -9,7 +9,11 @@ import ca.com.idealimport.config.exception.enums.IdealResponseErrorCode;
 import ca.com.idealimport.service.role.control.RoleControl;
 import ca.com.idealimport.service.users.boundry.repository.UserRepository;
 import ca.com.idealimport.service.users.entity.User;
-import ca.com.idealimport.service.users.entity.dto.*;
+import ca.com.idealimport.service.users.entity.dto.ChangePasswordRequest;
+import ca.com.idealimport.service.users.entity.dto.ChangePasswordResponse;
+import ca.com.idealimport.service.users.entity.dto.UserDto;
+import ca.com.idealimport.service.users.entity.dto.UserRegistrationResponse;
+import ca.com.idealimport.service.users.entity.dto.UserResponseDto;
 import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +64,13 @@ public class UserControl {
         var user = userRepository.findByUserName(userId)
                 .orElseThrow(() -> new RuntimeException("record not present"));
         log.debug("UserControl.findUserByEmailOrId end {}", user);
+        return user;
+    }
+
+    public Optional<User> findUserByEmail(String email) {
+        log.debug("UserControl.findUserByEmail start {}", email);
+        var user = userRepository.findUserByEmail(email);
+        log.debug("UserControl.findUserByEmail end {}", user);
         return user;
     }
 

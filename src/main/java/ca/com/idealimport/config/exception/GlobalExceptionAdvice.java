@@ -49,6 +49,10 @@ public class GlobalExceptionAdvice {
         return idealResponseBuilder.createErrorResponse(new IdealException(IdealResponseErrorCode.TOKEN_EXPIRED), request, response);
     }
 
+    @ExceptionHandler(value = {Exception.class})
+    public ResponseEntity<IdealErrorResponse> handleExpiredJwtException(Exception exception, HttpServletRequest request, HttpServletResponse response) {
+        return idealResponseBuilder.createErrorResponse(new IdealException(IdealResponseErrorCode.UNEXPECTED_ERROR, exception.getMessage()), request, response);
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {

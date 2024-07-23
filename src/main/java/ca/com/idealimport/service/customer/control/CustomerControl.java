@@ -1,5 +1,6 @@
 package ca.com.idealimport.service.customer.control;
 
+import ca.com.idealimport.common.enums.RoleEnum;
 import ca.com.idealimport.common.mapper.CustomerMapper;
 import ca.com.idealimport.common.pagination.CommonPageable;
 import ca.com.idealimport.common.util.SecurityUtils;
@@ -8,7 +9,9 @@ import ca.com.idealimport.config.exception.enums.IdealResponseErrorCode;
 import ca.com.idealimport.service.customer.boundry.repository.CustomerRepository;
 import ca.com.idealimport.service.customer.entity.Customer;
 import ca.com.idealimport.service.customer.entity.dto.CustomerDto;
+import ca.com.idealimport.service.role.control.RoleControl;
 import ca.com.idealimport.service.users.control.UserControl;
+import ca.com.idealimport.service.users.entity.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -26,6 +30,7 @@ public class CustomerControl {
     public final CustomerRepository customerRepository;
     public final UserControl userControl;
     public final CustomerMapper customerMapper;
+    public final RoleControl roleControl;
 
     public CustomerDto addCustomer(CustomerDto customerDto) {
         var loggedInUser = SecurityUtils.getLoggedInUserId();
@@ -35,6 +40,17 @@ public class CustomerControl {
                 .map(customerRepository::save)
                 .map(customerMapper::convertCustomerToCustomerDto)
                 .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND, "customer entity cannot be empty"));
+        userControl.findUserByEmail(customerDto.email())
+                .ifPresentOrElse(
+                        user -> log.info("User present no need to save date in user table"),
+                        () -> userControl.createUser(UserDto.builder()
+                                .email(customerDto.email())
+                                .firstName(customerDto.customerName())
+                                .mobileNo(customerDto.phoneNo())
+                                .lastName(customerDto.customerName())
+                                .role(Set.of(roleControl.findRoleByName(RoleEnum.CUSTOMER.name()).roleId()))
+                                .build(), "123456")
+                );
         log.debug("CustomerControl.addCustomer end custDto = {}", custDto);
         return custDto;
     }
@@ -68,6 +84,9 @@ public class CustomerControl {
 
     }
 
+    public Customer findCustomer(String email) {
+        return customerRepository.findByEmail(email);
+    }
     public CustomerDto deleteCustomerByCustomerId(Long customerId) {
         log.debug("CustomerControl.deleteCustomerByCustomerId start customerId = {}", customerId);
         final var customerDto = customerRepository.findByCustomerIdAndIsActiveTrue(customerId)
