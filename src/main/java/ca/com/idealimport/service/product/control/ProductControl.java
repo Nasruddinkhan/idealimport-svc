@@ -39,7 +39,6 @@ public class ProductControl {
     private final ProductItemMapper productItemMapper;
     private final ProductRepository productRepository;
     private final UserControl userControl;
-
     private final PageUtils pageUtils;
 
     @Transactional(readOnly = true)
@@ -93,8 +92,11 @@ public class ProductControl {
         Optional.ofNullable(searchProductDto.itemCode())
                 .filter(style -> !style.isEmpty())
                 .ifPresent(itemCode -> specificationsList.add(Specifications.fieldProperty("itemCode", itemCode)));
-        if (!SecurityUtils.isAdmin())
+        if (!SecurityUtils.isAdmin() && !SecurityUtils.isCustomer())
             specificationsList.add(Specifications.fieldProperty(Constants.CREATED_BY, SecurityUtils.getLoggedInUserId()));
+        if (SecurityUtils.isCustomer()) {
+            specificationsList.add(Specifications.fieldInClause(searchProductDto.parties(), "productKey", "party", "partyId"));
+        }
         return SpecificationUtils.and(specificationsList);
     }
 

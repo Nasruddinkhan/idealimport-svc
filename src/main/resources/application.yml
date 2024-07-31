@@ -40,9 +40,9 @@ spring:
       connection-test-query: SELECT 1
   jpa:
     open-in-view: true
-    show-sql: false
+    show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect

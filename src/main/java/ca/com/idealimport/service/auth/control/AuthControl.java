@@ -1,5 +1,6 @@
 package ca.com.idealimport.service.auth.control;
 
+import ca.com.idealimport.common.dto.DropDownDto;
 import ca.com.idealimport.common.enums.RoleEnum;
 import ca.com.idealimport.config.jwt.JwtService;
 import ca.com.idealimport.service.auth.entity.dto.AuthRequestDto;
@@ -55,6 +56,7 @@ public record AuthControl(UserControl userControl, AuthenticationManager authent
         if (user.getRoles().stream().anyMatch(e -> e.getName().equals(RoleEnum.CUSTOMER.name()))) {
             Customer customer = customerControl.findCustomer(user.getEmail());
             claims.put("parties", customer.getParties());
+            claims.put("customer", DropDownDto.builder().key(customer.getCustomerId().toString()).value(customer.getCustomerName()).build());
         }
         var token = jwtService.generateToken(claims, user);
         tokenControl.revokeAllUserTokens(user);

@@ -12,6 +12,7 @@ public record SaleOrderRequestDto(String saleOrderId,
                                   AmountDto amount,
                                   List<SaleOrderItemDto> items,
                                   DropDownDto orderStatus,
-                                  SaleOrderInfoDto saleOrderInfo) {
+                                  SaleOrderInfoDto saleOrderInfo,
+                                  String trackingId) {
 
 }
