@@ -31,4 +31,10 @@ public class SecurityUtils {
                 .anyMatch(role -> RoleEnum.ADMIN.name().equals(role) || RoleEnum.SUPER_ADMIN.name().equals(role));
     }
 
+    public static boolean isCustomer() {
+        List<String> roles = SecurityUtils.getLoggedInUserRole();
+        return roles.stream()
+                .anyMatch(role -> RoleEnum.CUSTOMER.name().equals(role));
+    }
+
 }

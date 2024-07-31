@@ -1,5 +1,6 @@
 package ca.com.idealimport.service.productitem.boundry;
 
+import ca.com.idealimport.service.product.entity.ProductItem;
 import ca.com.idealimport.service.product.entity.dto.ProductItemDTO;
 import ca.com.idealimport.service.productitem.control.ProductItemControl;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
@@ -40,6 +41,26 @@ public class ProductItemResource {
             @RequestParam("item-code") String itemCode,
             @RequestParam("color") String color) {
         return ResponseEntity.ok(productItemControl.getProductItem(partyId, itemCode, color));
+    }
+
+    @GetMapping("/product-item-id")
+    public ResponseEntity<ProductItemDTO> getProductItem(
+            @RequestParam("id") String productItemId) {
+        ProductItem item = productItemControl.findProductItemById(productItemId);
+
+        return ResponseEntity.ok(ProductItemDTO.builder()
+                .productItemId(item.getProductItemId())
+                .details(item.getDetails())
+                .l(item.getL())
+                .m(item.getM())
+                .xl(item.getXl())
+                .xs(item.getXs())
+                .s(item.getS())
+                .xxl(item.getXxl())
+                .xxxl(item.getXxxl())
+                .mixed(item.getMixed())
+                .subTotal(item.getSubTotal())
+                .build());
     }
 
     @GetMapping("/item")

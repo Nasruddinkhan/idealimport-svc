@@ -45,6 +45,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -71,11 +72,17 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         final var user = userControl.findUserByEmailOrId(SecurityUtils.getLoggedInUserId());
         final List<SaleOrderItem> items = validateAndGetSaleOrderItem(saleOrderRequest.items(), user);
         final var saleOrderInfo = saleOrderMapper.getSaleOrderInfo(saleOrderRequest.saleOrderInfo());
-        final var amount = saleOrderMapper.getSaleOrderAmount(saleOrderRequest.amount());
-        amount.setIsActive(true);
-        amount.setTax(taxService.findTax(saleOrderRequest.amount().tax().getTaxId()));
+        List<Amount> list = null;
+        if (Objects.nonNull(saleOrderRequest.amount())) {
+            list = new ArrayList<>();
+            final var amount = saleOrderMapper.getSaleOrderAmount(saleOrderRequest.amount());
+            amount.setIsActive(true);
+            if (Objects.nonNull(saleOrderRequest.amount().tax()))
+                amount.setTax(taxService.findTax(saleOrderRequest.amount().tax().getTaxId()));
+            list.add(amount);
+        }
         final var status = saleOrderStatusService.findStatus(saleOrderRequest.orderStatus().key());
-        final SaleOrder order = getSaleOrder(saleOrderId, List.of(amount), customer, items, status, saleOrderInfo, user);
+        final SaleOrder order = getSaleOrder(saleOrderId, list, customer, items, status, saleOrderInfo, user, saleOrderRequest.trackingId());
         SaleOrder saleOrder = saleOrderRepository.save(order);
         return saleOrderMapper.createSaleOrderResponse(saleOrder, saleOrderRequest.amount());
     }
@@ -119,7 +126,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     }
 
     private SaleOrder getSaleOrder(String saleOrderId, List<Amount> amounts, Customer customer, List<SaleOrderItem> items,
-                                   SaleOrderStatus status, SaleOrderInfo saleOrderInfo, User user) {
+                                   SaleOrderStatus status, SaleOrderInfo saleOrderInfo, User user, String trackingId) {
         return SaleOrder.builder()
                 .saleOrderId(saleOrderId)
                 .amounts(amounts)
@@ -128,7 +135,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
                 .orderStatus(status)
                 .user(user)
                 .isActive(true)
-                .trackingId(tracingNumberGenerator.getSaleOrderTrackingNumber())
+                .trackingId(Optional.ofNullable(trackingId).orElse(tracingNumberGenerator.getSaleOrderTrackingNumber()))
                 .saleOrderInfo(saleOrderInfo)
                 .build();
     }
@@ -138,6 +145,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         return items.stream().map(e -> {
             ProductItem productItem = productItemControl.findProductItemById(e.orderItem().productItemId());
             OrderItem orderItem = saleOrderMapper.validateAndGetOrderItem(productItem, e, e.itemCode(), user);
+            System.out.println(orderItem.getSubTotal());
             Party party = partyControl.findParty(Long.valueOf(e.party().key()));
             return SaleOrderItem.builder()
                     .party(party)
