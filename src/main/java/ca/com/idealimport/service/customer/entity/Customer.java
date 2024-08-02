@@ -58,7 +58,7 @@ public class Customer extends AuditableEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
+    // need to change customer have mutiple party
     @Column(name = "party_ids", columnDefinition = "nvarchar(1000)")
     @Convert(converter = DropDownDtoListConverter.class)
     private List<DropDownDto> parties;
