@@ -9,5 +9,7 @@ public interface CustomerPriceService {
 
     Page<CustomerPriceResponse> findAllCustomerPrice(int page, int size);
 
-    CustomerPriceResponse validatePrice(Long partyId, Long customerId);
+    void validatePrice(Long partyId, Long customerId);
+
+    void deletePriceById(Long customerPartyId);
 }

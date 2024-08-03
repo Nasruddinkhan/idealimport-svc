@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -93,13 +94,19 @@ public class CustomerPriceServiceImpl implements CustomerPriceService {
     }
 
     @Override
-    public CustomerPriceResponse validatePrice(Long partyId, Long customerId) {
+    public void validatePrice(Long partyId, Long customerId) {
         final Customer customer = customerControl.findCustomer(customerId);
         final Party party = partyControl.findParty(partyId);
-        return customerPartyRepository.findByCustomerAndParty(customer, party)
-                .map(this::getCustomerPriceResponse)
-                .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND,
-                        messageSource.getMessage(MessageConstants.PRICE_PRESENT, null,
-                                LocaleContextHolder.getLocale())));
+        Optional<CustomerParty> existingCustomerParty = customerPartyRepository.findByCustomerAndParty(customer, party);
+
+        if (existingCustomerParty.isPresent()) {
+            throw new IdealException(IdealResponseErrorCode.DUPLICATE_RECORD,
+                    messageSource.getMessage(MessageConstants.PRICE_PRESENT, null, LocaleContextHolder.getLocale()));
+        }
+    }
+
+    @Override
+    public void deletePriceById(Long customerPartyId) {
+        customerPartyRepository.deleteById(customerPartyId);
     }
 }
