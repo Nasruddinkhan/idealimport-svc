@@ -61,7 +61,6 @@ public class GlobalExceptionAdvice {
                         error -> ((FieldError) error).getField(),
                         error -> error.getDefaultMessage(),
                         (oldValue, newValue) -> oldValue)); // In case of duplicate keys
-
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 }

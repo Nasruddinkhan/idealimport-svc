@@ -1,6 +1,7 @@
 package ca.com.idealimport.service.users.boundry;
 
-import ca.com.idealimport.common.util.SecurityUtils;
+import ca.com.idealimport.common.dto.DropDownDto;
+import ca.com.idealimport.common.enums.AdditionalPermissionEnum;
 import ca.com.idealimport.service.users.control.UserControl;
 import ca.com.idealimport.service.users.entity.dto.ChangePasswordRequest;
 import ca.com.idealimport.service.users.entity.dto.ChangePasswordResponse;
@@ -11,7 +12,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/user/v1.0")
@@ -46,10 +56,18 @@ public record UserResource(UserControl userControl) {
     //Change password
 
     @PostMapping("/change-password")
-    public ResponseEntity<ChangePasswordResponse> changePassword(@RequestBody ChangePasswordRequest passwordRequest){
+    public ResponseEntity<ChangePasswordResponse> changePassword(@RequestBody ChangePasswordRequest passwordRequest) {
         ChangePasswordResponse passwordResponse = userControl.changePassword(passwordRequest);
         return new ResponseEntity<>(passwordResponse, HttpStatus.OK);
     }
 
+    @GetMapping("/additional-permission")
+    public ResponseEntity<List<DropDownDto>> getAdditionalPermission() {
+        return ResponseEntity.ok(AdditionalPermissionEnum.getAdditionalPermission().entrySet()
+                .stream().map(e -> DropDownDto.builder()
+                        .key(e.getKey())
+                        .value(e.getValue())
+                        .build()).toList());
+    }
 
 }

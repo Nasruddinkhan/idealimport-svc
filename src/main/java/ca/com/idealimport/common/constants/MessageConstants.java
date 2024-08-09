@@ -13,6 +13,7 @@ public class MessageConstants {
     public static final String USER_PATH = "templates/json/user.json";
     public static final String CHANGE_PASSWORD_MSG ="change.password.success.msg" ;
     public static final String PRICE_PRESENT = "price.list.present";
+    public static final String NO_CUSTOMER_PARTY = "customer.party.not.found";
 
 
     private MessageConstants() {

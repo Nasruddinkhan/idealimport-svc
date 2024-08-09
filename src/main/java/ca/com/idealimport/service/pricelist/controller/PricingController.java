@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/price/v1")
 @Slf4j
@@ -36,8 +38,9 @@ public class PricingController {
 
     @GetMapping
     public ResponseEntity<Page<CustomerPriceResponse>> findAllCustomerPrice(@RequestParam(name = "page", defaultValue = "0") int page,
-                                                                            @RequestParam(name = "size", defaultValue = "10") int size) {
-        final Page<CustomerPriceResponse> customerPriceResponses = customerPriceService.findAllCustomerPrice(page, size);
+                                                                            @RequestParam(name = "size", defaultValue = "10") int size,
+                                                                            @RequestParam(required = false) Long customerId) {
+        final Page<CustomerPriceResponse> customerPriceResponses = customerPriceService.findAllCustomerPrice(page, size, customerId);
         return ResponseEntity.ok(customerPriceResponses);
     }
 
@@ -53,4 +56,12 @@ public class PricingController {
         customerPriceService.deletePriceById(customerPartyId);
         return ResponseEntity.noContent().build();
     }
+
+
+    @GetMapping("/parties")
+    public ResponseEntity<List<CustomerPriceResponse>> findAllParty(@RequestParam Long customerId) {
+        return ResponseEntity.ok(customerPriceService.findAllParty(customerId));
+    }
+
+
 }

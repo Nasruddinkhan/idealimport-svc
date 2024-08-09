@@ -58,6 +58,8 @@ public record AuthControl(UserControl userControl, AuthenticationManager authent
             claims.put("parties", customer.getParties());
             claims.put("customer", DropDownDto.builder().key(customer.getCustomerId().toString()).value(customer.getCustomerName()).build());
         }
+        claims.put("additionalPermission", user.getAdditionalPermission());
+
         var token = jwtService.generateToken(claims, user);
         tokenControl.revokeAllUserTokens(user);
         tokenControl.saveUserToken(user, token);

@@ -30,6 +30,7 @@ public class UserMapper {
                 .email(userDto.email().toLowerCase())
                 .roles(roles)
                 .mobileNo(userDto.mobileNo())
+                .additionalPermission(userDto.additionalPermission())
                 .isActive(true)
                 .build();
     }

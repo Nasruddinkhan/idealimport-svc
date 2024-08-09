@@ -2,6 +2,8 @@ package ca.com.idealimport.service.pricelist.service.impl;
 
 import ca.com.idealimport.common.constants.MessageConstants;
 import ca.com.idealimport.common.dto.DropDownDto;
+import ca.com.idealimport.common.specifications.SpecificationUtils;
+import ca.com.idealimport.common.specifications.Specifications;
 import ca.com.idealimport.common.util.PageUtils;
 import ca.com.idealimport.config.exception.IdealException;
 import ca.com.idealimport.config.exception.enums.IdealResponseErrorCode;
@@ -22,9 +24,11 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -88,9 +92,10 @@ public class CustomerPriceServiceImpl implements CustomerPriceService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<CustomerPriceResponse> findAllCustomerPrice(int page, int size) {
+    public Page<CustomerPriceResponse> findAllCustomerPrice(int page, int size, Long customerId) {
         final var customerPricePage = pageUtils.getPageableOrder(page, size, Sort.Direction.DESC.name(), "customerPartyId");
-        return customerPartyRepository.findAll(customerPricePage).map(this::getCustomerPriceResponse);
+        Specification<CustomerParty> specification = buildWhereConditions(customerId);
+        return customerPartyRepository.findAll(specification, customerPricePage).map(this::getCustomerPriceResponse);
     }
 
     @Override
@@ -108,5 +113,22 @@ public class CustomerPriceServiceImpl implements CustomerPriceService {
     @Override
     public void deletePriceById(Long customerPartyId) {
         customerPartyRepository.deleteById(customerPartyId);
+    }
+
+    @Override
+    public List<CustomerPriceResponse> findAllParty(Long customerId) {
+        final Customer customer = customerControl.findCustomer(customerId);
+        final List<CustomerParty> customerParty = customerPartyRepository.findByCustomer(customer);
+        if (customerParty.isEmpty())
+            throw new IdealException(IdealResponseErrorCode.UNEXPECTED_ERROR,
+                    messageSource.getMessage(MessageConstants.NO_CUSTOMER_PARTY, null, LocaleContextHolder.getLocale()));
+        return customerParty.stream().map(this::getCustomerPriceResponse).toList();
+    }
+
+    private Specification<CustomerParty> buildWhereConditions(Long customerId) {
+        List<Specification<CustomerParty>> specificationsList = new ArrayList<>();
+        Optional.ofNullable(customerId)
+                .ifPresent(value -> specificationsList.add(Specifications.fieldProperty(value, "customer")));
+        return SpecificationUtils.and(specificationsList);
     }
 }

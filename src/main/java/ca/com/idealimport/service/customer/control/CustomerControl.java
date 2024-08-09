@@ -59,7 +59,7 @@ public class CustomerControl {
         log.debug("CustomerControl.findAllCustomer start page = {}, size = {}", page, size);
         final var pageable = new CommonPageable(page, size, Sort.by("customerId").descending());
         final var customer = customerRepository
-                .findByIsActiveTrueAndUser(pageable, userControl.findUserByEmailOrId(SecurityUtils.getLoggedInUserId()))
+                .findByIsActiveTrue(pageable)
                 .map(customerMapper::convertCustomerToCustomerDto);
         log.debug("CustomerControl.findAllCustomer end customer = {}", customer);
         return customer;
