@@ -55,7 +55,10 @@ public class OrderItem extends AuditableEntity {
     private Integer mixed;
 
     @Column(name = "sub_total", columnDefinition = "INT")
-    private Integer subTotal;
+    private BigDecimal subTotal;
+
+    @Column(name = "quantity", columnDefinition = "INT")
+    private Integer qty;
 
     @Column(name = "active", columnDefinition = "boolean default true")
     private Boolean isActive;

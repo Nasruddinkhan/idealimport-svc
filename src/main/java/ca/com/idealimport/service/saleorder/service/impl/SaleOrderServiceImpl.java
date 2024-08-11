@@ -28,6 +28,8 @@ import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderRequestDto;
 import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderResponse;
 import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderSearch;
 import ca.com.idealimport.service.saleorder.mapper.SaleOrderMapper;
+import ca.com.idealimport.service.saleorder.repository.SOrderAmountRepository;
+import ca.com.idealimport.service.saleorder.repository.SOrderItemRepository;
 import ca.com.idealimport.service.saleorder.repository.SaleOrderRepository;
 import ca.com.idealimport.service.saleorder.service.SaleOrderService;
 import ca.com.idealimport.service.saleorder.service.SaleOrderStatusService;
@@ -42,6 +44,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +67,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     private final SaleOrderRepository saleOrderRepository;
     private final PageUtils pageUtils;
     private final MessageSource messageSource;
-
+    private final SOrderItemRepository sOrderItemRepository;
+    private final SOrderAmountRepository sOrderAmountRepository;
     @Override
     public SaleOrderCreationResponse createSaleOrder(SaleOrderRequestDto saleOrderRequest) {
         final var saleOrderId = CommonUtils.getUUID(saleOrderRequest.saleOrderId());
@@ -83,6 +87,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         }
         final var status = saleOrderStatusService.findStatus(saleOrderRequest.orderStatus().key());
         final SaleOrder order = getSaleOrder(saleOrderId, list, customer, items, status, saleOrderInfo, user, saleOrderRequest.trackingId());
+        //call update product update in case status approver
         SaleOrder saleOrder = saleOrderRepository.save(order);
         return saleOrderMapper.createSaleOrderResponse(saleOrder, saleOrderRequest.amount());
     }
@@ -99,6 +104,29 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     public SaleOrderResponse findSaleOrderByTrackingId(String trackingId) {
         SaleOrder saleOrder = findByTrackingId(trackingId);
         return saleOrderMapper.convertSaleOrderToDtoResponse(saleOrder);
+    }
+
+    @Override
+    @Transactional
+    public void deleteSaleOrderItem(String orderAmountId, String oderItem) {
+        final OrderItem item = sOrderItemRepository.findById(oderItem)
+                .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND,
+                        messageSource.getMessage(MessageConstants.NO_SO_ORDER_FOUND,
+                                null,
+                                LocaleContextHolder.getLocale())));
+        sOrderItemRepository.deleteById(item.getOrderItemId());
+        final Amount amount = getAmountById(orderAmountId);
+        amount.setBalance(amount.getBalance().subtract(item.getSubTotal()));
+        amount.setTotalAmount(amount.getTotalAmount().subtract(item.getSubTotal()));
+        amount.setSubTotal(amount.getSubTotal().subtract(item.getSubTotal()));
+        sOrderAmountRepository.save(amount);
+    }
+
+    private Amount getAmountById(final String orderAmountId) {
+        return sOrderAmountRepository.findById(orderAmountId).orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND,
+                messageSource.getMessage(MessageConstants.NO_SO_ORDER_FOUND,
+                        null,
+                        LocaleContextHolder.getLocale())));
     }
 
     public SaleOrder findByTrackingId(String trackingId) {
@@ -145,7 +173,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         return items.stream().map(e -> {
             ProductItem productItem = productItemControl.findProductItemById(e.orderItem().productItemId());
             OrderItem orderItem = saleOrderMapper.validateAndGetOrderItem(productItem, e, e.itemCode(), user);
-            System.out.println(orderItem.getSubTotal());
             Party party = partyControl.findParty(Long.valueOf(e.party().key()));
             return SaleOrderItem.builder()
                     .party(party)

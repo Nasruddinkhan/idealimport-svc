@@ -15,7 +15,7 @@ public class MessageConstants {
     public static final String PRICE_PRESENT = "price.list.present";
     public static final String NO_CUSTOMER_PARTY = "customer.party.not.found";
 
-
+    public static final String NO_SO_ORDER_FOUND = "sale.order.item.not.found";
     private MessageConstants() {
     }
 }

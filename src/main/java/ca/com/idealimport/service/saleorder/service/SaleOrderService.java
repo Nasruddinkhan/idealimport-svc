@@ -12,4 +12,6 @@ public interface SaleOrderService {
     Page<SaleOrderResponse> findAllSaleOrder(int page, int size, SaleOrderSearch saleOrderSearch);
 
     SaleOrderResponse findSaleOrderByTrackingId(String trackingId);
+
+    void deleteSaleOrderItem(String orderAmountId, String oderItem);
 }

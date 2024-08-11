@@ -11,11 +11,15 @@ import ca.com.idealimport.service.product.entity.Product;
 import ca.com.idealimport.service.product.entity.ProductItem;
 import ca.com.idealimport.service.product.entity.dto.ProductItemDTO;
 import ca.com.idealimport.service.productitem.boundry.ProductItemRepository;
+import ca.com.idealimport.service.saleorder.entity.OrderItem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import static ca.com.idealimport.common.util.CommonUtils.safeValue;
 
 @Service
 @Slf4j
@@ -58,5 +62,25 @@ public class ProductItemControl {
                 .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND, String.format(ErrorConstants.PRODUCT_ORDER_LINE_NOT_PRESENT, productItemId)));
     }
 
+    @Transactional
+    public List<ProductItem> findAllProductItem(List<OrderItem> orderItems) {
+        List<ProductItem> productItems = orderItems.stream().map(o -> {
+            final int totalQty = safeValue(o.getXs()) + safeValue(o.getS()) + safeValue(o.getM()) + safeValue(o.getL())
+                    + safeValue(o.getXl()) + safeValue(o.getXxl()) + safeValue(o.getXxxl())
+                    + safeValue(o.getMixed());
+            ProductItem item = o.getProductItemId();
+            item.setXs(safeValue(item.getXs()) - safeValue(o.getXs()));
+            item.setS(safeValue(item.getS()) - safeValue(o.getS()));
+            item.setM(safeValue(item.getM()) - safeValue(o.getM()));
+            item.setL(safeValue(item.getL()) - safeValue(o.getL()));
+            item.setXl(safeValue(item.getXl()) - safeValue(o.getXl()));
+            item.setXxl(safeValue(item.getXxl()) - safeValue(o.getXxl()));
+            item.setXxxl(safeValue(item.getXxxl()) - safeValue(o.getXxxl()));
+            item.setMixed(safeValue(item.getMixed()) - safeValue(o.getMixed()));
+            item.setSubTotal(safeValue(item.getSubTotal()) - totalQty);
+            return item;
+        }).toList();
+        return productItemRepository.saveAll(productItems);
+    }
 
 }

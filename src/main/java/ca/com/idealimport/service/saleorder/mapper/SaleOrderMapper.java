@@ -35,6 +35,11 @@ public interface SaleOrderMapper {
 
     default OrderItem validateAndGetOrderItem(ProductItem productItem, SaleOrderItemDto item, String itemCode, User user) {
         final var orderItem = item.orderItem();
+        final int totalQty = safeValue(orderItem.xs()) + safeValue(orderItem.s()) + safeValue(orderItem.m()) + safeValue(orderItem.l())
+                + safeValue(orderItem.xl()) + safeValue(orderItem.xxl()) + safeValue(orderItem.xxxl())
+                + safeValue(orderItem.mixed());
+        final BigDecimal totalQuantityBD = BigDecimal.valueOf(totalQty);
+
         return OrderItem.builder()
                 .orderItemId(CommonUtils.getUUID(orderItem.orderItemId()))
                 .xs(getSizeItem(productItem.getXs(), orderItem.xs(), orderItem.color(), itemCode))
@@ -45,9 +50,8 @@ public interface SaleOrderMapper {
                 .xxl(getSizeItem(productItem.getXxl(), orderItem.xxl(), orderItem.color(), itemCode))
                 .xxxl(getSizeItem(productItem.getXxxl(), orderItem.xxxl(), orderItem.color(), itemCode))
                 .mixed(getSizeItem(productItem.getMixed(), orderItem.mixed(), orderItem.color(), itemCode))
-                .subTotal(safeValue(orderItem.xs()) + safeValue(orderItem.s()) + safeValue(orderItem.m()) + safeValue(orderItem.l())
-                        + safeValue(orderItem.xl()) + safeValue(orderItem.xxl()) + safeValue(orderItem.xxxl())
-                        + safeValue(orderItem.mixed()))
+                .qty(totalQty)
+                .subTotal(totalQuantityBD.multiply(orderItem.unitPrice()))
                 .unitPrice(orderItem.unitPrice())
                 .productItemId(productItem)
                 .color(orderItem.color())
@@ -88,7 +92,7 @@ public interface SaleOrderMapper {
         String name = saleOrder.getCustomer().getCustomerName();
         String trackingId = saleOrder.getTrackingId();
         long qty = saleOrder.getItems().stream().map(SaleOrderItem::getOrderItem)
-                .map(OrderItem::getSubTotal).reduce(0, Integer::sum);
+                .map(OrderItem::getQty).reduce(0, Integer::sum);
         return SaleOrderCreationResponse.builder()
                 .msg(String.format(MessageConstants.SALE_ORDER_RES_MSG, name,
                         saleOrder.getTrackingId()))
