@@ -45,9 +45,9 @@ public class SaleOrderController implements SecureApi {
         return ResponseEntity.ok(saleOrderService.findSaleOrderByTrackingId(trackingId));
     }
 
-    @DeleteMapping("/{order-amount-id}/{order-item}/item")
-    public ResponseEntity<Void> deleteSaleOrderItem(@PathVariable("order-amount-id") final String orderAmountId,
-                                                    @PathVariable("order-item") final String oderItem) {
+    @DeleteMapping("/{order-item}/item")
+    public ResponseEntity<Void> deleteSaleOrderItem(@RequestParam(value = "order-amount-id", required = false) final String orderAmountId,
+                                                    final String oderItem) {
         saleOrderService.deleteSaleOrderItem(orderAmountId, oderItem);
         return ResponseEntity.noContent().build();
     }

@@ -69,5 +69,4 @@ public class AuthResource {
         return new ResponseEntity<>(userRegistrationResponse, HttpStatus.OK);
     }
 
-
 }

@@ -115,11 +115,13 @@ public class SaleOrderServiceImpl implements SaleOrderService {
                                 null,
                                 LocaleContextHolder.getLocale())));
         sOrderItemRepository.deleteById(item.getOrderItemId());
-        final Amount amount = getAmountById(orderAmountId);
-        amount.setBalance(amount.getBalance().subtract(item.getSubTotal()));
-        amount.setTotalAmount(amount.getTotalAmount().subtract(item.getSubTotal()));
-        amount.setSubTotal(amount.getSubTotal().subtract(item.getSubTotal()));
-        sOrderAmountRepository.save(amount);
+        if (Objects.nonNull(orderAmountId)) {
+            final Amount amount = getAmountById(orderAmountId);
+            amount.setBalance(amount.getBalance().subtract(item.getSubTotal()));
+            amount.setTotalAmount(amount.getTotalAmount().subtract(item.getSubTotal()));
+            amount.setSubTotal(amount.getSubTotal().subtract(item.getSubTotal()));
+            sOrderAmountRepository.save(amount);
+        }
     }
 
     private Amount getAmountById(final String orderAmountId) {
