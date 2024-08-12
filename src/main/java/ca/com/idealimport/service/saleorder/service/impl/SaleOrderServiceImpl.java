@@ -108,6 +108,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
     @Override
     @Transactional
+    @Deprecated
     public void deleteSaleOrderItem(String orderAmountId, String oderItem) {
         final OrderItem item = sOrderItemRepository.findById(oderItem)
                 .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND,
