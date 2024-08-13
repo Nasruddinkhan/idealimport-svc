@@ -125,6 +125,22 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         }
     }
 
+    @Override
+    @Transactional
+    public void deleteBySaleOrderId(String saleOrderId) {
+        if (!saleOrderRepository.existsById(saleOrderId)) {
+            throw new IdealException(
+                    IdealResponseErrorCode.NOT_FOUND,
+                    messageSource.getMessage(
+                            MessageConstants.NO_SO_ORDER_FOUND,
+                            null,
+                            LocaleContextHolder.getLocale()
+                    )
+            );
+        }
+        saleOrderRepository.deleteById(saleOrderId);
+    }
+
     private Amount getAmountById(final String orderAmountId) {
         return sOrderAmountRepository.findById(orderAmountId).orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND,
                 messageSource.getMessage(MessageConstants.NO_SO_ORDER_FOUND,

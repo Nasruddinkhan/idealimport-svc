@@ -48,7 +48,7 @@ public class SaleOrder  extends AuditableEntity {
                     @Parameter(name = NUMBER_FORMAT_PARAMETER, value = TEN_DIGIT)})
     private String saleOrderId;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
@@ -60,11 +60,11 @@ public class SaleOrder  extends AuditableEntity {
     @JoinColumn(name = "sale_order_id")
     private List<SaleOrderItem> items;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "order_status_id")
     private SaleOrderStatus orderStatus;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "sale_order_info_id")
     private SaleOrderInfo saleOrderInfo;
 

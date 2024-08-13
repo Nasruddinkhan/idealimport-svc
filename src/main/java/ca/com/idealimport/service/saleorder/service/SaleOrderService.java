@@ -14,4 +14,6 @@ public interface SaleOrderService {
     SaleOrderResponse findSaleOrderByTrackingId(String trackingId);
 
     void deleteSaleOrderItem(String orderAmountId, String oderItem);
+
+    void deleteBySaleOrderId(String saleOrderId);
 }

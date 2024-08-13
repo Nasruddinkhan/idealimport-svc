@@ -47,10 +47,15 @@ public class SaleOrderController implements SecureApi {
 
     @DeleteMapping("/{order-item}/item")
     @Deprecated
-
     public ResponseEntity<Void> deleteSaleOrderItem(@RequestParam(value = "order-amount-id", required = false) final String orderAmountId,
                                                    @PathVariable("order-item") final String oderItem) {
         saleOrderService.deleteSaleOrderItem(orderAmountId, oderItem);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{saleOrderId}")
+    public ResponseEntity<Void> deleteBySaleOrderId(@PathVariable String saleOrderId){
+        saleOrderService.deleteBySaleOrderId(saleOrderId);
         return ResponseEntity.noContent().build();
     }
 }
