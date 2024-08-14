@@ -2,6 +2,7 @@ package ca.com.idealimport.service.saleorder.service.impl;
 
 import ca.com.idealimport.common.Constants;
 import ca.com.idealimport.common.constants.MessageConstants;
+import ca.com.idealimport.common.enums.SaleOrderStatusEnum;
 import ca.com.idealimport.common.specifications.SpecificationUtils;
 import ca.com.idealimport.common.specifications.Specifications;
 import ca.com.idealimport.common.util.CommonUtils;
@@ -85,8 +86,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
                 amount.setTax(taxService.findTax(saleOrderRequest.amount().tax().getTaxId()));
             list.add(amount);
         }
-        final var status = saleOrderStatusService.findStatus(saleOrderRequest.orderStatus().key());
-        final SaleOrder order = getSaleOrder(saleOrderId, list, customer, items, status, saleOrderInfo, user, saleOrderRequest.trackingId());
+        final SaleOrder order = getSaleOrder(saleOrderId, list, customer, items, saleOrderRequest.orderStatus(), saleOrderInfo, user, saleOrderRequest.trackingId());
         //call update product update in case status approver
         SaleOrder saleOrder = saleOrderRepository.save(order);
         return saleOrderMapper.createSaleOrderResponse(saleOrder, saleOrderRequest.amount());
@@ -141,6 +141,19 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         saleOrderRepository.deleteById(saleOrderId);
     }
 
+    @Override
+    public void updateInventory(String saleOrderId) {
+     SaleOrder  saleOrder =   saleOrderRepository.findById(saleOrderId)
+                .orElseThrow(()-> new IdealException(IdealResponseErrorCode.NOT_FOUND,
+                messageSource.getMessage(
+                        MessageConstants.NO_SO_ORDER_FOUND,
+                        null,
+                        LocaleContextHolder.getLocale()
+                ))
+        );
+        productItemControl.updateAllProductItem(saleOrder.getItems().stream().map(SaleOrderItem::getOrderItem).toList());
+    }
+
     private Amount getAmountById(final String orderAmountId) {
         return sOrderAmountRepository.findById(orderAmountId).orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND,
                 messageSource.getMessage(MessageConstants.NO_SO_ORDER_FOUND,
@@ -163,8 +176,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         Optional.ofNullable(saleOrderSearch.saleOrderNo())
                 .ifPresent(soNo -> specificationsList.add(Specifications.fieldProperty("saleOrderId", soNo)));
         Optional.ofNullable(saleOrderSearch.status())
-                .ifPresent(status -> specificationsList.add(Specifications.fieldProperty(status, "orderStatus",
-                        "saleOrderStatusId")));
+                .ifPresent(status -> specificationsList.add(Specifications.fieldProperty( "orderStatus", saleOrderSearch.status())));
         Optional.ofNullable(saleOrderSearch.trackingNo())
                 .ifPresent(trackingNo -> specificationsList.add(Specifications.fieldProperty("trackingId", trackingNo)));
         if (!SecurityUtils.isAdmin())
@@ -173,7 +185,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     }
 
     private SaleOrder getSaleOrder(String saleOrderId, List<Amount> amounts, Customer customer, List<SaleOrderItem> items,
-                                   SaleOrderStatus status, SaleOrderInfo saleOrderInfo, User user, String trackingId) {
+                                   SaleOrderStatusEnum status, SaleOrderInfo saleOrderInfo, User user, String trackingId) {
         return SaleOrder.builder()
                 .saleOrderId(saleOrderId)
                 .amounts(amounts)

@@ -96,7 +96,7 @@ public interface SaleOrderMapper {
         return SaleOrderCreationResponse.builder()
                 .msg(String.format(MessageConstants.SALE_ORDER_RES_MSG, name,
                         saleOrder.getTrackingId()))
-                .status(saleOrder.getOrderStatus().getName())
+                .status(saleOrder.getOrderStatus())
                 .name(name)
                 .trackingId(trackingId)
                 .amountDto(amountDto)
@@ -112,8 +112,7 @@ public interface SaleOrderMapper {
                 .items(getSaleOrderItem(saleOrder.getItems()))
                 .trackingId(saleOrder.getTrackingId())
                 .saleOrderId(saleOrder.getSaleOrderId())
-                .orderStatus(DropDownDto.builder().key(saleOrder.getOrderStatus().getSaleOrderStatusId())
-                        .value(saleOrder.getOrderStatus().getName()).build())
+                .orderStatus(saleOrder.getOrderStatus())
                 .build();
     }
 

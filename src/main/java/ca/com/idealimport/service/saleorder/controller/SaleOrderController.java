@@ -1,5 +1,6 @@
 package ca.com.idealimport.service.saleorder.controller;
 
+import ca.com.idealimport.common.enums.SaleOrderStatusEnum;
 import ca.com.idealimport.config.security.SecureApi;
 import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderCreationResponse;
 import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderRequestDto;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Objects;
+
 @RestController
 @RequestMapping("/sale-order/v1")
 @RequiredArgsConstructor
@@ -30,7 +33,11 @@ public class SaleOrderController implements SecureApi {
 
     @PostMapping
     public ResponseEntity<SaleOrderCreationResponse> createSaleOrder(@Valid @RequestBody SaleOrderRequestDto saleOrderRequest) {
-        return new ResponseEntity<>(saleOrderService.createSaleOrder(saleOrderRequest), HttpStatus.CREATED);
+        SaleOrderCreationResponse  saleOrderCreationResponse = saleOrderService.createSaleOrder(saleOrderRequest);
+        if(saleOrderCreationResponse.status().getValue().equals(SaleOrderStatusEnum.CONFIRMED.getValue())){
+            saleOrderService.updateInventory(saleOrderRequest.saleOrderId());
+        }
+        return new ResponseEntity<>(saleOrderCreationResponse, Objects.isNull(saleOrderRequest.saleOrderId()) ? HttpStatus.CREATED : HttpStatus.OK);
     }
 
     @PostMapping("/all")

@@ -16,4 +16,6 @@ public interface SaleOrderService {
     void deleteSaleOrderItem(String orderAmountId, String oderItem);
 
     void deleteBySaleOrderId(String saleOrderId);
+
+    void updateInventory(String saleOrderId);
 }

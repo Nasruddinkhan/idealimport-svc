@@ -1,5 +1,6 @@
 package ca.com.idealimport.common.specifications;
 
+import ca.com.idealimport.common.enums.SaleOrderStatusEnum;
 import jakarta.persistence.criteria.Path;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -20,7 +21,10 @@ public class Specifications {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get(fieldName), fieldValue);
     }
-
+    public static <T> Specification<T> fieldProperty(String fieldName, SaleOrderStatusEnum fieldValue) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get(fieldName), fieldValue);
+    }
     public static <T> Specification<T> fieldProperty(Long fieldValue, String... propertyNames) {
         return (root, query, criteriaBuilder) -> {
             Path<T> path = root;

@@ -63,7 +63,7 @@ public class ProductItemControl {
     }
 
     @Transactional
-    public List<ProductItem> findAllProductItem(List<OrderItem> orderItems) {
+    public List<ProductItem> updateAllProductItem(List<OrderItem> orderItems) {
         List<ProductItem> productItems = orderItems.stream().map(o -> {
             final int totalQty = safeValue(o.getXs()) + safeValue(o.getS()) + safeValue(o.getM()) + safeValue(o.getL())
                     + safeValue(o.getXl()) + safeValue(o.getXxl()) + safeValue(o.getXxxl())
