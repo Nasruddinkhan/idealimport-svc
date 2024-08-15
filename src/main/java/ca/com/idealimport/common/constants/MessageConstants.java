@@ -16,6 +16,7 @@ public class MessageConstants {
     public static final String NO_CUSTOMER_PARTY = "customer.party.not.found";
 
     public static final String NO_SO_ORDER_FOUND = "sale.order.item.not.found";
+    public static final String SO_ORDER_STATUS_UPDATE = "sale.order.status.update";
     private MessageConstants() {
     }
 }

@@ -16,7 +16,6 @@ public class TestThread {
     static {
         System.out.println(Thread.currentThread().getName());
         System.out.println("Hello");
-        // System.exit(0);
 
     }
 

@@ -107,7 +107,7 @@ public interface SaleOrderMapper {
     default SaleOrderResponse convertSaleOrderToDtoResponse(SaleOrder saleOrder) {
         return SaleOrderResponse.builder()
                 .orderInfo(getSaleOrderInfo(saleOrder.getSaleOrderInfo()))
-                .amount(saleOrder.getAmounts().stream().map(this::getSaleOrderAmount).toList())
+                .amount(getSaleOrderAmount(saleOrder.getAmounts()))
                 .customer(getCustomer(saleOrder.getCustomer()))
                 .items(getSaleOrderItem(saleOrder.getItems()))
                 .trackingId(saleOrder.getTrackingId())

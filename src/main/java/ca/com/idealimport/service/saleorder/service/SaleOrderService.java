@@ -1,9 +1,7 @@
 package ca.com.idealimport.service.saleorder.service;
 
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderCreationResponse;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderRequestDto;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderResponse;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderSearch;
+import ca.com.idealimport.common.dto.ApiResponse;
+import ca.com.idealimport.service.saleorder.entity.dto.*;
 import org.springframework.data.domain.Page;
 
 public interface SaleOrderService {
@@ -18,4 +16,6 @@ public interface SaleOrderService {
     void deleteBySaleOrderId(String saleOrderId);
 
     void updateInventory(String saleOrderId);
+
+    ApiResponse updateStatus(SaleOrderUpdateRequest saleOrderUpdateRequest);
 }

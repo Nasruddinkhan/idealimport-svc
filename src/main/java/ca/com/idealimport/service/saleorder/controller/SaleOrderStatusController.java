@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("/sale-order-status/v1")
 @RequiredArgsConstructor
 @Slf4j
-
+@Deprecated
 public class SaleOrderStatusController implements SecureApi {
 
     private final SaleOrderStatusService saleOrderStatusService;

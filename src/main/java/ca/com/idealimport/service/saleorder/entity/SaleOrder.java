@@ -42,9 +42,9 @@ public class SaleOrder  extends AuditableEntity {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    @JoinColumn(name = "sale_order_id")
-    private List<Amount> amounts;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "amount_id")
+    private Amount amounts;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "sale_order_id")

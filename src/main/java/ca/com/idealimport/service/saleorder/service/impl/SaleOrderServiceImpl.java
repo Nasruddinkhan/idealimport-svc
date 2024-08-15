@@ -2,6 +2,7 @@ package ca.com.idealimport.service.saleorder.service.impl;
 
 import ca.com.idealimport.common.Constants;
 import ca.com.idealimport.common.constants.MessageConstants;
+import ca.com.idealimport.common.dto.ApiResponse;
 import ca.com.idealimport.common.enums.SaleOrderStatusEnum;
 import ca.com.idealimport.common.specifications.SpecificationUtils;
 import ca.com.idealimport.common.specifications.Specifications;
@@ -23,11 +24,7 @@ import ca.com.idealimport.service.saleorder.entity.SaleOrder;
 import ca.com.idealimport.service.saleorder.entity.SaleOrderInfo;
 import ca.com.idealimport.service.saleorder.entity.SaleOrderItem;
 import ca.com.idealimport.service.saleorder.entity.SaleOrderStatus;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderCreationResponse;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderItemDto;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderRequestDto;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderResponse;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderSearch;
+import ca.com.idealimport.service.saleorder.entity.dto.*;
 import ca.com.idealimport.service.saleorder.mapper.SaleOrderMapper;
 import ca.com.idealimport.service.saleorder.repository.SOrderAmountRepository;
 import ca.com.idealimport.service.saleorder.repository.SOrderItemRepository;
@@ -77,16 +74,14 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         final var user = userControl.findUserByEmailOrId(SecurityUtils.getLoggedInUserId());
         final List<SaleOrderItem> items = validateAndGetSaleOrderItem(saleOrderRequest.items(), user);
         final var saleOrderInfo = saleOrderMapper.getSaleOrderInfo(saleOrderRequest.saleOrderInfo());
-        List<Amount> list = null;
+        Amount amount = null;
         if (Objects.nonNull(saleOrderRequest.amount())) {
-            list = new ArrayList<>();
-            final var amount = saleOrderMapper.getSaleOrderAmount(saleOrderRequest.amount());
+            amount = saleOrderMapper.getSaleOrderAmount(saleOrderRequest.amount());
             amount.setIsActive(true);
             if (Objects.nonNull(saleOrderRequest.amount().tax()))
                 amount.setTax(taxService.findTax(saleOrderRequest.amount().tax().getTaxId()));
-            list.add(amount);
         }
-        final SaleOrder order = getSaleOrder(saleOrderId, list, customer, items, saleOrderRequest.orderStatus(), saleOrderInfo, user, saleOrderRequest.trackingId());
+        final SaleOrder order = getSaleOrder(saleOrderId, amount, customer, items, saleOrderRequest.orderStatus(), saleOrderInfo, user, saleOrderRequest.trackingId());
         //call update product update in case status approver
         SaleOrder saleOrder = saleOrderRepository.save(order);
         return saleOrderMapper.createSaleOrderResponse(saleOrder, saleOrderRequest.amount());
@@ -143,15 +138,37 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
     @Override
     public void updateInventory(String saleOrderId) {
-     SaleOrder  saleOrder =   saleOrderRepository.findById(saleOrderId)
-                .orElseThrow(()-> new IdealException(IdealResponseErrorCode.NOT_FOUND,
-                messageSource.getMessage(
-                        MessageConstants.NO_SO_ORDER_FOUND,
-                        null,
-                        LocaleContextHolder.getLocale()
-                ))
-        );
-        productItemControl.updateAllProductItem(saleOrder.getItems().stream().map(SaleOrderItem::getOrderItem).toList());
+     final SaleOrder  saleOrder = getSaleOrder(saleOrderId);
+     productItemControl.updateAllProductItem(saleOrder.getItems().stream().map(SaleOrderItem::getOrderItem).toList());
+    }
+
+    private SaleOrder getSaleOrder(String saleOrderId) {
+        return saleOrderRepository.findById(saleOrderId)
+                .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND,
+                        messageSource.getMessage(
+                                MessageConstants.NO_SO_ORDER_FOUND,
+                                null,
+                                LocaleContextHolder.getLocale()
+                        ))
+                );
+    }
+
+    @Override
+    public ApiResponse updateStatus(SaleOrderUpdateRequest saleOrderUpdateRequest) {
+        Optional.of(saleOrderUpdateRequest.orderStatus().getValue())
+                .filter(status -> !List.of(
+                        SaleOrderStatusEnum.PENDING.getValue(),
+                        SaleOrderStatusEnum.PENDING_FOR_ADMIN.getValue()
+                ).contains(status))
+                .orElseThrow(() -> new IdealException(IdealResponseErrorCode.INVALID_ARGUMENT));
+
+        SaleOrder saleOrder = Optional.of(saleOrderUpdateRequest.saleOrderId())
+                .map(this::getSaleOrder)
+                .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND));
+
+        saleOrder.setOrderStatus(saleOrderUpdateRequest.orderStatus());
+        saleOrderRepository.save(saleOrder);
+        return new ApiResponse(messageSource.getMessage(MessageConstants.SO_ORDER_STATUS_UPDATE, null, LocaleContextHolder.getLocale()));
     }
 
     private Amount getAmountById(final String orderAmountId) {
@@ -184,7 +201,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         return SpecificationUtils.and(specificationsList);
     }
 
-    private SaleOrder getSaleOrder(String saleOrderId, List<Amount> amounts, Customer customer, List<SaleOrderItem> items,
+    private SaleOrder getSaleOrder(String saleOrderId, Amount amounts, Customer customer, List<SaleOrderItem> items,
                                    SaleOrderStatusEnum status, SaleOrderInfo saleOrderInfo, User user, String trackingId) {
         return SaleOrder.builder()
                 .saleOrderId(saleOrderId)

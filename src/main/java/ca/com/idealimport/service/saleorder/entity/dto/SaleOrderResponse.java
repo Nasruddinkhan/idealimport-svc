@@ -11,7 +11,7 @@ import java.util.List;
 public record SaleOrderResponse(SaleOrderInfoDto orderInfo,
                                 List<SaleOrderItemDto> items,
                                 CustomerDto customer,
-                                List<AmountDto> amount,
+                                AmountDto amount,
                                 SaleOrderStatusEnum orderStatus,
                                 String saleOrderId,
                                 String trackingId) {
