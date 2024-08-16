@@ -21,13 +21,20 @@ import ca.com.idealimport.service.productitem.control.ProductItemControl;
 import ca.com.idealimport.service.saleorder.entity.Amount;
 import ca.com.idealimport.service.saleorder.entity.OrderItem;
 import ca.com.idealimport.service.saleorder.entity.SaleOrder;
+import ca.com.idealimport.service.saleorder.entity.SaleOrderAmountAudit;
 import ca.com.idealimport.service.saleorder.entity.SaleOrderInfo;
 import ca.com.idealimport.service.saleorder.entity.SaleOrderItem;
-import ca.com.idealimport.service.saleorder.entity.SaleOrderStatus;
-import ca.com.idealimport.service.saleorder.entity.dto.*;
+import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderCreationResponse;
+import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderItemDto;
+import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderRequestDto;
+import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderResponse;
+import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderSearch;
+import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderUpdateAmtRequest;
+import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderUpdateRequest;
 import ca.com.idealimport.service.saleorder.mapper.SaleOrderMapper;
 import ca.com.idealimport.service.saleorder.repository.SOrderAmountRepository;
 import ca.com.idealimport.service.saleorder.repository.SOrderItemRepository;
+import ca.com.idealimport.service.saleorder.repository.SaleOrderAmountAuditRepository;
 import ca.com.idealimport.service.saleorder.repository.SaleOrderRepository;
 import ca.com.idealimport.service.saleorder.service.SaleOrderService;
 import ca.com.idealimport.service.saleorder.service.SaleOrderStatusService;
@@ -67,6 +74,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     private final MessageSource messageSource;
     private final SOrderItemRepository sOrderItemRepository;
     private final SOrderAmountRepository sOrderAmountRepository;
+    private final SaleOrderAmountAuditRepository orderAmountAuditRepository;
     @Override
     public SaleOrderCreationResponse createSaleOrder(SaleOrderRequestDto saleOrderRequest) {
         final var saleOrderId = CommonUtils.getUUID(saleOrderRequest.saleOrderId());
@@ -120,6 +128,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         }
     }
 
+
     @Override
     @Transactional
     public void deleteBySaleOrderId(String saleOrderId) {
@@ -169,6 +178,27 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         saleOrder.setOrderStatus(saleOrderUpdateRequest.orderStatus());
         saleOrderRepository.save(saleOrder);
         return new ApiResponse(messageSource.getMessage(MessageConstants.SO_ORDER_STATUS_UPDATE, null, LocaleContextHolder.getLocale()));
+    }
+
+    @Override
+    @Transactional
+    public ApiResponse updateAmount(SaleOrderUpdateAmtRequest updateAmtRequest) {
+
+        SaleOrderAmountAudit saleOrderAmountAudit = sOrderAmountRepository.findById(updateAmtRequest.saleOrderAmtId())
+                .map(e -> {
+                    e.setBalance(e.getBalance().subtract(updateAmtRequest.amount()));
+                    return e;
+                })
+                .map(sOrderAmountRepository::save)
+                .map(e -> saleOrderMapper.mapAmountToAmountAudit(e, updateAmtRequest))
+                .map(orderAmountAuditRepository::save)
+                .orElseThrow(() -> new IdealException(IdealResponseErrorCode.INVALID_ARGUMENT,
+                        messageSource.getMessage(MessageConstants.NO_AMT_FOUND, null, LocaleContextHolder.getLocale())));
+        String updateMessage = messageSource.getMessage(
+                MessageConstants.SO_AMT_UPD_MSG,
+                new Object[]{saleOrderAmountAudit.getPaidAmount(), saleOrderAmountAudit.getRemainingAmount()},
+                LocaleContextHolder.getLocale());
+        return new ApiResponse(updateMessage);
     }
 
     private Amount getAmountById(final String orderAmountId) {

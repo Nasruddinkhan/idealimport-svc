@@ -17,6 +17,10 @@ public class MessageConstants {
 
     public static final String NO_SO_ORDER_FOUND = "sale.order.item.not.found";
     public static final String SO_ORDER_STATUS_UPDATE = "sale.order.status.update";
+
+    public static final String NO_AMT_FOUND = "sale.order.amount.not.found";
+    public static final String SO_AMT_UPD_MSG = "sale.order.update.amount.msg";
+
     private MessageConstants() {
     }
 }

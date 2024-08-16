@@ -12,6 +12,7 @@ import ca.com.idealimport.service.product.entity.ProductItem;
 import ca.com.idealimport.service.saleorder.entity.Amount;
 import ca.com.idealimport.service.saleorder.entity.OrderItem;
 import ca.com.idealimport.service.saleorder.entity.SaleOrder;
+import ca.com.idealimport.service.saleorder.entity.SaleOrderAmountAudit;
 import ca.com.idealimport.service.saleorder.entity.SaleOrderInfo;
 import ca.com.idealimport.service.saleorder.entity.SaleOrderItem;
 import ca.com.idealimport.service.saleorder.entity.dto.AmountDto;
@@ -20,6 +21,7 @@ import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderCreationResponse
 import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderInfoDto;
 import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderItemDto;
 import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderResponse;
+import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderUpdateAmtRequest;
 import ca.com.idealimport.service.users.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -132,4 +134,10 @@ public interface SaleOrderMapper {
     OrderItemDto getSaleOrderItem(OrderItem item);
 
     SaleOrderInfoDto getSaleOrderInfo(SaleOrderInfo saleOrderInfo);
+
+    @Mapping(target = "amountHistoryId", expression = "java(getCommonId(null))")
+    @Mapping(target = "saleOrderId", source = "updateAmtRequest.saleOrderId")
+    @Mapping(target = "paidAmount", source = "updateAmtRequest.amount")
+    @Mapping(target = "remainingAmount", source = "amount.balance")
+    SaleOrderAmountAudit mapAmountToAmountAudit(Amount amount, SaleOrderUpdateAmtRequest updateAmtRequest);
 }
