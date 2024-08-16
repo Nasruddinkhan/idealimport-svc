@@ -163,6 +163,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     }
 
     @Override
+    @Transactional
     public ApiResponse updateStatus(SaleOrderUpdateRequest saleOrderUpdateRequest) {
         Optional.of(saleOrderUpdateRequest.orderStatus().getValue())
                 .filter(status -> !List.of(
@@ -170,13 +171,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
                         SaleOrderStatusEnum.PENDING_FOR_ADMIN.getValue()
                 ).contains(status))
                 .orElseThrow(() -> new IdealException(IdealResponseErrorCode.INVALID_ARGUMENT));
-
-        SaleOrder saleOrder = Optional.of(saleOrderUpdateRequest.saleOrderId())
-                .map(this::getSaleOrder)
-                .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND));
-
-        saleOrder.setOrderStatus(saleOrderUpdateRequest.orderStatus());
-        saleOrderRepository.save(saleOrder);
+        saleOrderRepository.updateStatus(saleOrderUpdateRequest.orderStatus(), saleOrderUpdateRequest.saleOrderId());
         return new ApiResponse(messageSource.getMessage(MessageConstants.SO_ORDER_STATUS_UPDATE, null, LocaleContextHolder.getLocale()));
     }
 

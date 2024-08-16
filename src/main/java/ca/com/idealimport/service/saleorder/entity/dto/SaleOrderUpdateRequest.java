@@ -7,7 +7,6 @@ import lombok.Builder;
 
 @Builder
 public record SaleOrderUpdateRequest(String  saleOrderId,
-                                     String amountId,
                                      @JsonDeserialize(using = SaleOrderStatusEnumDeserializer.class)
                                      SaleOrderStatusEnum orderStatus) {
 }
