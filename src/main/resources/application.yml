@@ -25,7 +25,7 @@ spring:
           starttls:
             enable: true
   datasource:
-    url: ${MYSQL_HOST:jdbc:mysql://localhost:3306/idealimport?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&characterEncoding=utf8&default-storage-engine=myisam&createDatabaseIfNotExist=true}
+    url: ${MYSQL_HOST:jdbc:mysql://localhost:3306/idealimport1?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&characterEncoding=utf8&default-storage-engine=myisam&createDatabaseIfNotExist=true}
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver

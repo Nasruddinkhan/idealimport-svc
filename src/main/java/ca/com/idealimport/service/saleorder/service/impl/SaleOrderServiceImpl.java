@@ -45,6 +45,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -175,10 +176,11 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
         SaleOrderAmountAudit saleOrderAmountAudit = sOrderAmountRepository.findById(updateAmtRequest.saleOrderAmtId())
                 .map(e -> {
-                    e.setBalance(e.getBalance().subtract(updateAmtRequest.amount()));
-                    return e;
+                    BigDecimal amount = updateAmtRequest.amount();
+                    e.setBalance(e.getBalance().subtract(amount));
+                    e.setPaid(e.getPaid().add(amount));
+                    return sOrderAmountRepository.save(e);
                 })
-                .map(sOrderAmountRepository::save)
                 .map(e -> saleOrderMapper.mapAmountToAmountAudit(e, updateAmtRequest))
                 .map(orderAmountAuditRepository::save)
                 .orElseThrow(() -> new IdealException(IdealResponseErrorCode.INVALID_ARGUMENT,

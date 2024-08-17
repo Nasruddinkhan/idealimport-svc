@@ -45,7 +45,7 @@ public class AuthResource {
         log.info("AuthResource.registerUser start {}", userDto);
         String password = "123456";
         var userRegistrationResponse = authControl.registerUser(userDto, password);
-        mailSenderService.sendEmail(emailMapper.convertRegisterUserDtoToMailDto(userDto, password, userRegistrationResponse.userName()), registrationTemplateName);
+      //  mailSenderService.sendEmail(emailMapper.convertRegisterUserDtoToMailDto(userDto, password, userRegistrationResponse.userName()), registrationTemplateName);
         log.info("AuthResource.registerUser end {}", userRegistrationResponse);
         return new ResponseEntity<>(userRegistrationResponse, HttpStatus.CREATED);
     }

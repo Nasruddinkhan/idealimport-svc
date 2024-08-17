@@ -32,6 +32,7 @@ public class Amount extends AuditableEntity {
     private BigDecimal paid;
     private BigDecimal balance;
 
+
     @Column(name = "active", columnDefinition = "boolean default true")
     private Boolean isActive;
 
