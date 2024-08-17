@@ -1,13 +1,10 @@
 package ca.com.idealimport.service.saleorder.service;
 
 import ca.com.idealimport.common.dto.ApiResponse;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderCreationResponse;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderRequestDto;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderResponse;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderSearch;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderUpdateAmtRequest;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderUpdateRequest;
+import ca.com.idealimport.service.saleorder.entity.dto.*;
 import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 public interface SaleOrderService {
     SaleOrderCreationResponse createSaleOrder(SaleOrderRequestDto saleOrderRequest);
@@ -25,4 +22,6 @@ public interface SaleOrderService {
     ApiResponse updateStatus(SaleOrderUpdateRequest saleOrderUpdateRequest);
 
     ApiResponse updateAmount(SaleOrderUpdateAmtRequest updateAmtRequest);
+
+    List<SaleOrderAmountHistoryDTO> findAllAmountHistory(String soOrderId, String amountHistory);
 }

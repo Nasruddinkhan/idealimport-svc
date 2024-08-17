@@ -15,13 +15,7 @@ import ca.com.idealimport.service.saleorder.entity.SaleOrder;
 import ca.com.idealimport.service.saleorder.entity.SaleOrderAmountAudit;
 import ca.com.idealimport.service.saleorder.entity.SaleOrderInfo;
 import ca.com.idealimport.service.saleorder.entity.SaleOrderItem;
-import ca.com.idealimport.service.saleorder.entity.dto.AmountDto;
-import ca.com.idealimport.service.saleorder.entity.dto.OrderItemDto;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderCreationResponse;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderInfoDto;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderItemDto;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderResponse;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderUpdateAmtRequest;
+import ca.com.idealimport.service.saleorder.entity.dto.*;
 import ca.com.idealimport.service.users.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -140,4 +134,12 @@ public interface SaleOrderMapper {
     @Mapping(target = "paidAmount", source = "updateAmtRequest.amount")
     @Mapping(target = "remainingAmount", source = "amount.balance")
     SaleOrderAmountAudit mapAmountToAmountAudit(Amount amount, SaleOrderUpdateAmtRequest updateAmtRequest);
+    @Mapping(source = "paidAmount", target = "paidAmount")
+    @Mapping(source = "remainingAmount", target = "remainingAmount")
+    @Mapping(target = "auditDto.createdBy", source = "createdBy")
+    @Mapping(target = "auditDto.createdDate", source = "createdDate")
+    @Mapping(target = "auditDto.lastModifiedBy", source = "lastModifiedBy")
+    @Mapping(target = "auditDto.lastModifiedDate", source = "lastModifiedDate")
+    SaleOrderAmountHistoryDTO toDto(SaleOrderAmountAudit audit);
+    List<SaleOrderAmountHistoryDTO> mapAmountAuditToAmountHistory(List<SaleOrderAmountAudit> amountHistorys);
 }

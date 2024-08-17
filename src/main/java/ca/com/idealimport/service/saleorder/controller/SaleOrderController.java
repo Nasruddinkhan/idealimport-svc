@@ -3,12 +3,7 @@ package ca.com.idealimport.service.saleorder.controller;
 import ca.com.idealimport.common.dto.ApiResponse;
 import ca.com.idealimport.common.enums.SaleOrderStatusEnum;
 import ca.com.idealimport.config.security.SecureApi;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderCreationResponse;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderRequestDto;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderResponse;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderSearch;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderUpdateAmtRequest;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderUpdateRequest;
+import ca.com.idealimport.service.saleorder.entity.dto.*;
 import ca.com.idealimport.service.saleorder.service.SaleOrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -78,6 +74,13 @@ public class SaleOrderController implements SecureApi {
     @PutMapping("/update-amount")
     public ResponseEntity<ApiResponse> updateAmount(@RequestBody SaleOrderUpdateAmtRequest updateAmtRequest) {
         return ResponseEntity.ok(saleOrderService.updateAmount(updateAmtRequest));
+    }
+
+    @GetMapping("/amt-history")
+    public ResponseEntity<List<SaleOrderAmountHistoryDTO>> findAllAmountHistory(
+            @RequestParam("sale-order-id") String soOrderId,
+            @RequestParam("amount-history-id") String amountHistory){
+        return ResponseEntity.ok(saleOrderService.findAllAmountHistory(soOrderId, amountHistory));
     }
 
 }

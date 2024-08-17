@@ -24,13 +24,7 @@ import ca.com.idealimport.service.saleorder.entity.SaleOrder;
 import ca.com.idealimport.service.saleorder.entity.SaleOrderAmountAudit;
 import ca.com.idealimport.service.saleorder.entity.SaleOrderInfo;
 import ca.com.idealimport.service.saleorder.entity.SaleOrderItem;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderCreationResponse;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderItemDto;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderRequestDto;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderResponse;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderSearch;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderUpdateAmtRequest;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderUpdateRequest;
+import ca.com.idealimport.service.saleorder.entity.dto.*;
 import ca.com.idealimport.service.saleorder.mapper.SaleOrderMapper;
 import ca.com.idealimport.service.saleorder.repository.SOrderAmountRepository;
 import ca.com.idealimport.service.saleorder.repository.SOrderItemRepository;
@@ -194,6 +188,13 @@ public class SaleOrderServiceImpl implements SaleOrderService {
                 new Object[]{saleOrderAmountAudit.getPaidAmount(), saleOrderAmountAudit.getRemainingAmount()},
                 LocaleContextHolder.getLocale());
         return new ApiResponse(updateMessage);
+    }
+
+    @Override
+    public List<SaleOrderAmountHistoryDTO> findAllAmountHistory(String soOrderId, String amountHistory) {
+       List<SaleOrderAmountAudit> amountHistorys =  orderAmountAuditRepository
+               .findBySaleOrderIdOrAmountId(soOrderId, amountHistory);
+        return  saleOrderMapper.mapAmountAuditToAmountHistory(amountHistorys);
     }
 
     private Amount getAmountById(final String orderAmountId) {
