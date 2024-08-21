@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public class ConversionUtils {
@@ -56,6 +57,16 @@ public class ConversionUtils {
 
     public static <T> List<T> jsonFileToList(File file, Class<T> valueType) throws IOException {
         return objectMapper.readValue(file, objectMapper.getTypeFactory().constructCollectionType(List.class, valueType));
+    }
+
+    // Convert InputStream to Object of specified class
+    public static <T> T jsonStreamToObject(InputStream inputStream, Class<T> valueType) throws IOException {
+        return objectMapper.readValue(inputStream, valueType);
+    }
+
+    // Convert InputStream to List of specified class
+    public static <T> List<T> jsonStreamToList(InputStream inputStream, Class<T> elementType) throws IOException {
+        return objectMapper.readValue(inputStream, objectMapper.getTypeFactory().constructCollectionType(List.class, elementType));
     }
 
 }
