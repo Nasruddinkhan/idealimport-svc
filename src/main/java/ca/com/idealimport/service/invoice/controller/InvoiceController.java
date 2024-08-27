@@ -1,27 +1,39 @@
 package ca.com.idealimport.service.invoice.controller;
 
-import ca.com.idealimport.service.invoice.model.Invoice;
 import ca.com.idealimport.service.invoice.model.InvoiceItem;
+import ca.com.idealimport.service.invoice.model.SOInvoiceItem;
 import ca.com.idealimport.service.invoice.service.InvoiceService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/invoice")
+@RequiredArgsConstructor
 public class InvoiceController {
 
-    @Autowired
-    private InvoiceService invoiceService;
+    private final InvoiceService invoiceService;
+    private final ResourceLoader resourceLoader;
 
     private static List<InvoiceItem> getInvoiceItems() {
         List<InvoiceItem> items = new ArrayList<>();
@@ -43,41 +55,41 @@ public class InvoiceController {
     }
 
     @GetMapping(value = "/create", produces = MediaType.APPLICATION_PDF_VALUE)
-    public ResponseEntity<byte[]> createInvoice() {
-        try {
-            Invoice invoice = new Invoice();
-            invoice.setSoldTo("Customer Name");
-            invoice.setSoldToAddress("Customer Address");
-            invoice.setInvoiceNumber("INV12345");
-            invoice.setInvoiceDate("2024-05-20");
-            invoice.setCustomerOrder("Order123");
-            invoice.setTerms("Net 30");
-            invoice.setVia("UPS");
-            invoice.setRefNo("Ref123");
+    public void createInvoice(HttpServletResponse response) throws IOException, JRException {
+        List<SOInvoiceItem> orderItems = fetchOrderItems(); // Replace with your data fetching logic
 
-            List<InvoiceItem> items = getInvoiceItems();
+        // Create a JRBeanCollectionDataSource with your list of data
+        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(orderItems);
 
-            invoice.setItems(items);
-            invoice.setSubTotal(new BigDecimal("7000.00"));
-            invoice.setGst(new BigDecimal("350.00"));
-            invoice.setQst(new BigDecimal("697.50"));
-            invoice.setTotal(new BigDecimal("8047.50"));
-            invoice.setRemarks("20 BOXES PICKED UP BY HAROUT");
-            invoice.setShippingDate("2024/05/09");
+        // Load the jrxml file
+        Resource resource = resourceLoader.getResource("classpath:templates/reports/sale-order.jrxml");
+        InputStream inputStream = resource.getInputStream();
 
-            byte[] pdf = invoiceService.createInvoice(invoice);
+        // Compile the JasperReport
+        JasperReport jasperReport = JasperCompileManager.compileReport(inputStream);
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_PDF);
-            headers.setContentDispositionFormData("attachment", "invoice.pdf");
+        // Hardcoded parameters
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("invoice", "INV-2024-001");
+        parameters.put("orderDate", "2024-08-24");
+        parameters.put("fromAddress", "1234 Main St, Springfield, USA");
+        parameters.put("customerAlais", "John Doe");
+        parameters.put("customerAddressAlais", "7890 Elm St, Shelbyville, USA");
+        parameters.put("via", "FedEx");
+        parameters.put("ref", "Ref-001");
+        parameters.put("listOfOrder", dataSource);
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "inline; filename=sale-order.pdf");
+        JasperExportManager.exportReportToPdfStream(jasperPrint, response.getOutputStream());
 
-            return ResponseEntity.ok()
-                    .headers(headers)
-                    .body(pdf);
+    }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+    private List<SOInvoiceItem> fetchOrderItems() {
+        // Replace this with your actual logic to fetch order items from the database
+        return List.of(
+                new SOInvoiceItem("Party A", "Item 1", "Style A", 10, new BigDecimal("20.00"), new BigDecimal("200.00")),
+                new SOInvoiceItem("Party B", "Item 2", "Style B", 5, new BigDecimal("15.00"), new BigDecimal("75.00"))
+        );
     }
 }
