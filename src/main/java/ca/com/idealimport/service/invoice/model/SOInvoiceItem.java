@@ -1,6 +1,7 @@
 package ca.com.idealimport.service.invoice.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class SOInvoiceItem{
     private String party;    // Name of the party associated with the order item
     private String item;       // Name of the item
