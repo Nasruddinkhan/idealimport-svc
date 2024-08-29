@@ -16,6 +16,7 @@ import ca.com.idealimport.service.customer.control.CustomerControl;
 import ca.com.idealimport.service.customer.entity.Customer;
 import ca.com.idealimport.service.party.control.PartyControl;
 import ca.com.idealimport.service.party.entity.Party;
+import ca.com.idealimport.service.product.control.ProductControl;
 import ca.com.idealimport.service.product.entity.ProductItem;
 import ca.com.idealimport.service.productitem.control.ProductItemControl;
 import ca.com.idealimport.service.saleorder.entity.Amount;
@@ -70,6 +71,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     private final SOrderItemRepository sOrderItemRepository;
     private final SOrderAmountRepository sOrderAmountRepository;
     private final SaleOrderAmountAuditRepository orderAmountAuditRepository;
+    private final ProductControl productControl;
     @Override
     public SaleOrderCreationResponse createSaleOrder(SaleOrderRequestDto saleOrderRequest) {
         final var saleOrderId = CommonUtils.getUUID(saleOrderRequest.saleOrderId());
@@ -143,7 +145,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     @Override
     public void updateInventory(String saleOrderId) {
      final SaleOrder  saleOrder = getSaleOrder(saleOrderId);
-     productItemControl.updateAllProductItem(saleOrder.getItems().stream().map(SaleOrderItem::getOrderItem).toList());
+      productItemControl.updateAllProductItem(saleOrder.getItems().stream().map(SaleOrderItem::getOrderItem).toList());
     }
 
     private SaleOrder getSaleOrder(String saleOrderId) {

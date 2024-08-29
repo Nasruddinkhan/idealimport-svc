@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class SOInvoiceItem{
     private String party;    // Name of the party associated with the order item
     private String item;       // Name of the item
@@ -18,4 +17,5 @@ public class SOInvoiceItem{
     private int qty;          // Quantity of the item
     private BigDecimal rate;  // Price per unit
     private BigDecimal totalAmount;
+    private String newStyle;
 }

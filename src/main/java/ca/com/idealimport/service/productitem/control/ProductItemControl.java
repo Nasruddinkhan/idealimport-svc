@@ -14,6 +14,7 @@ import ca.com.idealimport.service.productitem.boundry.ProductItemRepository;
 import ca.com.idealimport.service.saleorder.entity.OrderItem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,6 +79,9 @@ public class ProductItemControl {
             item.setXxxl(safeValue(item.getXxxl()) - safeValue(o.getXxxl()));
             item.setMixed(safeValue(item.getMixed()) - safeValue(o.getMixed()));
             item.setSubTotal(safeValue(item.getSubTotal()) - totalQty);
+            Product product = item.getProduct();
+            product.setQuantityInHand(product.getQuantityInHand() - totalQty);
+            item.setProduct(product);
             return item;
         }).toList();
         return productItemRepository.saveAll(productItems);

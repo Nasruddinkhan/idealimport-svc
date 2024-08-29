@@ -75,7 +75,7 @@ public class InvoiceController {
         parameters.put("ref", "Ref-001");
         parameters.put("listOfOrder", dataSource);
         parameters.put("discount", new BigDecimal("50"));
-        parameters.put("subTotal", new BigDecimal("100"));
+        parameters.put("subTotal","100");
         parameters.put("firstTax","GST (5.0000 %)");
         parameters.put("secTax","GST (5.0000 %)");
         parameters.put("firstTaxValue","162.00");
@@ -83,7 +83,6 @@ public class InvoiceController {
         parameters.put("grandTotal",new BigDecimal("3725.19"));
         parameters.put("shippingDate","2024/05/09");
         parameters.put("remarks","20 BOXES PICKED UP BY HAROUT");
-
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, new JREmptyDataSource());
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", "inline; filename=sale-order.pdf");
@@ -94,12 +93,12 @@ public class InvoiceController {
     private List<SOInvoiceItem> fetchOrderItems() {
         // Replace this with your actual logic to fetch order items from the database
         return List.of(
-                new SOInvoiceItem("Party A", "Item 1", "Style A", 10, new BigDecimal("20.00"), new BigDecimal("200.00")),
-                new SOInvoiceItem("Party B", "Item 2", "Style B", 5, new BigDecimal("15.00"), new BigDecimal("75.00")),
-                new SOInvoiceItem("Party C", "Item 3", "Style C", 8, new BigDecimal("18.00"), new BigDecimal("144.00")),
-                new SOInvoiceItem("Party D", "Item 4", "Style D", 12, new BigDecimal("22.00"), new BigDecimal("264.00")),
-                new SOInvoiceItem("Party E", "Item 5", "Style E", 20, new BigDecimal("25.00"), new BigDecimal("500.00")),
-                new SOInvoiceItem("Party F", "Item 6", "Style F", 15, new BigDecimal("30.00"), new BigDecimal("450.00"))
+                new SOInvoiceItem("Party A", "Item 1", "Style A", 10, new BigDecimal("20.00"), new BigDecimal("200.00"),"Style A"),
+                new SOInvoiceItem("Party B", "Item 2", "Style B", 5, new BigDecimal("15.00"), new BigDecimal("75.00"),"Style B"),
+                new SOInvoiceItem("Party C", "Item 3", "Style C", 8, new BigDecimal("18.00"), new BigDecimal("144.00"),"Style C"),
+                new SOInvoiceItem("Party D", "Item 4", "Style D", 12, new BigDecimal("22.00"), new BigDecimal("264.00"),"Style D"),
+                new SOInvoiceItem("Party E", "Item 5", "Style E", 20, new BigDecimal("25.00"), new BigDecimal("500.00"),"Style E"),
+                new SOInvoiceItem("Party F", "Item 6", "Style F", 15, new BigDecimal("30.00"), new BigDecimal("450.00"),"Style F")
                // new SOInvoiceItem("Party G", "Item 7", "Style G", 7, new BigDecimal("12.00"), new BigDecimal("84.00")),
               //  new SOInvoiceItem("Party H", "Item 8", "Style H", 6, new BigDecimal("10.00"), new BigDecimal("60.00")),
               //  new SOInvoiceItem("Party I", "Item 9", "Style I", 14, new BigDecimal("28.00"), new BigDecimal("392.00"))
