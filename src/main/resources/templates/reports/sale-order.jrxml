@@ -244,33 +244,6 @@ GST: 764238093 QST: 1223937779
 							</detailCell>
 							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
 						</column>
-						<column kind="single" uuid="3007e5f3-bf89-4a38-8dde-ad003de96abb" width="85">
-							<columnHeader height="30" rowSpan="1" style="Table 1_CH">
-								<element kind="staticText" uuid="96a7ec5b-9181-4c6b-bd85-3d0c95e2109f" mode="Opaque" x="0" y="0" width="85" height="30" forecolor="#FFFFFF" backcolor="#3399FF" bold="true" hTextAlign="Center" vTextAlign="Middle">
-									<text><![CDATA[Item]]></text>
-									<box>
-										<pen lineColor="rgba(247, 242, 242, 0.8980392)"/>
-										<topPen lineWidth="1.0" lineStyle="Solid" lineColor="rgba(247, 242, 242, 0.8980392)"/>
-										<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-										<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="rgba(247, 242, 242, 0.8980392)"/>
-										<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-									</box>
-								</element>
-							</columnHeader>
-							<detailCell height="30" style="Table 1_TD">
-								<element kind="textField" uuid="b7b5edd7-6968-4661-becc-57d0501946ce" x="0" y="0" width="85" height="30" hTextAlign="Center" vTextAlign="Middle">
-									<expression><![CDATA[$F{item}]]></expression>
-									<box>
-										<pen lineColor="rgba(247, 242, 242, 0.8980392)"/>
-										<topPen lineWidth="1.0" lineStyle="Solid" lineColor="rgba(247, 242, 242, 0.8980392)"/>
-										<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-										<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="rgba(247, 242, 242, 0.8980392)"/>
-										<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-									</box>
-								</element>
-							</detailCell>
-							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
-						</column>
 						<column kind="single" uuid="de6efd5d-0810-47b8-bf43-b34c5d25b36f" width="73">
 							<columnHeader height="30" rowSpan="1" style="Table 1_CH">
 								<element kind="staticText" uuid="ce0fea10-23d8-4d12-aff3-5a07acdde21e" mode="Opaque" x="0" y="0" width="73" height="30" forecolor="#FFFFFF" backcolor="#3399FF" hTextAlign="Center" vTextAlign="Middle">
@@ -296,7 +269,7 @@ GST: 764238093 QST: 1223937779
 									</box>
 								</element>
 							</detailCell>
-							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
 						</column>
 						<column kind="single" uuid="3b820d3c-b233-45f6-bbd5-3390e221852d" width="76">
 							<columnHeader height="30" rowSpan="1" style="Table 1_CH">
@@ -314,6 +287,33 @@ GST: 764238093 QST: 1223937779
 							<detailCell height="30" style="Table 1_TD">
 								<element kind="textField" uuid="4f83af80-c2e6-47cb-9410-c8b54f4cd6de" x="0" y="0" width="76" height="30" hTextAlign="Center" vTextAlign="Middle">
 									<expression><![CDATA[$F{style}]]></expression>
+									<box>
+										<pen lineColor="rgba(247, 242, 242, 0.8980392)"/>
+										<topPen lineWidth="1.0" lineStyle="Solid" lineColor="rgba(247, 242, 242, 0.8980392)"/>
+										<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+										<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="rgba(247, 242, 242, 0.8980392)"/>
+										<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									</box>
+								</element>
+							</detailCell>
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+						</column>
+						<column kind="single" uuid="3007e5f3-bf89-4a38-8dde-ad003de96abb" width="85">
+							<columnHeader height="30" rowSpan="1" style="Table 1_CH">
+								<element kind="staticText" uuid="96a7ec5b-9181-4c6b-bd85-3d0c95e2109f" mode="Opaque" x="0" y="0" width="85" height="30" forecolor="#FFFFFF" backcolor="#3399FF" bold="true" hTextAlign="Center" vTextAlign="Middle">
+									<text><![CDATA[Item]]></text>
+									<box>
+										<pen lineColor="rgba(247, 242, 242, 0.8980392)"/>
+										<topPen lineWidth="1.0" lineStyle="Solid" lineColor="rgba(247, 242, 242, 0.8980392)"/>
+										<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+										<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="rgba(247, 242, 242, 0.8980392)"/>
+										<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									</box>
+								</element>
+							</columnHeader>
+							<detailCell height="30" style="Table 1_TD">
+								<element kind="textField" uuid="b7b5edd7-6968-4661-becc-57d0501946ce" x="0" y="0" width="85" height="30" hTextAlign="Center" vTextAlign="Middle">
+									<expression><![CDATA[$F{item}]]></expression>
 									<box>
 										<pen lineColor="rgba(247, 242, 242, 0.8980392)"/>
 										<topPen lineWidth="1.0" lineStyle="Solid" lineColor="rgba(247, 242, 242, 0.8980392)"/>
