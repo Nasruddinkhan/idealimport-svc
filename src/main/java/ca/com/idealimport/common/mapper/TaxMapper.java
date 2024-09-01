@@ -13,7 +13,7 @@ public interface TaxMapper {
 
     Tax taxDtoToTax(TaxDto taxDto);
 
-    @Mapping(source = "taxRate1", target = "taxRate1", numberFormat = "$#.00")
+    @Mapping(source = "taxRate1", target = "taxRate1", numberFormat = "$#.0000")
     TaxDto taxToTaxDto(Tax tax);
 
     List<TaxDto> taxToTaxDto(List<Tax> taxes);

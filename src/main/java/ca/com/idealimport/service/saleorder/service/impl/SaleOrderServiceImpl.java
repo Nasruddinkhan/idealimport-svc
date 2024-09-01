@@ -148,7 +148,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       productItemControl.updateAllProductItem(saleOrder.getItems().stream().map(SaleOrderItem::getOrderItem).toList());
     }
 
-    private SaleOrder getSaleOrder(String saleOrderId) {
+    @Override
+    public SaleOrder getSaleOrder(String saleOrderId) {
         return saleOrderRepository.findById(saleOrderId)
                 .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND,
                         messageSource.getMessage(

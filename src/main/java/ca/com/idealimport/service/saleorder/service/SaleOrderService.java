@@ -1,6 +1,7 @@
 package ca.com.idealimport.service.saleorder.service;
 
 import ca.com.idealimport.common.dto.ApiResponse;
+import ca.com.idealimport.service.saleorder.entity.SaleOrder;
 import ca.com.idealimport.service.saleorder.entity.dto.*;
 import org.springframework.data.domain.Page;
 
@@ -24,4 +25,5 @@ public interface SaleOrderService {
     ApiResponse updateAmount(SaleOrderUpdateAmtRequest updateAmtRequest);
 
     List<SaleOrderAmountHistoryDTO> findAllAmountHistory(String soOrderId, String amountHistory);
+    SaleOrder getSaleOrder(String saleOrderId);
 }
