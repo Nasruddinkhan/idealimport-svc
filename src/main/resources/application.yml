@@ -54,7 +54,11 @@ spring:
 springdoc:
   show-actuator: true
   #use-management-port: true
-
+logging:
+  level:
+    org:
+      hibernate: INFO
+      SQL: INFO
 management:
   endpoint:
     health:

@@ -38,12 +38,14 @@ import ca.com.idealimport.service.users.control.UserControl;
 import ca.com.idealimport.service.users.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -150,7 +152,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
     @Override
     public SaleOrder getSaleOrder(String saleOrderId) {
-        return saleOrderRepository.findById(saleOrderId)
+        SaleOrder saleOrder =  saleOrderRepository.findById(saleOrderId)
                 .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND,
                         messageSource.getMessage(
                                 MessageConstants.NO_SO_ORDER_FOUND,
@@ -158,6 +160,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
                                 LocaleContextHolder.getLocale()
                         ))
                 );
+        Hibernate.initialize(saleOrder.getItems()); // Initialize lazy collection within transaction
+        return saleOrder;
     }
 
     @Override
