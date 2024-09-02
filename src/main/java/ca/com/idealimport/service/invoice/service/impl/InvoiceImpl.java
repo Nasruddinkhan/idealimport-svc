@@ -3,7 +3,6 @@ package ca.com.idealimport.service.invoice.service.impl;
 import ca.com.idealimport.common.util.CommonUtils;
 import ca.com.idealimport.service.invoice.model.SOInvoiceItem;
 import ca.com.idealimport.service.invoice.service.InvoiceService;
-import ca.com.idealimport.service.product.control.ProductControl;
 import ca.com.idealimport.service.product.entity.Product;
 import ca.com.idealimport.service.product.service.ProductService;
 import ca.com.idealimport.service.saleorder.entity.Amount;
@@ -20,11 +19,8 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,6 +32,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static ca.com.idealimport.common.Constants.NA;
+
 @Service
 @RequiredArgsConstructor
 public class InvoiceImpl implements InvoiceService {
@@ -44,9 +42,57 @@ public class InvoiceImpl implements InvoiceService {
     private final ResourceLoader resourceLoader;
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public byte[] createInvoice(String orderId) throws IOException, JRException {
-        SaleOrder saleOrder = saleOrderService.getSaleOrder(orderId);
+        final SaleOrder saleOrder = saleOrderService.getSaleOrder(orderId);
+        final List<SOInvoiceItem> reducedItems = getSoInvoiceItems(saleOrder);
+        final JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(reducedItems);
+        final Amount amount = saleOrder.getAmounts();
+        Map<String, Object> parameters = buildParameters(saleOrder, dataSource, amount);
+        try (InputStream inputStream = CommonUtils.readFileFromResources("classpath:templates/reports/sale-order.jrxml", resourceLoader)) {
+            JasperReport jasperReport = JasperCompileManager.compileReport(inputStream);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, new JREmptyDataSource());
+            return JasperExportManager.exportReportToPdf(jasperPrint);
+        }
+    }
+
+    private Map<String, Object> buildParameters(SaleOrder saleOrder, JRBeanCollectionDataSource dataSource, Amount amount) {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("invoice", String.format("INV-%s", saleOrder.getSaleOrderId().split("-")[1]));
+        parameters.put("orderDate", saleOrder.getCreatedDate());
+        parameters.put("fromAddress", saleOrder.getCustomer().getAddress());
+        parameters.put("customerAlais", String.format("%s %s", saleOrder.getCustomer().getCustomerName(), saleOrder.getSaleOrderId()));
+        parameters.put("customerAddressAlais", saleOrder.getCustomer().getAddress());
+        parameters.put("via", Optional.ofNullable(saleOrder.getSaleOrderInfo().getVia()).orElse(NA));
+        parameters.put("ref", Optional.ofNullable(saleOrder.getSaleOrderInfo().getRef()).orElse(NA));
+        parameters.put("listOfOrder", dataSource);
+        parameters.put("discount", amount.getDiscount());
+        parameters.put("subTotal", amount.getSubTotal());
+        Optional.ofNullable(amount.getTax())
+                .ifPresentOrElse(
+                        tax -> addTaxDetails(parameters, tax, amount.getSubTotal()),
+                        () -> {
+                            parameters.put("firstTax", NA);
+                            parameters.put("secTax", NA);
+                            parameters.put("firstTaxValue", NA);
+                            parameters.put("secTaxValue", NA);
+                        }
+                );
+        parameters.put("grandTotal", amount.getSubTotal());
+        parameters.put("shippingDate", "");
+        parameters.put("remarks", saleOrder.getSaleOrderInfo().getRemarks());
+        return parameters;
+    }
+    private void addTaxDetails(Map<String, Object> parameters, Tax tax, BigDecimal subTotal) {
+        String firstTax = String.format("%s (%.4f%%)", tax.getTaxName1(), tax.getTaxRate1());
+        String secTax = String.format("%s (%.4f%%)", tax.getTaxRate2(), tax.getTaxRate2());
+        String firstTaxValue = String.format("$ %s", subTotal.multiply(tax.getTaxRate1()).divide(new BigDecimal("100")));
+        String secTaxValue = String.format("$ %s", subTotal.multiply(tax.getTaxRate2()).divide(new BigDecimal("100")));
+        parameters.put("firstTax", firstTax);
+        parameters.put("secTax", secTax);
+        parameters.put("firstTaxValue", firstTaxValue);
+        parameters.put("secTaxValue", secTaxValue);
+    }
+    private List<SOInvoiceItem> getSoInvoiceItems(SaleOrder saleOrder) {
         List<SOInvoiceItem> reducedItems = saleOrder.getItems().stream()
                 .map(this::getSoInvoiceItem)
                 .collect(Collectors.groupingBy(SOInvoiceItem::getItem))
@@ -54,48 +100,7 @@ public class InvoiceImpl implements InvoiceService {
                 .map(this::getSoInvoiceItem)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
-        reducedItems.forEach(System.out::println);
-        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(reducedItems);
-
-        Amount amount = saleOrder.getAmounts();
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("invoice",  String.format("INV-", saleOrder.getSaleOrderId().split("-")[1]));
-        parameters.put("orderDate", saleOrder.getCreatedDate().toString());
-        parameters.put("fromAddress", saleOrder.getCustomer().getAddress());
-        parameters.put("customerAlais",String.format("%s %s", saleOrder.getCustomer().getCustomerName(), saleOrder.getSaleOrderId()));
-        parameters.put("customerAddressAlais", saleOrder.getCustomer().getAddress());
-        parameters.put("via", Optional.ofNullable(saleOrder.getSaleOrderInfo().getVia()).orElse("NA"));
-        parameters.put("ref",  Optional.ofNullable(saleOrder.getSaleOrderInfo().getRef()).orElse("NA"));
-        parameters.put("listOfOrder", dataSource);
-        parameters.put("discount",amount.getDiscount());
-        parameters.put("subTotal",amount.getSubTotal().toString());
-        final Tax tax = amount.getTax();
-        final String firstTax =  Optional.ofNullable(tax)
-                .map(e-> String.format("%s (%.4f%%)", tax.getTaxName1(), tax.getTaxRate1()))
-                .orElse("NA");
-        final String secTax =  Optional.ofNullable(tax)
-                .map(e-> String.format("%s (%.4f%%)", tax.getTaxRate2(), tax.getTaxRate2()))
-                .orElse("NA");
-        final String firstTaxValue = Optional.ofNullable(tax)
-                .map(e-> String.format("$ %s",
-                                amount.getSubTotal().multiply(tax.getTaxRate1()).divide(new BigDecimal("100"))))
-                .orElse("NA");
-        String secTaxValue = Optional.ofNullable(tax)
-                .map(e-> String.format("$ %s",
-                        amount.getSubTotal().multiply(tax.getTaxRate1()).divide(new BigDecimal("100"))))
-                .orElse("NA");
-        parameters.put("firstTax",firstTax);
-        parameters.put("secTax",secTax);
-        parameters.put("firstTaxValue",firstTaxValue);
-        parameters.put("secTaxValue",secTaxValue);
-        parameters.put("grandTotal",amount.getSubTotal());
-        parameters.put("shippingDate","2024/05/09");
-        parameters.put("remarks",saleOrder.getSaleOrderInfo().getRemarks());
-        try(InputStream inputStream = CommonUtils.readFileFromResources("classpath:templates/reports/sale-order.jrxml", resourceLoader)){
-            JasperReport jasperReport = JasperCompileManager.compileReport(inputStream);
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, new JREmptyDataSource());
-            return JasperExportManager.exportReportToPdf(jasperPrint);
-        }
+        return reducedItems;
     }
 
     private  SOInvoiceItem getSoInvoiceItem(List<SOInvoiceItem> items) {
