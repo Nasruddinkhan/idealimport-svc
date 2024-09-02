@@ -78,7 +78,7 @@ public class InvoiceImpl implements InvoiceService {
                             parameters.put("secTaxValue", NA);
                         }
                 );
-        parameters.put("grandTotal", amount.getSubTotal());
+        parameters.put("grandTotal", amount.getTotalAmount());
         parameters.put("shippingDate", "");
         parameters.put("remarks", saleOrder.getSaleOrderInfo().getRemarks());
         return parameters;
