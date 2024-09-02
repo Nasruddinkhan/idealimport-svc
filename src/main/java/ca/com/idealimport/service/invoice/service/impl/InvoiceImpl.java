@@ -33,6 +33,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static ca.com.idealimport.common.Constants.NA;
+import static ca.com.idealimport.common.util.CommonUtils.formatDate;
 
 @Service
 @RequiredArgsConstructor
@@ -58,7 +59,7 @@ public class InvoiceImpl implements InvoiceService {
     private Map<String, Object> buildParameters(SaleOrder saleOrder, JRBeanCollectionDataSource dataSource, Amount amount) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("invoice", String.format("INV-%s", saleOrder.getSaleOrderId().split("-")[1]));
-        parameters.put("orderDate", saleOrder.getCreatedDate());
+        parameters.put("orderDate", formatDate(saleOrder.getCreatedDate()));
         parameters.put("fromAddress", saleOrder.getCustomer().getAddress());
         parameters.put("customerAlais", String.format("%s %s", saleOrder.getCustomer().getCustomerName(), saleOrder.getSaleOrderId()));
         parameters.put("customerAddressAlais", saleOrder.getCustomer().getAddress());
@@ -93,14 +94,13 @@ public class InvoiceImpl implements InvoiceService {
         parameters.put("secTaxValue", secTaxValue);
     }
     private List<SOInvoiceItem> getSoInvoiceItems(SaleOrder saleOrder) {
-        List<SOInvoiceItem> reducedItems = saleOrder.getItems().stream()
+        return saleOrder.getItems().stream()
                 .map(this::getSoInvoiceItem)
                 .collect(Collectors.groupingBy(SOInvoiceItem::getItem))
                 .values().stream()
                 .map(this::getSoInvoiceItem)
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-        return reducedItems;
+                .toList();
     }
 
     private  SOInvoiceItem getSoInvoiceItem(List<SOInvoiceItem> items) {

@@ -6,6 +6,8 @@ import org.springframework.core.io.ResourceLoader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -30,5 +32,13 @@ public class CommonUtils {
     public static InputStream readFileFromResources(String filename, ResourceLoader resourceLoader) throws IOException {
         Resource resource = resourceLoader.getResource(filename);
         return resource.getInputStream();
+    }
+
+    public static String formatDate(Date date) {
+        if (date == null) {
+            throw new IllegalArgumentException("Date cannot be null");
+        }
+        final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        return formatter.format(date);
     }
 }
