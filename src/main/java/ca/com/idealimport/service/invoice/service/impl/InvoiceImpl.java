@@ -48,10 +48,10 @@ public class InvoiceImpl implements InvoiceService {
         final List<SOInvoiceItem> reducedItems = getSoInvoiceItems(saleOrder);
         final JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(reducedItems);
         final Amount amount = saleOrder.getAmounts();
-        Map<String, Object> parameters = buildParameters(saleOrder, dataSource, amount);
-        try (InputStream inputStream = CommonUtils.readFileFromResources("classpath:templates/reports/sale-order.jrxml", resourceLoader)) {
-            JasperReport jasperReport = JasperCompileManager.compileReport(inputStream);
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, new JREmptyDataSource());
+        final Map<String, Object> parameters = buildParameters(saleOrder, dataSource, amount);
+        try (final InputStream inputStream = CommonUtils.readFileFromResources("classpath:templates/reports/sale-order.jrxml", resourceLoader)) {
+            final JasperReport jasperReport = JasperCompileManager.compileReport(inputStream);
+            final JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, new JREmptyDataSource());
             return JasperExportManager.exportReportToPdf(jasperPrint);
         }
     }
@@ -67,7 +67,7 @@ public class InvoiceImpl implements InvoiceService {
         parameters.put("ref", Optional.ofNullable(saleOrder.getSaleOrderInfo().getRef()).orElse(NA));
         parameters.put("listOfOrder", dataSource);
         parameters.put("discount", amount.getDiscount());
-        parameters.put("subTotal", amount.getSubTotal());
+        parameters.put("subTotal", amount.getSubTotal().toString());
         Optional.ofNullable(amount.getTax())
                 .ifPresentOrElse(
                         tax -> addTaxDetails(parameters, tax, amount.getSubTotal()),
@@ -84,10 +84,10 @@ public class InvoiceImpl implements InvoiceService {
         return parameters;
     }
     private void addTaxDetails(Map<String, Object> parameters, Tax tax, BigDecimal subTotal) {
-        String firstTax = String.format("%s (%.4f%%)", tax.getTaxName1(), tax.getTaxRate1());
-        String secTax = String.format("%s (%.4f%%)", tax.getTaxRate2(), tax.getTaxRate2());
-        String firstTaxValue = String.format("$ %s", subTotal.multiply(tax.getTaxRate1()).divide(new BigDecimal("100")));
-        String secTaxValue = String.format("$ %s", subTotal.multiply(tax.getTaxRate2()).divide(new BigDecimal("100")));
+        final String firstTax = String.format("%s (%.4f%%)", tax.getTaxName1(), tax.getTaxRate1());
+        final String secTax = String.format("%s (%.4f%%)", tax.getTaxRate2(), tax.getTaxRate2());
+        final String firstTaxValue = String.format("$ %s", subTotal.multiply(tax.getTaxRate1()).divide(new BigDecimal("100")));
+        final String secTaxValue = String.format("$ %s", subTotal.multiply(tax.getTaxRate2()).divide(new BigDecimal("100")));
         parameters.put("firstTax", firstTax);
         parameters.put("secTax", secTax);
         parameters.put("firstTaxValue", firstTaxValue);
@@ -116,7 +116,7 @@ public class InvoiceImpl implements InvoiceService {
     }
 
     private SOInvoiceItem getSoInvoiceItem(SaleOrderItem e) {
-        Product product = productService.findByProductKeyPartyAndItemCode(e.getParty(), e.getItemCode());
+        final Product product = productService.findByProductKeyPartyAndItemCode(e.getParty(), e.getItemCode());
         return SOInvoiceItem.builder()
                 .item(product.getItemCode())
                 .party(e.getParty().getFullName())

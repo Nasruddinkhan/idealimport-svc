@@ -45,7 +45,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -76,11 +75,11 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     private final ProductControl productControl;
     @Override
     public SaleOrderCreationResponse createSaleOrder(SaleOrderRequestDto saleOrderRequest) {
-        final var saleOrderId = CommonUtils.getUUID(saleOrderRequest.saleOrderId());
-        final var customer = customerControl.findCustomer(Long.valueOf(saleOrderRequest.customer().key()));
-        final var user = userControl.findUserByEmailOrId(SecurityUtils.getLoggedInUserId());
+        final String saleOrderId = CommonUtils.getUUID(saleOrderRequest.saleOrderId());
+        final Customer customer = customerControl.findCustomer(Long.valueOf(saleOrderRequest.customer().key()));
+        final User user = userControl.findUserByEmailOrId(SecurityUtils.getLoggedInUserId());
         final List<SaleOrderItem> items = validateAndGetSaleOrderItem(saleOrderRequest.items(), user);
-        final var saleOrderInfo = saleOrderMapper.getSaleOrderInfo(saleOrderRequest.saleOrderInfo());
+        final SaleOrderInfo saleOrderInfo = saleOrderMapper.getSaleOrderInfo(saleOrderRequest.saleOrderInfo());
         Amount amount = null;
         if (Objects.nonNull(saleOrderRequest.amount())) {
             amount = saleOrderMapper.getSaleOrderAmount(saleOrderRequest.amount());
@@ -89,7 +88,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
                 amount.setTax(taxService.findTax(saleOrderRequest.amount().tax().getTaxId()));
         }
         final SaleOrder order = getSaleOrder(saleOrderId, amount, customer, items, saleOrderRequest.orderStatus(), saleOrderInfo, user, saleOrderRequest.trackingId());
-        //call update product update in case status approver
         SaleOrder saleOrder = saleOrderRepository.save(order);
         return saleOrderMapper.createSaleOrderResponse(saleOrder, saleOrderRequest.amount());
     }
@@ -110,7 +108,11 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
     @Override
     @Transactional
-    @Deprecated
+
+    /**
+     * @deprecated (when, why, refactoring advice...)
+     */
+    @Deprecated(since="4.2", forRemoval=true)
     public void deleteSaleOrderItem(String orderAmountId, String oderItem) {
         final OrderItem item = sOrderItemRepository.findById(oderItem)
                 .orElseThrow(() -> new IdealException(IdealResponseErrorCode.NOT_FOUND,
@@ -181,7 +183,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     @Transactional
     public ApiResponse updateAmount(SaleOrderUpdateAmtRequest updateAmtRequest) {
 
-        SaleOrderAmountAudit saleOrderAmountAudit = sOrderAmountRepository.findById(updateAmtRequest.saleOrderAmtId())
+        final SaleOrderAmountAudit saleOrderAmountAudit = sOrderAmountRepository.findById(updateAmtRequest.saleOrderAmtId())
                 .map(e -> {
                     BigDecimal amount = updateAmtRequest.amount();
                     e.setBalance(e.getBalance().subtract(amount));
@@ -192,7 +194,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
                 .map(orderAmountAuditRepository::save)
                 .orElseThrow(() -> new IdealException(IdealResponseErrorCode.INVALID_ARGUMENT,
                         messageSource.getMessage(MessageConstants.NO_AMT_FOUND, null, LocaleContextHolder.getLocale())));
-        String updateMessage = messageSource.getMessage(
+        final String updateMessage = messageSource.getMessage(
                 MessageConstants.SO_AMT_UPD_MSG,
                 new Object[]{saleOrderAmountAudit.getPaidAmount(), saleOrderAmountAudit.getRemainingAmount()},
                 LocaleContextHolder.getLocale());
