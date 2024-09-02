@@ -2,6 +2,7 @@ package ca.com.idealimport.service.invoice.service.impl;
 
 import ca.com.idealimport.common.util.CommonUtils;
 import ca.com.idealimport.service.invoice.model.SOInvoiceItem;
+import ca.com.idealimport.service.invoice.model.SOOrderForm;
 import ca.com.idealimport.service.invoice.service.InvoiceService;
 import ca.com.idealimport.service.product.entity.Product;
 import ca.com.idealimport.service.product.service.ProductService;
@@ -56,6 +57,39 @@ public class InvoiceImpl implements InvoiceService {
         }
     }
 
+    @Override
+    public List<SOOrderForm> createOrderInvoice(String orderId) throws IOException, JRException {
+        final SaleOrder saleOrder = saleOrderService.getSaleOrder(orderId);
+        return getOrderFormInvoiceItems(saleOrder);
+    }
+
+    private List<SOOrderForm> getOrderFormInvoiceItems(SaleOrder saleOrder) {
+        return saleOrder.getItems().stream().map(e -> {
+                    final Product product = productService.findByProductKeyPartyAndItemCode(e.getParty(), e.getItemCode());
+                    return SOOrderForm
+                            .builder().item(e.getItemCode())
+                            .party(e.getParty().getFullName())
+                            .style(product.getStyle())
+                            .newStyle(product.getPackingColors())
+                            .color(e.getOrderItem().getColor())
+                            .xs(e.getOrderItem().getXs())
+                            .s(e.getOrderItem().getS())
+                            .m(e.getOrderItem().getM())
+                            .l(e.getOrderItem().getL())
+                            .xl(e.getOrderItem().getXl())
+                            .xxl(e.getOrderItem().getXxl())
+                            .xxxl(e.getOrderItem().getXxxl())
+                            .mixed(e.getOrderItem().getMixed())
+                            .quantity(e.getOrderItem().getQty())
+                            .amount(e.getOrderItem().getSubTotal())
+                            .rate(e.getOrderItem().getUnitPrice())
+                            .build();
+                })
+                .toList();
+
+    }
+
+
     private Map<String, Object> buildParameters(SaleOrder saleOrder, JRBeanCollectionDataSource dataSource, Amount amount) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("invoice", String.format("INV-%s", saleOrder.getSaleOrderId().split("-")[1]));
@@ -83,6 +117,7 @@ public class InvoiceImpl implements InvoiceService {
         parameters.put("remarks", saleOrder.getSaleOrderInfo().getRemarks());
         return parameters;
     }
+
     private void addTaxDetails(Map<String, Object> parameters, Tax tax, BigDecimal subTotal) {
         final String firstTax = String.format("%s (%.4f%%)", tax.getTaxName1(), tax.getTaxRate1());
         final String secTax = String.format("%s (%.4f%%)", tax.getTaxRate2(), tax.getTaxRate2());
@@ -93,6 +128,7 @@ public class InvoiceImpl implements InvoiceService {
         parameters.put("firstTaxValue", firstTaxValue);
         parameters.put("secTaxValue", secTaxValue);
     }
+
     private List<SOInvoiceItem> getSoInvoiceItems(SaleOrder saleOrder) {
         return saleOrder.getItems().stream()
                 .map(this::getSoInvoiceItem)
@@ -103,7 +139,7 @@ public class InvoiceImpl implements InvoiceService {
                 .toList();
     }
 
-    private  SOInvoiceItem getSoInvoiceItem(List<SOInvoiceItem> items) {
+    private SOInvoiceItem getSoInvoiceItem(List<SOInvoiceItem> items) {
         return items.stream().reduce((s1, s2) -> SOInvoiceItem.builder()
                 .item(s1.getItem())
                 .party(s1.getParty())
