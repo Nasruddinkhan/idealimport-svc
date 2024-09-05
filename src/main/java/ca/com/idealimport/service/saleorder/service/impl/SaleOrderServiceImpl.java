@@ -23,6 +23,7 @@ import ca.com.idealimport.service.saleorder.entity.Amount;
 import ca.com.idealimport.service.saleorder.entity.OrderItem;
 import ca.com.idealimport.service.saleorder.entity.SaleOrder;
 import ca.com.idealimport.service.saleorder.entity.SaleOrderAmountAudit;
+import ca.com.idealimport.service.saleorder.entity.SaleOrderHistory;
 import ca.com.idealimport.service.saleorder.entity.SaleOrderInfo;
 import ca.com.idealimport.service.saleorder.entity.SaleOrderItem;
 import ca.com.idealimport.service.saleorder.entity.dto.*;
@@ -30,6 +31,7 @@ import ca.com.idealimport.service.saleorder.mapper.SaleOrderMapper;
 import ca.com.idealimport.service.saleorder.repository.SOrderAmountRepository;
 import ca.com.idealimport.service.saleorder.repository.SOrderItemRepository;
 import ca.com.idealimport.service.saleorder.repository.SaleOrderAmountAuditRepository;
+import ca.com.idealimport.service.saleorder.repository.SaleOrderHistoryRepository;
 import ca.com.idealimport.service.saleorder.repository.SaleOrderRepository;
 import ca.com.idealimport.service.saleorder.service.SaleOrderService;
 import ca.com.idealimport.service.saleorder.service.SaleOrderStatusService;
@@ -64,7 +66,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     private final PartyControl partyControl;
     private final ProductItemControl productItemControl;
     private final TaxService taxService;
-    private final SaleOrderStatusService saleOrderStatusService;
     private final TracingNumberGenerator tracingNumberGenerator;
     private final SaleOrderRepository saleOrderRepository;
     private final PageUtils pageUtils;
@@ -72,7 +73,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     private final SOrderItemRepository sOrderItemRepository;
     private final SOrderAmountRepository sOrderAmountRepository;
     private final SaleOrderAmountAuditRepository orderAmountAuditRepository;
-    private final ProductControl productControl;
+    private final SaleOrderHistoryRepository saleOrderHistoryRepository;
     @Override
     public SaleOrderCreationResponse createSaleOrder(SaleOrderRequestDto saleOrderRequest) {
         final String saleOrderId = CommonUtils.getUUID(saleOrderRequest.saleOrderId());
@@ -88,7 +89,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
                 amount.setTax(taxService.findTax(saleOrderRequest.amount().tax().getTaxId()));
         }
         final SaleOrder order = getSaleOrder(saleOrderId, amount, customer, items, saleOrderRequest.orderStatus(), saleOrderInfo, user, saleOrderRequest.trackingId());
-        SaleOrder saleOrder = saleOrderRepository.save(order);
+        final SaleOrder saleOrder = saleOrderRepository.save(order);
+        saleOrderHistoryRepository.save(saleOrderMapper.getSaleOrderHistoryId(saleOrder));
         return saleOrderMapper.createSaleOrderResponse(saleOrder, saleOrderRequest.amount());
     }
 
@@ -150,6 +152,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     public void updateInventory(String saleOrderId) {
      final SaleOrder  saleOrder = getSaleOrder(saleOrderId);
       productItemControl.updateAllProductItem(saleOrder.getItems().stream().map(SaleOrderItem::getOrderItem).toList());
+
     }
 
     @Override
@@ -176,6 +179,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
                 ).contains(status))
                 .orElseThrow(() -> new IdealException(IdealResponseErrorCode.INVALID_ARGUMENT));
         saleOrderRepository.updateStatus(saleOrderUpdateRequest.orderStatus(), saleOrderUpdateRequest.saleOrderId());
+       saleOrderHistoryRepository.save(saleOrderMapper.getSaleOrderHistoryId(saleOrderUpdateRequest));
         return new ApiResponse(messageSource.getMessage(MessageConstants.SO_ORDER_STATUS_UPDATE, null, LocaleContextHolder.getLocale()));
     }
 

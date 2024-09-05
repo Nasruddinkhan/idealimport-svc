@@ -13,6 +13,7 @@ import ca.com.idealimport.service.saleorder.entity.Amount;
 import ca.com.idealimport.service.saleorder.entity.OrderItem;
 import ca.com.idealimport.service.saleorder.entity.SaleOrder;
 import ca.com.idealimport.service.saleorder.entity.SaleOrderAmountAudit;
+import ca.com.idealimport.service.saleorder.entity.SaleOrderHistory;
 import ca.com.idealimport.service.saleorder.entity.SaleOrderInfo;
 import ca.com.idealimport.service.saleorder.entity.SaleOrderItem;
 import ca.com.idealimport.service.saleorder.entity.dto.*;
@@ -142,4 +143,10 @@ public interface SaleOrderMapper {
     @Mapping(target = "auditDto.lastModifiedDate", source = "lastModifiedDate")
     SaleOrderAmountHistoryDTO toDto(SaleOrderAmountAudit audit);
     List<SaleOrderAmountHistoryDTO> mapAmountAuditToAmountHistory(List<SaleOrderAmountAudit> amountHistorys);
+
+    @Mapping(target = "saleOrderHistoryId", expression = "java(getCommonId(null))")
+    SaleOrderHistory getSaleOrderHistoryId(SaleOrderUpdateRequest saleOrder);
+
+    @Mapping(target = "saleOrderHistoryId", expression = "java(getCommonId(null))")
+    SaleOrderHistory getSaleOrderHistoryId(SaleOrder saleOrder);
 }

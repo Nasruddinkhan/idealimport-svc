@@ -32,6 +32,4 @@ public class InvoiceController {
     public ResponseEntity<List<SOOrderForm>> createOrderFormInvoice(@PathVariable String orderId) throws IOException, JRException {
         return  ResponseEntity.ok(invoiceService.createOrderInvoice(orderId));
     }
-
-
 }
