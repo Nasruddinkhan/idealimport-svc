@@ -172,7 +172,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
     @Override
     public List<SaleOrderHistoryDto> findAllSaleOrderHistory(String saleOrderId) {
-        return saleOrderHistoryRepository.findAll()
+        return saleOrderHistoryRepository.findBySaleOrderId(saleOrderId)
                 .stream()
                 .map(saleOrderMapper::getHistoryToHistoryDto)
                 .toList();
