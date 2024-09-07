@@ -1,6 +1,7 @@
 package ca.com.idealimport.service.saleorder.entity;
 
 
+import ca.com.idealimport.common.entity.AuditableEntity;
 import ca.com.idealimport.common.enums.SaleOrderStatusEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,7 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SaleOrderHistory {
+public class SaleOrderHistory extends AuditableEntity {
 
     @Id
     @Column(name = "sale_order_history_id", length = 36)

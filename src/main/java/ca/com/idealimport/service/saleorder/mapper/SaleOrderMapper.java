@@ -149,4 +149,10 @@ public interface SaleOrderMapper {
 
     @Mapping(target = "saleOrderHistoryId", expression = "java(getCommonId(null))")
     SaleOrderHistory getSaleOrderHistoryId(SaleOrder saleOrder);
+
+    @Mapping(target = "auditDto.createdBy", source = "createdBy")
+    @Mapping(target = "auditDto.createdDate", source = "createdDate")
+    @Mapping(target = "auditDto.lastModifiedBy", source = "lastModifiedBy")
+    @Mapping(target = "auditDto.lastModifiedDate", source = "lastModifiedDate")
+    SaleOrderHistoryDto getHistoryToHistoryDto(SaleOrderHistory saleOrderHistory);
 }

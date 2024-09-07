@@ -83,4 +83,10 @@ public class SaleOrderController implements SecureApi {
         return ResponseEntity.ok(saleOrderService.findAllAmountHistory(soOrderId, amountHistory));
     }
 
+    @GetMapping("/status-history/{sale-order-id}")
+    public ResponseEntity<List<SaleOrderHistoryDto>> findAllSaleOrderHistory(
+            @PathVariable("sale-order-id") String saleOrderId){
+        return  ResponseEntity.ok(saleOrderService.findAllSaleOrderHistory(saleOrderId));
+    }
+
 }

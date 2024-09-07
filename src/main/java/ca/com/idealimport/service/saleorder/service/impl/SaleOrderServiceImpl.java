@@ -76,6 +76,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     private final SaleOrderHistoryRepository saleOrderHistoryRepository;
     @Override
     public SaleOrderCreationResponse createSaleOrder(SaleOrderRequestDto saleOrderRequest) {
+
         final String saleOrderId = CommonUtils.getUUID(saleOrderRequest.saleOrderId());
         final Customer customer = customerControl.findCustomer(Long.valueOf(saleOrderRequest.customer().key()));
         final User user = userControl.findUserByEmailOrId(SecurityUtils.getLoggedInUserId());
@@ -167,6 +168,14 @@ public class SaleOrderServiceImpl implements SaleOrderService {
                 );
         Hibernate.initialize(saleOrder.getItems()); // Initialize lazy collection within transaction
         return saleOrder;
+    }
+
+    @Override
+    public List<SaleOrderHistoryDto> findAllSaleOrderHistory(String saleOrderId) {
+        return saleOrderHistoryRepository.findAll()
+                .stream()
+                .map(saleOrderMapper::getHistoryToHistoryDto)
+                .toList();
     }
 
     @Override

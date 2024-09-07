@@ -26,4 +26,6 @@ public interface SaleOrderService {
 
     List<SaleOrderAmountHistoryDTO> findAllAmountHistory(String soOrderId, String amountHistory);
     SaleOrder getSaleOrder(String saleOrderId);
+
+    List<SaleOrderHistoryDto> findAllSaleOrderHistory(String saleOrderId);
 }
