@@ -47,9 +47,8 @@ public class InvoiceImpl implements InvoiceService {
     public byte[] createInvoice(String orderId) throws IOException, JRException {
         final SaleOrder saleOrder = saleOrderService.getSaleOrder(orderId);
         final List<SOInvoiceItem> reducedItems = getSoInvoiceItems(saleOrder);
-        final JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(reducedItems);
         final Amount amount = saleOrder.getAmounts();
-        final Map<String, Object> parameters = buildParameters(saleOrder, dataSource, amount);
+        final Map<String, Object> parameters = buildParameters(saleOrder, reducedItems, amount);
         try (final InputStream inputStream = CommonUtils.readFileFromResources("classpath:templates/reports/sale-order.jrxml", resourceLoader)) {
             final JasperReport jasperReport = JasperCompileManager.compileReport(inputStream);
             final JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, new JREmptyDataSource());
@@ -58,9 +57,16 @@ public class InvoiceImpl implements InvoiceService {
     }
 
     @Override
-    public List<SOOrderForm> createOrderInvoice(String orderId) throws IOException, JRException {
+    public byte[] createOrderInvoice(String orderId) throws IOException, JRException {
         final SaleOrder saleOrder = saleOrderService.getSaleOrder(orderId);
-        return getOrderFormInvoiceItems(saleOrder);
+        final List<SOOrderForm> orderForms = getOrderFormInvoiceItems(saleOrder);
+        final Amount amount = saleOrder.getAmounts();
+        final Map<String, Object> parameters = buildParametersOf(saleOrder, orderForms, amount);
+        try (final InputStream inputStream = CommonUtils.readFileFromResources("classpath:templates/reports/oder-form-landscape.jrxml", resourceLoader)) {
+            final JasperReport jasperReport = JasperCompileManager.compileReport(inputStream);
+            final JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, new JREmptyDataSource());
+            return JasperExportManager.exportReportToPdf(jasperPrint);
+        }
     }
 
     private List<SOOrderForm> getOrderFormInvoiceItems(SaleOrder saleOrder) {
@@ -88,9 +94,35 @@ public class InvoiceImpl implements InvoiceService {
                 .toList();
 
     }
+    private Map<String, Object> buildParametersOf(SaleOrder saleOrder,List<SOOrderForm> soOrderForms, Amount amount) {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("orderNo",saleOrder.getSaleOrderId());
+        parameters.put("status",saleOrder.getOrderStatus().getValue());
+        parameters.put("orderDate", formatDate(saleOrder.getCreatedDate()));
+        parameters.put("orderBy", saleOrder.getSaleOrderInfo().getOrderBy());
+        parameters.put("customerAlais", String.format("%s %s", saleOrder.getCustomer().getCustomerName(), saleOrder.getSaleOrderId()));
+        parameters.put("via", Optional.ofNullable(saleOrder.getSaleOrderInfo().getVia()).orElse(NA));
+        parameters.put("ref", Optional.ofNullable(saleOrder.getSaleOrderInfo().getRef()).orElse(NA));
+        parameters.put("orderList", new JRBeanCollectionDataSource(soOrderForms));
+        parameters.put("discount", amount.getDiscount());
+        parameters.put("subTotal", amount.getSubTotal().toString());
+        Optional.ofNullable(amount.getTax())
+                .ifPresentOrElse(
+                        tax -> addTaxDetails(parameters, tax, amount.getSubTotal()),
+                        () -> {
+                            parameters.put("firstTax", NA);
+                            parameters.put("secTax", NA);
+                            parameters.put("firstTaxValue", NA);
+                            parameters.put("secTaxValue", NA);
+                        }
+                );
+        parameters.put("grandTotal", amount.getTotalAmount());
+       // parameters.put("shippingDate", "");
+        parameters.put("remarks", saleOrder.getSaleOrderInfo().getRemarks());
+        return parameters;
+    }
 
-
-    private Map<String, Object> buildParameters(SaleOrder saleOrder, JRBeanCollectionDataSource dataSource, Amount amount) {
+    private Map<String, Object> buildParameters(SaleOrder saleOrder, List<SOInvoiceItem> soInvoiceItems, Amount amount) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("invoice", String.format("INV-%s", saleOrder.getSaleOrderId().split("-")[1]));
         parameters.put("orderDate", formatDate(saleOrder.getCreatedDate()));
@@ -99,7 +131,7 @@ public class InvoiceImpl implements InvoiceService {
         parameters.put("customerAddressAlais", saleOrder.getCustomer().getAddress());
         parameters.put("via", Optional.ofNullable(saleOrder.getSaleOrderInfo().getVia()).orElse(NA));
         parameters.put("ref", Optional.ofNullable(saleOrder.getSaleOrderInfo().getRef()).orElse(NA));
-        parameters.put("listOfOrder", dataSource);
+        parameters.put("listOfOrder", new JRBeanCollectionDataSource(soInvoiceItems));
         parameters.put("discount", amount.getDiscount());
         parameters.put("subTotal", amount.getSubTotal().toString());
         Optional.ofNullable(amount.getTax())

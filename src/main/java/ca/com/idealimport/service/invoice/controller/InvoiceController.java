@@ -29,7 +29,7 @@ public class InvoiceController {
 
     @LogApiTime
     @GetMapping("/sale-order-form/{orderId}")
-    public ResponseEntity<List<SOOrderForm>> createOrderFormInvoice(@PathVariable String orderId) throws IOException, JRException {
+    public ResponseEntity<byte[]> createOrderFormInvoice(@PathVariable String orderId) throws IOException, JRException {
         return  ResponseEntity.ok(invoiceService.createOrderInvoice(orderId));
     }
 }

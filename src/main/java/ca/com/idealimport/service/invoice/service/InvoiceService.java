@@ -10,6 +10,6 @@ public interface InvoiceService {
 
     byte[] createInvoice(String orderId) throws IOException, JRException;
 
-    List<SOOrderForm> createOrderInvoice(String orderId) throws IOException, JRException;
+    byte[] createOrderInvoice(String orderId) throws IOException, JRException;
 
 }
