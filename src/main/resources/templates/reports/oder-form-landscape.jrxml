@@ -150,7 +150,6 @@
 								<text><![CDATA[Party]]></text>
 							</element>
 						</columnHeader>
-						<columnFooter height="30" rowSpan="1" style="Table_CH"/>
 						<detailCell height="30" style="Table_TD">
 							<element kind="textField" uuid="404dfec7-cdb7-418f-a6d8-ae43cfebc2b3" x="0" y="0" width="69" height="30" hTextAlign="Center" vTextAlign="Middle">
 								<expression><![CDATA[$F{party}]]></expression>
@@ -165,7 +164,6 @@
 								<text><![CDATA[P-Style]]></text>
 							</element>
 						</columnHeader>
-						<columnFooter height="30" rowSpan="1" style="Table_CH"/>
 						<detailCell height="30" style="Table_TD">
 							<element kind="textField" uuid="1b321e41-e0d2-481a-8a37-49aeca685237" x="0" y="0" width="69" height="30" hTextAlign="Center" vTextAlign="Middle">
 								<expression><![CDATA[$F{newStyle}]]></expression>
@@ -179,7 +177,6 @@
 								<text><![CDATA[Style]]></text>
 							</element>
 						</columnHeader>
-						<columnFooter height="30" rowSpan="1" style="Table_CH"/>
 						<detailCell height="30" style="Table_TD">
 							<element kind="textField" uuid="402d1b13-e564-4543-a0f9-aec0979336c8" x="0" y="0" width="69" height="30" hTextAlign="Center" vTextAlign="Middle">
 								<expression><![CDATA[$F{style}]]></expression>
@@ -193,7 +190,6 @@
 								<text><![CDATA[Item]]></text>
 							</element>
 						</columnHeader>
-						<columnFooter height="30" rowSpan="1" style="Table_CH"/>
 						<detailCell height="30" style="Table_TD">
 							<element kind="textField" uuid="acf354d5-14cb-4e60-82be-ba024b93c80b" x="0" y="0" width="69" height="30" hTextAlign="Center" vTextAlign="Middle">
 								<expression><![CDATA[$F{item}]]></expression>
@@ -207,7 +203,6 @@
 								<text><![CDATA[Color]]></text>
 							</element>
 						</columnHeader>
-						<columnFooter height="30" rowSpan="1" style="Table_CH"/>
 						<detailCell height="30" style="Table_TD">
 							<element kind="textField" uuid="515878ed-41b5-486d-9884-ea2f83e29d40" x="0" y="0" width="68" height="30" hTextAlign="Center" vTextAlign="Middle">
 								<expression><![CDATA[$F{color}]]></expression>
@@ -221,7 +216,6 @@
 								<text><![CDATA[xs]]></text>
 							</element>
 						</columnHeader>
-						<columnFooter height="30" rowSpan="1" style="Table_CH"/>
 						<detailCell height="30" style="Table_TD">
 							<element kind="textField" uuid="d3f142d3-9e24-4490-95ee-799706621a9c" x="0" y="0" width="30" height="30" hTextAlign="Center" vTextAlign="Middle">
 								<expression><![CDATA[$F{xs}]]></expression>
@@ -235,7 +229,6 @@
 								<text><![CDATA[S]]></text>
 							</element>
 						</columnHeader>
-						<columnFooter height="30" rowSpan="1" style="Table_CH"/>
 						<detailCell height="30" style="Table_TD">
 							<element kind="textField" uuid="4324209e-982c-4f32-ac96-f62aa8868556" x="0" y="0" width="29" height="30" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
 								<expression><![CDATA[$F{s}]]></expression>
@@ -249,7 +242,6 @@
 								<text><![CDATA[M]]></text>
 							</element>
 						</columnHeader>
-						<columnFooter height="30" rowSpan="1" style="Table_CH"/>
 						<detailCell height="30" style="Table_TD">
 							<element kind="textField" uuid="d28df1ca-cb04-4c92-ba68-8ecad2a27a78" x="0" y="0" width="30" height="30" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
 								<expression><![CDATA[$F{m}]]></expression>
@@ -263,7 +255,6 @@
 								<text><![CDATA[L]]></text>
 							</element>
 						</columnHeader>
-						<columnFooter height="30" rowSpan="1" style="Table_CH"/>
 						<detailCell height="30" style="Table_TD">
 							<element kind="textField" uuid="3f999250-6334-4af4-a467-40ab0c038a10" x="0" y="0" width="29" height="30" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
 								<expression><![CDATA[$F{l}]]></expression>
@@ -277,7 +268,6 @@
 								<text><![CDATA[XL]]></text>
 							</element>
 						</columnHeader>
-						<columnFooter height="30" rowSpan="1" style="Table_CH"/>
 						<detailCell height="30" style="Table_TD">
 							<element kind="textField" uuid="6a80bcbc-1bbe-4f54-8c61-65c01e57a9dd" x="0" y="0" width="30" height="30" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
 								<expression><![CDATA[$F{xl}]]></expression>
@@ -291,7 +281,6 @@
 								<text><![CDATA[2XL]]></text>
 							</element>
 						</columnHeader>
-						<columnFooter height="30" rowSpan="1" style="Table_CH"/>
 						<detailCell height="30" style="Table_TD">
 							<element kind="textField" uuid="7414eaf0-dbaf-402a-9090-5d915c301b06" x="0" y="0" width="30" height="30" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
 								<expression><![CDATA[$F{xxl}]]></expression>
@@ -305,7 +294,6 @@
 								<text><![CDATA[3XL]]></text>
 							</element>
 						</columnHeader>
-						<columnFooter height="30" rowSpan="1" style="Table_CH"/>
 						<detailCell height="30" style="Table_TD">
 							<element kind="textField" uuid="fc5abcc6-fbd7-4981-ab85-7c49f9440adf" x="0" y="0" width="30" height="30" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
 								<expression><![CDATA[$F{xxxl}]]></expression>
@@ -319,7 +307,6 @@
 								<text><![CDATA[Mix]]></text>
 							</element>
 						</columnHeader>
-						<columnFooter height="30" rowSpan="1" style="Table_CH"/>
 						<detailCell height="30" style="Table_TD">
 							<element kind="textField" uuid="5f805f75-4241-4042-803a-86c6e48f5365" x="0" y="0" width="29" height="30" blankWhenNull="true" hTextAlign="Center" vTextAlign="Middle">
 								<expression><![CDATA[$F{mixed}]]></expression>
@@ -333,7 +320,6 @@
 								<text><![CDATA[Total Qty]]></text>
 							</element>
 						</columnHeader>
-						<columnFooter height="30" rowSpan="1" style="Table_CH"/>
 						<detailCell height="30" style="Table_TD">
 							<element kind="textField" uuid="5ef20cf0-1782-4c5f-bac6-3959a90dec94" x="0" y="0" width="53" height="30" hTextAlign="Center" vTextAlign="Middle">
 								<expression><![CDATA[$F{quantity}]]></expression>
@@ -347,11 +333,6 @@
 								<text><![CDATA[Rate]]></text>
 							</element>
 						</columnHeader>
-						<columnFooter height="30" rowSpan="1" style="Table_CH">
-							<element kind="staticText" uuid="ae0947ce-f6d5-4bb9-8a39-eb9c6f5a96de" x="0" y="0" width="53" height="30" hTextAlign="Center" vTextAlign="Middle">
-								<text><![CDATA[Total Amt]]></text>
-							</element>
-						</columnFooter>
 						<detailCell height="30" style="Table_TD">
 							<element kind="textField" uuid="31f03eee-b1db-4f19-8572-cc32e20049f8" x="0" y="0" width="53" height="30" hTextAlign="Center" vTextAlign="Middle">
 								<expression><![CDATA[$F{rate}]]></expression>
@@ -365,7 +346,6 @@
 								<text><![CDATA[Ampunt]]></text>
 							</element>
 						</columnHeader>
-						<columnFooter height="30" rowSpan="1" style="Table_CH"/>
 						<detailCell height="30" style="Table_TD">
 							<element kind="textField" uuid="6e1c8d24-8db4-4afe-8ba4-8ee3f1809974" x="0" y="0" width="53" height="30" hTextAlign="Center" vTextAlign="Middle">
 								<expression><![CDATA[$F{amount}]]></expression>
