@@ -100,7 +100,7 @@ public class InvoiceImpl implements InvoiceService {
         parameters.put("status",saleOrder.getOrderStatus().getValue());
         parameters.put("orderDate", formatDate(saleOrder.getCreatedDate()));
         parameters.put("orderBy", saleOrder.getSaleOrderInfo().getOrderBy());
-        parameters.put("customerAlais", String.format("%s %s", saleOrder.getCustomer().getCustomerName(), saleOrder.getSaleOrderId()));
+        parameters.put("customerAlais", saleOrder.getCustomer().getCustomerName());
         parameters.put("via", Optional.ofNullable(saleOrder.getSaleOrderInfo().getVia()).orElse(NA));
         parameters.put("ref", Optional.ofNullable(saleOrder.getSaleOrderInfo().getRef()).orElse(NA));
         parameters.put("orderList", new JRBeanCollectionDataSource(soOrderForms));
@@ -116,6 +116,7 @@ public class InvoiceImpl implements InvoiceService {
                             parameters.put("secTaxValue", NA);
                         }
                 );
+        parameters.put("shippingDate", "");
         parameters.put("grandTotal", amount.getTotalAmount());
        // parameters.put("shippingDate", "");
         parameters.put("remarks", saleOrder.getSaleOrderInfo().getRemarks());
