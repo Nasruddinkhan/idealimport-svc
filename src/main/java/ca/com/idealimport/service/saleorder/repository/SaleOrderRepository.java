@@ -1,6 +1,7 @@
 package ca.com.idealimport.service.saleorder.repository;
 
 import ca.com.idealimport.common.enums.SaleOrderStatusEnum;
+import ca.com.idealimport.service.customer.entity.Customer;
 import ca.com.idealimport.service.saleorder.entity.SaleOrder;
 import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderResponse;
 import org.springframework.data.domain.Page;
@@ -12,6 +13,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -24,4 +26,6 @@ public interface SaleOrderRepository extends JpaRepository<SaleOrder, String> {
     @Modifying
     @Query("Update SaleOrder s set s.orderStatus = :STATUS where s.saleOrderId = :ID" )
     int updateStatus(@Param("STATUS") SaleOrderStatusEnum saleOrderStatusEnum,@Param("ID") String saleOrderId);
+
+    List<SaleOrder> findByCustomer(Customer customer);
 }

@@ -1,10 +1,12 @@
 package ca.com.idealimport.service.saleorder.service;
 
 import ca.com.idealimport.common.dto.ApiResponse;
+import ca.com.idealimport.service.customer.entity.Customer;
 import ca.com.idealimport.service.saleorder.entity.SaleOrder;
 import ca.com.idealimport.service.saleorder.entity.dto.*;
 import org.springframework.data.domain.Page;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface SaleOrderService {
@@ -28,4 +30,6 @@ public interface SaleOrderService {
     SaleOrder getSaleOrder(String saleOrderId);
 
     List<SaleOrderHistoryDto> findAllSaleOrderHistory(String saleOrderId);
+
+    List<SaleOrder> findBalanceByCustomer(Customer customer);
 }

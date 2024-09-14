@@ -179,6 +179,12 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<SaleOrder> findBalanceByCustomer(Customer customer) {
+        return saleOrderRepository.findByCustomer(customer);
+    }
+
+    @Override
     @Transactional
     public ApiResponse updateStatus(SaleOrderUpdateRequest saleOrderUpdateRequest) {
         Optional.of(saleOrderUpdateRequest.orderStatus().getValue())
