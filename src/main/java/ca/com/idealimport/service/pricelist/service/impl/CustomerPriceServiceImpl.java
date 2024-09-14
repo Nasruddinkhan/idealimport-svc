@@ -1,6 +1,7 @@
 package ca.com.idealimport.service.pricelist.service.impl;
 
 import ca.com.idealimport.common.constants.MessageConstants;
+import ca.com.idealimport.common.dto.AuditDto;
 import ca.com.idealimport.common.dto.DropDownDto;
 import ca.com.idealimport.common.specifications.SpecificationUtils;
 import ca.com.idealimport.common.specifications.Specifications;
@@ -13,11 +14,16 @@ import ca.com.idealimport.service.party.control.PartyControl;
 import ca.com.idealimport.service.party.entity.Party;
 import ca.com.idealimport.service.pricelist.entity.CustomerParty;
 import ca.com.idealimport.service.pricelist.entity.ItemPrice;
+import ca.com.idealimport.service.pricelist.entity.ItemPriceHistory;
 import ca.com.idealimport.service.pricelist.entity.dto.CustomerPriceDto;
 import ca.com.idealimport.service.pricelist.entity.dto.CustomerPriceResponse;
+import ca.com.idealimport.service.pricelist.entity.dto.ItemPriceHistoryDto;
 import ca.com.idealimport.service.pricelist.entity.dto.PriceItemDto;
 import ca.com.idealimport.service.pricelist.repository.CustomerPartyRepository;
+import ca.com.idealimport.service.pricelist.repository.ItemPriceHistoryRepository;
 import ca.com.idealimport.service.pricelist.service.CustomerPriceService;
+import ca.com.idealimport.service.product.entity.Product;
+import ca.com.idealimport.service.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -41,7 +47,8 @@ public class CustomerPriceServiceImpl implements CustomerPriceService {
     private final CustomerPartyRepository customerPartyRepository;
     private final PageUtils pageUtils;
     private final MessageSource messageSource;
-
+    private final ProductService productService;
+    private final ItemPriceHistoryRepository itemPriceHistoryRepository;
     /**
      * Later change the mapping with customer price item mapper
      *
@@ -53,21 +60,48 @@ public class CustomerPriceServiceImpl implements CustomerPriceService {
     public CustomerPriceResponse createCustomerPrice(CustomerPriceDto customerPriceDto) {
         final Customer customer = customerControl.findCustomer(customerPriceDto.customerId());
         final Party party = partyControl.findParty(customerPriceDto.partyId());
-        final List<ItemPrice> itemPriceList = customerPriceDto.itemPrices().stream()
-                .map(itemDTO -> ItemPrice.builder()
-                        .price(itemDTO.amount())
-                        .itemPriceId(itemDTO.priceId())
-                        .itemId(itemDTO.itemCode())
-                        .build()).toList();
-        final CustomerParty customerParty = CustomerParty.builder()
+        final List<ItemPrice> itemPriceList = getItemPrices(customerPriceDto);
+        final CustomerParty customerParty = getCustomerParty(customerPriceDto, itemPriceList, customer, party);
+        itemPriceList.forEach(itemPrice -> itemPrice.setCustomerParty(customerParty));
+        CustomerParty customerParty1 = customerPartyRepository.save(customerParty);
+        List<ItemPriceHistory> itemPriceHistories = getItemPriceHistories(customerParty1);
+        itemPriceHistoryRepository.saveAll(itemPriceHistories);
+        return getCustomerPriceResponse(customerParty1);
+    }
+
+    private List<ItemPriceHistory> getItemPriceHistories(CustomerParty customerParty) {
+        return customerParty.getItemPrices().stream().map(e -> {
+            final Product product = productService.findByProductKeyPartyAndItemCode(e.getCustomerParty().getParty(),
+                    e.getItemId());
+            return ItemPriceHistory.builder()
+                    .customer(customerParty.getCustomer())
+                    .partyName(customerParty.getParty().getFullName())
+                    .itemId(e.getItemId())
+                    .style(product.getStyle())
+                    .pStyle(product.getPackingColors())
+                    .style(product.getStyle())
+                    .price(e.getPrice())
+                    .itemPriceId(e.getItemPriceId())
+                    .build();
+        }).toList();
+    }
+
+    private static CustomerParty getCustomerParty(CustomerPriceDto customerPriceDto, List<ItemPrice> itemPriceList, Customer customer, Party party) {
+        return CustomerParty.builder()
                 .customerPartyId(customerPriceDto.customerPartyId())
                 .itemPrices(itemPriceList)
                 .customer(customer)
                 .party(party)
                 .build();
-        itemPriceList.forEach(itemPrice -> itemPrice.setCustomerParty(customerParty));
-        CustomerParty customerParty1 = customerPartyRepository.save(customerParty);
-        return getCustomerPriceResponse(customerParty1);
+    }
+
+    private static List<ItemPrice> getItemPrices(CustomerPriceDto customerPriceDto) {
+        return customerPriceDto.itemPrices().stream()
+                .map(itemDTO -> ItemPrice.builder()
+                        .price(itemDTO.amount())
+                        .itemPriceId(itemDTO.priceId())
+                        .itemId(itemDTO.itemCode())
+                        .build()).toList();
     }
 
     private CustomerPriceResponse getCustomerPriceResponse(CustomerParty customerParty1) {
@@ -123,6 +157,24 @@ public class CustomerPriceServiceImpl implements CustomerPriceService {
             throw new IdealException(IdealResponseErrorCode.UNEXPECTED_ERROR,
                     messageSource.getMessage(MessageConstants.NO_CUSTOMER_PARTY, null, LocaleContextHolder.getLocale()));
         return customerParty.stream().map(this::getCustomerPriceResponse).toList();
+    }
+
+    @Override
+    public List<ItemPriceHistoryDto> findAllPartyPriceHistory(Long customerId) {
+        final Customer customer = customerControl.findCustomer(customerId);
+       return itemPriceHistoryRepository.findAllByCustomer(customer).stream().map(e->ItemPriceHistoryDto.builder()
+               .customerName(e.getCustomer().getCustomerName())
+               .pStyle(e.getPStyle())
+               .style(e.getStyle())
+               .itemId(e.getItemId())
+               .partyName(e.getPartyName())
+               .auditDto(AuditDto.builder()
+                       .createdDate(e.getCreatedDate())
+                       .lastModifiedDate(e.getLastModifiedDate())
+                       .createdBy(e.getCreatedBy())
+                       .createdDate(e.getCreatedDate())
+                       .build())
+               .build()).toList();
     }
 
     private Specification<CustomerParty> buildWhereConditions(Long customerId) {

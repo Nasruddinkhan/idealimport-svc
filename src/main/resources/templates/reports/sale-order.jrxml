@@ -247,7 +247,7 @@ GST: 764238093 QST: 1223937779
 						<column kind="single" uuid="de6efd5d-0810-47b8-bf43-b34c5d25b36f" width="73">
 							<columnHeader height="30" rowSpan="1" style="Table 1_CH">
 								<element kind="staticText" uuid="ce0fea10-23d8-4d12-aff3-5a07acdde21e" mode="Opaque" x="0" y="0" width="73" height="30" forecolor="#FFFFFF" backcolor="#3399FF" hTextAlign="Center" vTextAlign="Middle">
-									<text><![CDATA[N-Style]]></text>
+									<text><![CDATA[P-Style]]></text>
 									<box>
 										<pen lineColor="rgba(247, 242, 242, 0.8980392)"/>
 										<topPen lineWidth="1.0" lineStyle="Solid" lineColor="rgba(247, 242, 242, 0.8980392)"/>
@@ -328,7 +328,7 @@ GST: 764238093 QST: 1223937779
 						<column kind="single" uuid="0956ecbc-3c57-43b6-8a4b-c7f01e89a3b6" width="79">
 							<columnHeader height="30" rowSpan="1" style="Table 1_CH">
 								<element kind="staticText" uuid="af7a22f0-cf74-443f-8c9b-71dc215dc07b" mode="Opaque" x="0" y="0" width="79" height="30" forecolor="#FFFFFF" backcolor="#3399FF" bold="true" hTextAlign="Center" vTextAlign="Middle">
-									<text><![CDATA[Qty]]></text>
+									<text><![CDATA[Total Qty]]></text>
 									<box>
 										<pen lineColor="rgba(247, 242, 242, 0.8980392)"/>
 										<topPen lineWidth="1.0" lineStyle="Solid" lineColor="rgba(247, 242, 242, 0.8980392)"/>

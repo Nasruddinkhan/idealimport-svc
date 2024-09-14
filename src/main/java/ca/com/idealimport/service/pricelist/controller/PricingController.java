@@ -2,6 +2,7 @@ package ca.com.idealimport.service.pricelist.controller;
 
 import ca.com.idealimport.service.pricelist.entity.dto.CustomerPriceDto;
 import ca.com.idealimport.service.pricelist.entity.dto.CustomerPriceResponse;
+import ca.com.idealimport.service.pricelist.entity.dto.ItemPriceHistoryDto;
 import ca.com.idealimport.service.pricelist.service.CustomerPriceService;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -63,5 +64,10 @@ public class PricingController {
         return ResponseEntity.ok(customerPriceService.findAllParty(customerId));
     }
 
+    @GetMapping("/history/{customer-id}")
+    private ResponseEntity<List<ItemPriceHistoryDto>> findAllPartyPriceHistory(
+            @PathVariable("customer-id") Long customerId){
+        return ResponseEntity.ok(customerPriceService.findAllPartyPriceHistory(customerId));
+    }
 
 }
