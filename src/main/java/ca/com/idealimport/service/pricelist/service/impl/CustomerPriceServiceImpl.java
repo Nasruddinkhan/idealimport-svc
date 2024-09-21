@@ -36,6 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.function.IntFunction;
 import java.util.stream.IntStream;
 
 @Service
@@ -166,49 +167,35 @@ public class CustomerPriceServiceImpl implements CustomerPriceService {
     public List<ItemPriceHistoryDto>   findAllPartyPriceHistory(Long customerId) {
         final Customer customer = customerControl.findCustomer(customerId);
         List<ItemPriceHistory> sortedItems = itemPriceHistoryRepository.findAllByCustomer(customer).stream()
-                // Sort by itemPriceHistoryId in descending order
                 .sorted(Comparator.comparing(ItemPriceHistory::getItemPriceHistoryId).reversed())
                 .toList();
-//       return itemPriceHistoryRepository.findAllByCustomer(customer).stream()
-//               .sorted(Comparator.comparing(ItemPriceHistory::getItemPriceHistoryId).reversed())
-//               .map(e->ItemPriceHistoryDto.builder()
-//               .customerName(e.getCustomer().getCustomerName())
-//               .pStyle(e.getPStyle())
-//               .style(e.getStyle())
-//               .itemId(e.getItemId())
-//               .price(e.getPrice())
-//               .partyName(e.getPartyName())
-//               .auditDto(AuditDto.builder()
-//                       .createdDate(e.getCreatedDate())
-//                       .lastModifiedBy(e.getLastModifiedBy())
-//                       .lastModifiedDate(e.getLastModifiedDate())
-//                       .createdBy(e.getCreatedBy())
-//                       .createdDate(e.getCreatedDate())
-//                       .build())
-//               .build()).toList();
         return IntStream.range(0, sortedItems.size())
-                .mapToObj(i -> {
-                    ItemPriceHistory current = sortedItems.get(i);
-                    ItemPriceHistory next = (i + 1 < sortedItems.size()) ? sortedItems.get(i + 1) : null;
-                    BigDecimal previousPrice = (next != null) ? next.getPrice() : null;
-                    return ItemPriceHistoryDto.builder()
-                            .customerName(current.getCustomer().getCustomerName())
-                            .pStyle(current.getPStyle())
-                            .style(current.getStyle())
-                            .itemId(current.getItemId())
-                            .price(current.getPrice())
-                            .partyName(current.getPartyName())
-                            .auditDto(AuditDto.builder()
-                                    .createdDate(current.getCreatedDate())
-                                    .lastModifiedBy(current.getLastModifiedBy())
-                                    .lastModifiedDate(current.getLastModifiedDate())
-                                    .createdBy(current.getCreatedBy())
-                                    .createdDate(current.getCreatedDate())
-                                    .build())
-                            .previousPrice(previousPrice) // Set previous price from next item
-                            .build();
-                })
+                .mapToObj(getItemPriceHistoryDtoIntFunction(sortedItems))
                 .toList();
+    }
+
+    private static IntFunction<ItemPriceHistoryDto> getItemPriceHistoryDtoIntFunction(List<ItemPriceHistory> sortedItems) {
+        return i -> {
+            ItemPriceHistory current = sortedItems.get(i);
+            ItemPriceHistory next = (i + 1 < sortedItems.size()) ? sortedItems.get(i + 1) : null;
+            BigDecimal previousPrice = (next != null) ? next.getPrice() : null;
+            return ItemPriceHistoryDto.builder()
+                    .customerName(current.getCustomer().getCustomerName())
+                    .pStyle(current.getPStyle())
+                    .style(current.getStyle())
+                    .itemId(current.getItemId())
+                    .price(current.getPrice())
+                    .partyName(current.getPartyName())
+                    .auditDto(AuditDto.builder()
+                            .createdDate(current.getCreatedDate())
+                            .lastModifiedBy(current.getLastModifiedBy())
+                            .lastModifiedDate(current.getLastModifiedDate())
+                            .createdBy(current.getCreatedBy())
+                            .createdDate(current.getCreatedDate())
+                            .build())
+                    .previousPrice(previousPrice) // Set previous price from next item
+                    .build();
+        };
     }
 
     @Override
