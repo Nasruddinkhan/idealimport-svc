@@ -34,6 +34,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -177,6 +178,17 @@ public class CustomerPriceServiceImpl implements CustomerPriceService {
                        .createdDate(e.getCreatedDate())
                        .build())
                .build()).toList();
+    }
+
+    @Override
+    public BigDecimal findCustomerPartyItem(Party party, String itemCode, Long customerId) {
+        final Customer customer = customerControl.findCustomer(customerId);
+        return  customerPartyRepository.findByCustomerAndParty(customer, party)
+                .flatMap(customerParty -> customerParty.getItemPrices().stream()
+                        .filter(item -> item.getItemId().equals(itemCode))
+                        .findFirst())
+                .map(ItemPrice::getPrice)
+                .orElse(new BigDecimal("0"));
     }
 
     private Specification<CustomerParty> buildWhereConditions(Long customerId) {

@@ -33,4 +33,7 @@ public class SaleOrderHistory extends AuditableEntity {
     @Column(name = "sale_order_id", length = 36)
     private String saleOrderId;
 
+    @Column(name = "active", columnDefinition = "boolean default true")
+    private Boolean isActive;
+
 }

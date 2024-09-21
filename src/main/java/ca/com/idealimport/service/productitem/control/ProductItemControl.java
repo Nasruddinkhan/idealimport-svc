@@ -6,6 +6,7 @@ import ca.com.idealimport.config.exception.IdealException;
 import ca.com.idealimport.config.exception.enums.IdealResponseErrorCode;
 import ca.com.idealimport.service.party.control.PartyControl;
 import ca.com.idealimport.service.party.entity.Party;
+import ca.com.idealimport.service.pricelist.service.CustomerPriceService;
 import ca.com.idealimport.service.product.boundry.repository.ProductRepository;
 import ca.com.idealimport.service.product.entity.Product;
 import ca.com.idealimport.service.product.entity.ProductItem;
@@ -18,6 +19,7 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static ca.com.idealimport.common.util.CommonUtils.safeValue;
@@ -30,7 +32,7 @@ public class ProductItemControl {
     private final PartyControl partyControl;
     private final ProductRepository productRepository;
     private final ProductItemMapper productItemMapper;
-
+    private final CustomerPriceService customerPriceService;
     public void deleteProductItemById(String productItemId) {
         productItemRepository.deleteById(productItemId);
     }
@@ -47,14 +49,16 @@ public class ProductItemControl {
 
     }
 
-    public List<ProductItemDTO> getProductItem(Long partyId, String itemCode) {
+    public List<ProductItemDTO> getProductItem(Long partyId, String itemCode, Long customerId) {
         Party party = partyControl.findParty(partyId);
+        BigDecimal price = customerPriceService.findCustomerPartyItem(party, itemCode, customerId);
         Product product = productRepository.findByProductKeyPartyAndItemCode(party, itemCode);
+        System.out.println("ProductItemControl.getProductItem :::"+price);
         return product.getProductItems()
                 .stream()
                 .map(productItemMapper::convertProductItemToDto)
+                .peek(e->e.withUnitPrice(price))
                 .toList();
-
     }
 
 

@@ -1,10 +1,12 @@
 package ca.com.idealimport.service.pricelist.service;
 
+import ca.com.idealimport.service.party.entity.Party;
 import ca.com.idealimport.service.pricelist.entity.dto.CustomerPriceDto;
 import ca.com.idealimport.service.pricelist.entity.dto.CustomerPriceResponse;
 import ca.com.idealimport.service.pricelist.entity.dto.ItemPriceHistoryDto;
 import org.springframework.data.domain.Page;
 
+import java.math.BigDecimal;
 import java.util.List;
 public interface CustomerPriceService {
     CustomerPriceResponse createCustomerPrice(CustomerPriceDto customerPriceDto);
@@ -18,4 +20,6 @@ public interface CustomerPriceService {
     List<CustomerPriceResponse> findAllParty(Long customerId);
 
     List<ItemPriceHistoryDto> findAllPartyPriceHistory(Long customerId);
+
+    BigDecimal findCustomerPartyItem(Party party, String itemCode, Long customerId);
 }

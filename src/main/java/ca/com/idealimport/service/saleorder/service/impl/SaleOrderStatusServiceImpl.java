@@ -19,6 +19,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Deprecated
 public class SaleOrderStatusServiceImpl implements SaleOrderStatusService {
     private final SaleOrderStatusRepository saleOrderStatusRepository;
     private final SaleOrderStatusMapper saleOrderStatusMapper;
