@@ -53,11 +53,9 @@ public class ProductItemControl {
         Party party = partyControl.findParty(partyId);
         BigDecimal price = customerPriceService.findCustomerPartyItem(party, itemCode, customerId);
         Product product = productRepository.findByProductKeyPartyAndItemCode(party, itemCode);
-        System.out.println("ProductItemControl.getProductItem :::"+price);
         return product.getProductItems()
                 .stream()
-                .map(productItemMapper::convertProductItemToDto)
-                .peek(e->e.withUnitPrice(price))
+                .map(e->productItemMapper.convertProductItemToDto(e, price))
                 .toList();
     }
 

@@ -17,21 +17,4 @@ public record ProductItemDTO(String productItemId,
                              Integer s,
                              Integer m,
                              BigDecimal unitPrice) {
-
-    public ProductItemDTO withUnitPrice(BigDecimal newUnitPrice) {
-        return new ProductItemDTO(
-                this.productItemId,
-                this.details,
-                this.xs,
-                this.l,
-                this.xl,
-                this.xxl,
-                this.xxxl,
-                this.mixed,
-                this.subTotal,
-                this.s,
-                this.m,
-                newUnitPrice
-        );
-    }
 }

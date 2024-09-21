@@ -11,6 +11,7 @@ public record ItemPriceHistoryDto(String customerName,
                                   String pStyle,
                                   String style,
                                   BigDecimal price,
+                                  BigDecimal previousPrice,
                                   String partyName,
                                   AuditDto auditDto) {
 

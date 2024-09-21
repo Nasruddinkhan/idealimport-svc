@@ -35,9 +35,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.IntStream;
 
 @Service
 @Slf4j
@@ -65,6 +64,8 @@ public class CustomerPriceServiceImpl implements CustomerPriceService {
         final CustomerParty customerParty = getCustomerParty(customerPriceDto, itemPriceList, customer, party);
         itemPriceList.forEach(itemPrice -> itemPrice.setCustomerParty(customerParty));
         CustomerParty customerParty1 = customerPartyRepository.save(customerParty);
+       final List<String> items = customerParty1.getItemPrices().stream().map(ItemPrice::getItemId).toList(); itemPriceHistoryRepository.saveAll( itemPriceHistoryRepository.findByItemIdIn(items)
+                .stream().peek(e->e.setIsActive(false)).toList());
         List<ItemPriceHistory> itemPriceHistories = getItemPriceHistories(customerParty1);
         itemPriceHistoryRepository.saveAll(itemPriceHistories);
         return getCustomerPriceResponse(customerParty1);
@@ -82,6 +83,7 @@ public class CustomerPriceServiceImpl implements CustomerPriceService {
                     .pStyle(product.getPackingColors())
                     .style(product.getStyle())
                     .price(e.getPrice())
+                    .isActive(true)
                     .itemPriceId(e.getItemPriceId())
                     .build();
         }).toList();
@@ -161,23 +163,52 @@ public class CustomerPriceServiceImpl implements CustomerPriceService {
     }
 
     @Override
-    public List<ItemPriceHistoryDto> findAllPartyPriceHistory(Long customerId) {
+    public List<ItemPriceHistoryDto>   findAllPartyPriceHistory(Long customerId) {
         final Customer customer = customerControl.findCustomer(customerId);
-       return itemPriceHistoryRepository.findAllByCustomer(customer).stream().map(e->ItemPriceHistoryDto.builder()
-               .customerName(e.getCustomer().getCustomerName())
-               .pStyle(e.getPStyle())
-               .style(e.getStyle())
-               .itemId(e.getItemId())
-               .price(e.getPrice())
-               .partyName(e.getPartyName())
-               .auditDto(AuditDto.builder()
-                       .createdDate(e.getCreatedDate())
-                       .lastModifiedBy(e.getLastModifiedBy())
-                       .lastModifiedDate(e.getLastModifiedDate())
-                       .createdBy(e.getCreatedBy())
-                       .createdDate(e.getCreatedDate())
-                       .build())
-               .build()).toList();
+        List<ItemPriceHistory> sortedItems = itemPriceHistoryRepository.findAllByCustomer(customer).stream()
+                // Sort by itemPriceHistoryId in descending order
+                .sorted(Comparator.comparing(ItemPriceHistory::getItemPriceHistoryId).reversed())
+                .toList();
+//       return itemPriceHistoryRepository.findAllByCustomer(customer).stream()
+//               .sorted(Comparator.comparing(ItemPriceHistory::getItemPriceHistoryId).reversed())
+//               .map(e->ItemPriceHistoryDto.builder()
+//               .customerName(e.getCustomer().getCustomerName())
+//               .pStyle(e.getPStyle())
+//               .style(e.getStyle())
+//               .itemId(e.getItemId())
+//               .price(e.getPrice())
+//               .partyName(e.getPartyName())
+//               .auditDto(AuditDto.builder()
+//                       .createdDate(e.getCreatedDate())
+//                       .lastModifiedBy(e.getLastModifiedBy())
+//                       .lastModifiedDate(e.getLastModifiedDate())
+//                       .createdBy(e.getCreatedBy())
+//                       .createdDate(e.getCreatedDate())
+//                       .build())
+//               .build()).toList();
+        return IntStream.range(0, sortedItems.size())
+                .mapToObj(i -> {
+                    ItemPriceHistory current = sortedItems.get(i);
+                    ItemPriceHistory next = (i + 1 < sortedItems.size()) ? sortedItems.get(i + 1) : null;
+                    BigDecimal previousPrice = (next != null) ? next.getPrice() : null;
+                    return ItemPriceHistoryDto.builder()
+                            .customerName(current.getCustomer().getCustomerName())
+                            .pStyle(current.getPStyle())
+                            .style(current.getStyle())
+                            .itemId(current.getItemId())
+                            .price(current.getPrice())
+                            .partyName(current.getPartyName())
+                            .auditDto(AuditDto.builder()
+                                    .createdDate(current.getCreatedDate())
+                                    .lastModifiedBy(current.getLastModifiedBy())
+                                    .lastModifiedDate(current.getLastModifiedDate())
+                                    .createdBy(current.getCreatedBy())
+                                    .createdDate(current.getCreatedDate())
+                                    .build())
+                            .previousPrice(previousPrice) // Set previous price from next item
+                            .build();
+                })
+                .toList();
     }
 
     @Override

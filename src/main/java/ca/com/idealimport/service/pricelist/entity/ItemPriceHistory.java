@@ -53,6 +53,13 @@ public class ItemPriceHistory extends AuditableEntity {
     @Column(name = "price")
     private BigDecimal price;
 
+    @Column(name = "previous_price")
+    private BigDecimal previousPrice;
+
     @Column(name = "party",  length = 50)
     private String partyName;
+
+    @Column(name = "active", columnDefinition = "boolean default true")
+    private Boolean isActive;
+
 }
