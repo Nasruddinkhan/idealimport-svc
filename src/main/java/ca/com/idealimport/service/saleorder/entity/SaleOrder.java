@@ -68,4 +68,7 @@ public class SaleOrder  extends AuditableEntity {
     @Column(name = "order_status")
     private SaleOrderStatusEnum orderStatus;
 
+    @Column(name = "enable_invoice", columnDefinition = "CHAR(1)")
+    private String enableInvoice;
+
 }

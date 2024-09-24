@@ -17,6 +17,8 @@ public record SaleOrderRequestDto(String saleOrderId,
                                   @JsonDeserialize(using = SaleOrderStatusEnumDeserializer.class)
                                   SaleOrderStatusEnum orderStatus,
                                   SaleOrderInfoDto saleOrderInfo,
+
+                                  String enableInvoice,
                                   String trackingId) {
 
 }
