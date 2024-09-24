@@ -89,7 +89,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
             if (Objects.nonNull(saleOrderRequest.amount().tax()))
                 amount.setTax(taxService.findTax(saleOrderRequest.amount().tax().getTaxId()));
         }
-        final SaleOrder order = getSaleOrder(saleOrderId, amount, customer, items, saleOrderRequest.orderStatus(), saleOrderInfo, user, saleOrderRequest.trackingId());
+        final SaleOrder order = getSaleOrder(saleOrderId, amount, customer, items, saleOrderRequest, saleOrderInfo, user, saleOrderRequest.trackingId());
         final SaleOrder saleOrder = saleOrderRepository.save(order);
         saleOrderHistoryRepository.save(saleOrderMapper.getSaleOrderHistoryId(saleOrder));
         return saleOrderMapper.createSaleOrderResponse(saleOrder, saleOrderRequest.amount());
@@ -258,17 +258,18 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     }
 
     private SaleOrder getSaleOrder(String saleOrderId, Amount amounts, Customer customer, List<SaleOrderItem> items,
-                                   SaleOrderStatusEnum status, SaleOrderInfo saleOrderInfo, User user, String trackingId) {
+                                   SaleOrderRequestDto requestDto, SaleOrderInfo saleOrderInfo, User user, String trackingId) {
         return SaleOrder.builder()
                 .saleOrderId(saleOrderId)
                 .amounts(amounts)
                 .customer(customer)
                 .items(items)
-                .orderStatus(status)
+                .orderStatus(requestDto.orderStatus())
                 .user(user)
                 .isActive(true)
                 .trackingId(Optional.ofNullable(trackingId).orElse(tracingNumberGenerator.getSaleOrderTrackingNumber()))
                 .saleOrderInfo(saleOrderInfo)
+                .enableInvoice(requestDto.enableInvoice())
                 .build();
     }
 
