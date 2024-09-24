@@ -110,6 +110,7 @@ public interface SaleOrderMapper {
                 .trackingId(saleOrder.getTrackingId())
                 .saleOrderId(saleOrder.getSaleOrderId())
                 .orderStatus(saleOrder.getOrderStatus())
+                .enableInvoice(saleOrder.getEnableInvoice())
                 .build();
     }
 

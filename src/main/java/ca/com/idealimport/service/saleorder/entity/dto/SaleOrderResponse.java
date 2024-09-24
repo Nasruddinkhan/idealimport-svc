@@ -14,5 +14,6 @@ public record SaleOrderResponse(SaleOrderInfoDto orderInfo,
                                 AmountDto amount,
                                 SaleOrderStatusEnum orderStatus,
                                 String saleOrderId,
+                                String enableInvoice,
                                 String trackingId) {
 }
