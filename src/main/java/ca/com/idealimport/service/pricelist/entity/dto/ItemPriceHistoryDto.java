@@ -13,6 +13,7 @@ public record ItemPriceHistoryDto(String customerName,
                                   BigDecimal price,
                                   BigDecimal previousPrice,
                                   String partyName,
+                                  Boolean isActive,
                                   AuditDto auditDto) {
 
 

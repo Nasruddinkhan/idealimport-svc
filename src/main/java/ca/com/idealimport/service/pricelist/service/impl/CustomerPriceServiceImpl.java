@@ -171,7 +171,7 @@ public class CustomerPriceServiceImpl implements CustomerPriceService {
                 .toList();
         return IntStream.range(0, sortedItems.size())
                 .mapToObj(getItemPriceHistoryDtoIntFunction(sortedItems))
-                .toList();
+                .toList().stream().filter(ItemPriceHistoryDto::isActive).toList();
     }
 
     private static IntFunction<ItemPriceHistoryDto> getItemPriceHistoryDtoIntFunction(List<ItemPriceHistory> sortedItems) {
@@ -179,8 +179,10 @@ public class CustomerPriceServiceImpl implements CustomerPriceService {
             ItemPriceHistory current = sortedItems.get(i);
             ItemPriceHistory next = (i + 1 < sortedItems.size()) ? sortedItems.get(i + 1) : null;
             BigDecimal previousPrice = (next != null) ? next.getPrice() : null;
+            Date previousDate = (next != null) ? next.getCreatedDate() : null;
             return ItemPriceHistoryDto.builder()
                     .customerName(current.getCustomer().getCustomerName())
+                    .isActive(current.getIsActive())
                     .pStyle(current.getPStyle())
                     .style(current.getStyle())
                     .itemId(current.getItemId())
@@ -189,7 +191,7 @@ public class CustomerPriceServiceImpl implements CustomerPriceService {
                     .auditDto(AuditDto.builder()
                             .createdDate(current.getCreatedDate())
                             .lastModifiedBy(current.getLastModifiedBy())
-                            .lastModifiedDate(current.getLastModifiedDate())
+                            .lastModifiedDate(previousDate)
                             .createdBy(current.getCreatedBy())
                             .createdDate(current.getCreatedDate())
                             .build())
