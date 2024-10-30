@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jasperreports.engine.JRException;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
@@ -49,7 +50,7 @@ public class GlobalExceptionAdvice {
         return idealResponseBuilder.createErrorResponse(new IdealException(IdealResponseErrorCode.TOKEN_EXPIRED), request, response);
     }
 
-    @ExceptionHandler(value = {Exception.class})
+    @ExceptionHandler(value = {Exception.class, NoSuchMethodException.class, JRException.class})
     public ResponseEntity<IdealErrorResponse> handleExpiredJwtException(Exception exception, HttpServletRequest request, HttpServletResponse response) {
         return idealResponseBuilder.createErrorResponse(new IdealException(IdealResponseErrorCode.UNEXPECTED_ERROR, exception.getMessage()), request, response);
     }
@@ -61,7 +62,6 @@ public class GlobalExceptionAdvice {
                         error -> ((FieldError) error).getField(),
                         error -> error.getDefaultMessage(),
                         (oldValue, newValue) -> oldValue)); // In case of duplicate keys
-
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 }

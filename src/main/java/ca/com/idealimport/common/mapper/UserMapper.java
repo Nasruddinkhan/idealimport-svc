@@ -30,6 +30,7 @@ public class UserMapper {
                 .email(userDto.email().toLowerCase())
                 .roles(roles)
                 .mobileNo(userDto.mobileNo())
+                .additionalPermission(userDto.additionalPermission())
                 .isActive(true)
                 .build();
     }
@@ -40,6 +41,7 @@ public class UserMapper {
         user.setEmail(userDto.email().toLowerCase());
         user.setRoles(roles);
         user.setMobileNo(userDto.mobileNo());
+        user.setAdditionalPermission(userDto.additionalPermission());
         user.setIsActive(true);
         return user;
     }
@@ -66,6 +68,7 @@ public class UserMapper {
                 .email(user.getEmail())
                 .mobileNo(user.getMobileNo())
                 .isActive(user.getIsActive())
+                .additionalPermission(user.getAdditionalPermission())
                 .build();
     }
 

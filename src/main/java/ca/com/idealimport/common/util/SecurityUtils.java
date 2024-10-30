@@ -37,4 +37,10 @@ public class SecurityUtils {
                 .anyMatch(role -> RoleEnum.CUSTOMER.name().equals(role));
     }
 
+    public static boolean isEmployee() {
+        List<String> roles = SecurityUtils.getLoggedInUserRole();
+        return roles.stream()
+                .anyMatch(role -> RoleEnum.EMPLOYEE
+                        .name().equals(role));
+    }
 }

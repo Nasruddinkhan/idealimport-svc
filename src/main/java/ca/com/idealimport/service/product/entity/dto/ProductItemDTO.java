@@ -2,6 +2,8 @@ package ca.com.idealimport.service.product.entity.dto;
 
 import lombok.Builder;
 
+import java.math.BigDecimal;
+
 @Builder(builderClassName = "ProductItemBuilder")
 public record ProductItemDTO(String productItemId,
                              String details,
@@ -13,6 +15,6 @@ public record ProductItemDTO(String productItemId,
                              Integer mixed,
                              Integer subTotal,
                              Integer s,
-                             Integer m) {
-
+                             Integer m,
+                             BigDecimal unitPrice) {
 }

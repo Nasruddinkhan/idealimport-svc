@@ -13,9 +13,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth/v1.0")
@@ -41,9 +43,9 @@ public class AuthResource {
     @PostMapping("/register")
     public ResponseEntity<UserRegistrationResponse> registerUser(@RequestBody UserDto userDto) {
         log.info("AuthResource.registerUser start {}", userDto);
-        String password = UUID.randomUUID().toString();
+        String password = "123456";
         var userRegistrationResponse = authControl.registerUser(userDto, password);
-        mailSenderService.sendEmail(emailMapper.convertRegisterUserDtoToMailDto(userDto, password, userRegistrationResponse.userName()), registrationTemplateName);
+      //  mailSenderService.sendEmail(emailMapper.convertRegisterUserDtoToMailDto(userDto, password, userRegistrationResponse.userName()), registrationTemplateName);
         log.info("AuthResource.registerUser end {}", userRegistrationResponse);
         return new ResponseEntity<>(userRegistrationResponse, HttpStatus.CREATED);
     }
@@ -66,6 +68,5 @@ public class AuthResource {
         log.info("AuthResource.regenerateToken end {}", userRegistrationResponse);
         return new ResponseEntity<>(userRegistrationResponse, HttpStatus.OK);
     }
-
 
 }

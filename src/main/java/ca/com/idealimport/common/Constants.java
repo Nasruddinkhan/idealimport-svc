@@ -8,5 +8,7 @@ public class Constants {
     public static final String PURCHASE_ORDER_ID = "purchaseOrderKey.purchaseOrderId";
     public static final String CREATED_DATE = "createdDate";
     public static final String CREATED_BY = "createdBy";
+    public static final String NA = "NA";
+
     private Constants(){}
 }

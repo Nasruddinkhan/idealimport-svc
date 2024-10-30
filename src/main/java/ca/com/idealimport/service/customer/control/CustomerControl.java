@@ -10,6 +10,7 @@ import ca.com.idealimport.service.customer.boundry.repository.CustomerRepository
 import ca.com.idealimport.service.customer.entity.Customer;
 import ca.com.idealimport.service.customer.entity.dto.CustomerDto;
 import ca.com.idealimport.service.role.control.RoleControl;
+import ca.com.idealimport.service.saleorder.service.SaleOrderService;
 import ca.com.idealimport.service.users.control.UserControl;
 import ca.com.idealimport.service.users.entity.dto.UserDto;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class CustomerControl {
     public final UserControl userControl;
     public final CustomerMapper customerMapper;
     public final RoleControl roleControl;
+
 
     public CustomerDto addCustomer(CustomerDto customerDto) {
         var loggedInUser = SecurityUtils.getLoggedInUserId();
@@ -59,11 +61,13 @@ public class CustomerControl {
         log.debug("CustomerControl.findAllCustomer start page = {}, size = {}", page, size);
         final var pageable = new CommonPageable(page, size, Sort.by("customerId").descending());
         final var customer = customerRepository
-                .findByIsActiveTrueAndUser(pageable, userControl.findUserByEmailOrId(SecurityUtils.getLoggedInUserId()))
+                .findByIsActiveTrue(pageable)
                 .map(customerMapper::convertCustomerToCustomerDto);
         log.debug("CustomerControl.findAllCustomer end customer = {}", customer);
         return customer;
     }
+
+
 
     public CustomerDto findCustomerByCustomerId(Long customerId) {
         log.debug("CustomerControl.findCustomerByCustomerId start customerId = {}", customerId);
@@ -97,5 +101,7 @@ public class CustomerControl {
         log.debug("CustomerControl.deleteCustomerByCustomerId end customer = {}", customerDto);
         return customerDto;
     }
+
+
 
 }

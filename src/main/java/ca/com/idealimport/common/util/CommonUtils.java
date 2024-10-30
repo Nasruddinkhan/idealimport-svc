@@ -1,7 +1,13 @@
 package ca.com.idealimport.common.util;
 
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,7 +25,20 @@ public class CommonUtils {
         return value == null ? 0 : value;
     }
 
-    public static File readFileFromResources(String fileName,   ClassLoader classLoader) throws IOException {
-      return new File(classLoader.getResource(fileName).getFile());
+//    public static File readFileFromResources(String fileName,   ResourceLoader classLoader) throws IOException {
+//     return   classLoader.getResource("classpath:"+ fileName).getFile();
+//    }
+
+    public static InputStream readFileFromResources(String filename, ResourceLoader resourceLoader) throws IOException {
+        Resource resource = resourceLoader.getResource(filename);
+        return resource.getInputStream();
+    }
+
+    public static String formatDate(Date date) {
+        if (date == null) {
+            throw new IllegalArgumentException("Date cannot be null");
+        }
+        final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        return formatter.format(date);
     }
 }

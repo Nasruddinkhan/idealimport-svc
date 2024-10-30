@@ -29,11 +29,11 @@ public class SaleOrderItem extends AuditableEntity {
     @Column(name = "item_code", length = 50)
     private String itemCode;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "party_id")
     private Party party;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "order_item_id")
     private OrderItem orderItem;
 

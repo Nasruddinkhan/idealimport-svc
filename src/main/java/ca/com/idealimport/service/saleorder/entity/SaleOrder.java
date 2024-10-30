@@ -1,20 +1,10 @@
 package ca.com.idealimport.service.saleorder.entity;
 
 import ca.com.idealimport.common.entity.AuditableEntity;
+import ca.com.idealimport.common.enums.SaleOrderStatusEnum;
 import ca.com.idealimport.service.customer.entity.Customer;
 import ca.com.idealimport.service.users.entity.User;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -48,23 +38,19 @@ public class SaleOrder  extends AuditableEntity {
                     @Parameter(name = NUMBER_FORMAT_PARAMETER, value = TEN_DIGIT)})
     private String saleOrderId;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "sale_order_id")
-    private List<Amount> amounts;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "amount_id")
+    private Amount amounts;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "sale_order_id")
     private List<SaleOrderItem> items;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "order_status_id")
-    private SaleOrderStatus orderStatus;
-
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "sale_order_info_id")
     private SaleOrderInfo saleOrderInfo;
 
@@ -77,5 +63,12 @@ public class SaleOrder  extends AuditableEntity {
 
     @Column(name = "tracking_id", length = 15, unique = true, updatable = false)
     private String trackingId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "order_status")
+    private SaleOrderStatusEnum orderStatus;
+
+    @Column(name = "enable_invoice", columnDefinition = "CHAR(1)")
+    private String enableInvoice;
 
 }

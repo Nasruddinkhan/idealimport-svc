@@ -12,14 +12,11 @@ import ca.com.idealimport.service.product.entity.ProductItem;
 import ca.com.idealimport.service.saleorder.entity.Amount;
 import ca.com.idealimport.service.saleorder.entity.OrderItem;
 import ca.com.idealimport.service.saleorder.entity.SaleOrder;
+import ca.com.idealimport.service.saleorder.entity.SaleOrderAmountAudit;
+import ca.com.idealimport.service.saleorder.entity.SaleOrderHistory;
 import ca.com.idealimport.service.saleorder.entity.SaleOrderInfo;
 import ca.com.idealimport.service.saleorder.entity.SaleOrderItem;
-import ca.com.idealimport.service.saleorder.entity.dto.AmountDto;
-import ca.com.idealimport.service.saleorder.entity.dto.OrderItemDto;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderCreationResponse;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderInfoDto;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderItemDto;
-import ca.com.idealimport.service.saleorder.entity.dto.SaleOrderResponse;
+import ca.com.idealimport.service.saleorder.entity.dto.*;
 import ca.com.idealimport.service.users.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -35,6 +32,11 @@ public interface SaleOrderMapper {
 
     default OrderItem validateAndGetOrderItem(ProductItem productItem, SaleOrderItemDto item, String itemCode, User user) {
         final var orderItem = item.orderItem();
+        final int totalQty = safeValue(orderItem.xs()) + safeValue(orderItem.s()) + safeValue(orderItem.m()) + safeValue(orderItem.l())
+                + safeValue(orderItem.xl()) + safeValue(orderItem.xxl()) + safeValue(orderItem.xxxl())
+                + safeValue(orderItem.mixed());
+        final BigDecimal totalQuantityBD = BigDecimal.valueOf(totalQty);
+
         return OrderItem.builder()
                 .orderItemId(CommonUtils.getUUID(orderItem.orderItemId()))
                 .xs(getSizeItem(productItem.getXs(), orderItem.xs(), orderItem.color(), itemCode))
@@ -45,9 +47,8 @@ public interface SaleOrderMapper {
                 .xxl(getSizeItem(productItem.getXxl(), orderItem.xxl(), orderItem.color(), itemCode))
                 .xxxl(getSizeItem(productItem.getXxxl(), orderItem.xxxl(), orderItem.color(), itemCode))
                 .mixed(getSizeItem(productItem.getMixed(), orderItem.mixed(), orderItem.color(), itemCode))
-                .subTotal(safeValue(orderItem.xs()) + safeValue(orderItem.s()) + safeValue(orderItem.m()) + safeValue(orderItem.l())
-                        + safeValue(orderItem.xl()) + safeValue(orderItem.xxl()) + safeValue(orderItem.xxxl())
-                        + safeValue(orderItem.mixed()))
+                .qty(totalQty)
+                .subTotal(totalQuantityBD.multiply(orderItem.unitPrice()))
                 .unitPrice(orderItem.unitPrice())
                 .productItemId(productItem)
                 .color(orderItem.color())
@@ -88,11 +89,11 @@ public interface SaleOrderMapper {
         String name = saleOrder.getCustomer().getCustomerName();
         String trackingId = saleOrder.getTrackingId();
         long qty = saleOrder.getItems().stream().map(SaleOrderItem::getOrderItem)
-                .map(OrderItem::getSubTotal).reduce(0, Integer::sum);
+                .map(OrderItem::getQty).reduce(0, Integer::sum);
         return SaleOrderCreationResponse.builder()
                 .msg(String.format(MessageConstants.SALE_ORDER_RES_MSG, name,
                         saleOrder.getTrackingId()))
-                .status(saleOrder.getOrderStatus().getName())
+                .status(saleOrder.getOrderStatus())
                 .name(name)
                 .trackingId(trackingId)
                 .amountDto(amountDto)
@@ -103,13 +104,13 @@ public interface SaleOrderMapper {
     default SaleOrderResponse convertSaleOrderToDtoResponse(SaleOrder saleOrder) {
         return SaleOrderResponse.builder()
                 .orderInfo(getSaleOrderInfo(saleOrder.getSaleOrderInfo()))
-                .amount(saleOrder.getAmounts().stream().map(this::getSaleOrderAmount).toList())
+                .amount(getSaleOrderAmount(saleOrder.getAmounts()))
                 .customer(getCustomer(saleOrder.getCustomer()))
                 .items(getSaleOrderItem(saleOrder.getItems()))
                 .trackingId(saleOrder.getTrackingId())
                 .saleOrderId(saleOrder.getSaleOrderId())
-                .orderStatus(DropDownDto.builder().key(saleOrder.getOrderStatus().getSaleOrderStatusId())
-                        .value(saleOrder.getOrderStatus().getName()).build())
+                .orderStatus(saleOrder.getOrderStatus())
+                .enableInvoice(saleOrder.getEnableInvoice())
                 .build();
     }
 
@@ -129,4 +130,30 @@ public interface SaleOrderMapper {
     OrderItemDto getSaleOrderItem(OrderItem item);
 
     SaleOrderInfoDto getSaleOrderInfo(SaleOrderInfo saleOrderInfo);
+
+    @Mapping(target = "amountHistoryId", expression = "java(getCommonId(null))")
+    @Mapping(target = "saleOrderId", source = "updateAmtRequest.saleOrderId")
+    @Mapping(target = "paidAmount", source = "updateAmtRequest.amount")
+    @Mapping(target = "remainingAmount", source = "amount.balance")
+    SaleOrderAmountAudit mapAmountToAmountAudit(Amount amount, SaleOrderUpdateAmtRequest updateAmtRequest);
+    @Mapping(source = "paidAmount", target = "paidAmount")
+    @Mapping(source = "remainingAmount", target = "remainingAmount")
+    @Mapping(target = "auditDto.createdBy", source = "createdBy")
+    @Mapping(target = "auditDto.createdDate", source = "createdDate")
+    @Mapping(target = "auditDto.lastModifiedBy", source = "lastModifiedBy")
+    @Mapping(target = "auditDto.lastModifiedDate", source = "lastModifiedDate")
+    SaleOrderAmountHistoryDTO toDto(SaleOrderAmountAudit audit);
+    List<SaleOrderAmountHistoryDTO> mapAmountAuditToAmountHistory(List<SaleOrderAmountAudit> amountHistorys);
+
+    @Mapping(target = "saleOrderHistoryId", expression = "java(getCommonId(null))")
+    SaleOrderHistory getSaleOrderHistoryId(SaleOrderUpdateRequest saleOrder);
+
+    @Mapping(target = "saleOrderHistoryId", expression = "java(getCommonId(null))")
+    SaleOrderHistory getSaleOrderHistoryId(SaleOrder saleOrder);
+
+    @Mapping(target = "auditDto.createdBy", source = "createdBy")
+    @Mapping(target = "auditDto.createdDate", source = "createdDate")
+    @Mapping(target = "auditDto.lastModifiedBy", source = "lastModifiedBy")
+    @Mapping(target = "auditDto.lastModifiedDate", source = "lastModifiedDate")
+    SaleOrderHistoryDto getHistoryToHistoryDto(SaleOrderHistory saleOrderHistory);
 }

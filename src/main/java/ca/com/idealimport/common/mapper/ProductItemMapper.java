@@ -10,6 +10,7 @@ import ca.com.idealimport.service.purchaseorder.entity.dto.UpdatePurchaseOrderBe
 import ca.com.idealimport.service.users.entity.User;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Component
@@ -65,6 +66,25 @@ public class ProductItemMapper {
                 .build();
 
     }
+    public ProductItemDTO convertProductItemToDto(ProductItem productItem, BigDecimal unitPrice) {
+        return ProductItemDTO.builder()
+                .productItemId(productItem.getProductItemId())
+                .s(productItem.getS())
+                .l(productItem.getL())
+                .xl(productItem.getXl())
+                .m(productItem.getM())
+                .xs(productItem.getXs())
+                .xxl(productItem.getXxl())
+                .xxxl(productItem.getXxxl())
+                .mixed(productItem.getMixed())
+                .details(productItem.getDetails())
+                .subTotal(productItem.getSubTotal())
+                .unitPrice(unitPrice)
+                .unitPrice(unitPrice)
+                .build();
+
+    }
+
 
     public ProductItem mapPurchaseOrderItenToProductItem(ProductItem productItem, UpdatePurchaseOrderBean orderBean) {
         PurchaseOrderItem item = orderBean.orderItem();

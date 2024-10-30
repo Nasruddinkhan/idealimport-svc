@@ -66,8 +66,9 @@ public class ProductItemResource {
     @GetMapping("/item")
     public ResponseEntity<List<ProductItemDTO>> getProductItem(
             @RequestParam("party-id") Long partyId,
-            @RequestParam("item-code") String itemCode) {
-        return ResponseEntity.ok(productItemControl.getProductItem(partyId, itemCode));
+            @RequestParam("item-code") String itemCode,
+            @RequestParam(name = "customerId", required = false) Long customerId) {
+        return ResponseEntity.ok(productItemControl.getProductItem(partyId, itemCode, customerId));
     }
 
 }

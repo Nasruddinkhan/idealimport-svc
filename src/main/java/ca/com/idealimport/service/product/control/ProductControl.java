@@ -13,6 +13,7 @@ import ca.com.idealimport.service.party.control.PartyControl;
 import ca.com.idealimport.service.party.entity.Party;
 import ca.com.idealimport.service.product.boundry.repository.ProductRepository;
 import ca.com.idealimport.service.product.entity.Product;
+import ca.com.idealimport.service.product.entity.ProductItem;
 import ca.com.idealimport.service.product.entity.dto.ProductCreationResponse;
 import ca.com.idealimport.service.product.entity.dto.ProductDTO;
 import ca.com.idealimport.service.product.entity.dto.ProductResponseDto;
@@ -92,11 +93,14 @@ public class ProductControl {
         Optional.ofNullable(searchProductDto.itemCode())
                 .filter(style -> !style.isEmpty())
                 .ifPresent(itemCode -> specificationsList.add(Specifications.fieldProperty("itemCode", itemCode)));
-        if (!SecurityUtils.isAdmin() && !SecurityUtils.isCustomer())
-            specificationsList.add(Specifications.fieldProperty(Constants.CREATED_BY, SecurityUtils.getLoggedInUserId()));
+        //  if (!SecurityUtils.isAdmin() && !SecurityUtils.isCustomer())
+        //    specificationsList.add(Specifications.fieldProperty(Constants.CREATED_BY, SecurityUtils.getLoggedInUserId()));
         if (SecurityUtils.isCustomer()) {
             specificationsList.add(Specifications.fieldInClause(searchProductDto.parties(), "productKey", "party", "partyId"));
         }
+//        if(SecurityUtils.isEmployee()){
+//
+//        }
         return SpecificationUtils.and(specificationsList);
     }
 
@@ -112,4 +116,6 @@ public class ProductControl {
         return product;
 
     }
+
+
 }

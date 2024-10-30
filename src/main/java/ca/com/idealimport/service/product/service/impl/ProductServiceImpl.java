@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -70,6 +71,14 @@ public class ProductServiceImpl implements ProductService {
         log.info(String.format("%s stock update successfully with %s quantity with in hand",
                 product.getItemCode(), product.getQuantityInHand()));
 
+    }
+    @Override
+    public Product findByProductKeyPartyAndItemCode(Party party, String itemCode){
+       return Optional.ofNullable(productRepository.findByProductKeyPartyAndItemCode(party, itemCode))
+                .orElseThrow(() -> {
+                    throw new IdealException(IdealResponseErrorCode.NOT_FOUND,
+                            String.format(ErrorConstants.PRODUCT_NOT_PRESENT, itemCode));
+                });
     }
 
     @Override

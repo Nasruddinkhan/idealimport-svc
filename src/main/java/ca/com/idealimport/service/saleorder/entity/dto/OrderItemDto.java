@@ -18,5 +18,6 @@ public record OrderItemDto(
         Integer subTotal,
         BigDecimal unitPrice,
         Integer s,
-        Integer m) {
+        Integer m,
+        Integer qty) {
 }
